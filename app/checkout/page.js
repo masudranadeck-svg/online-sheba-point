@@ -18,7 +18,7 @@ export default function Checkout() {
     try {
       // আমরা ধরে নিচ্ছি ইউজার শুধু প্রথম প্রোডাক্টটা কিনছে (ডেমো পেমেন্ট)
       // পরবর্তীতে আমরা কার্ট থেকে ডাটা নিয়ে আসব। এখন আপাতত টেস্ট করার জন্য।
-      const res = await fetch('http://127.0.0.1:5000/api/products');
+      const res = await fetch('https://online-sheba-point.onrender.com/api/products');
       const products = await res.json();
       
       if (products.length === 0) {
@@ -29,7 +29,7 @@ export default function Checkout() {
 
       const productId = products[0]._id; // প্রথম প্রোডাক্টটা নিচ্ছি
 
-      const checkoutRes = await fetch('http://127.0.0.1:5000/api/orders/checkout', {
+      const checkoutRes = await fetch('https://online-sheba-point.onrender.com/api/orders/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ buyerEmail: email, productId: productId })

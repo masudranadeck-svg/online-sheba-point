@@ -12,7 +12,7 @@ export default function Register() {
     setMessage('লোডিং...'); // ক্লিক করার সাথে সাথে লোডিং দেখাবে
 
     try {
-      const res = await fetch('http://127.0.0.1:5000/api/auth/register', {
+      const res = await fetch('https://online-sheba-point.onrender.com/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password })
