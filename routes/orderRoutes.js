@@ -44,4 +44,14 @@ router.post('/checkout', async (req, res) => {
     }
 });
 
+// --- কাস্টমারের অর্ডার হিস্ট্রি দেখার রুট (GET Request) ---
+router.get('/my-orders/:email', async (req, res) => {
+    try {
+        const orders = await Order.find({ buyerEmail: req.params.email });
+        res.status(200).json(orders);
+    } catch (error) {
+        res.status(500).json({ message: "সার্ভার এরর!", error: error.message });
+    }
+});
+
 module.exports = router;
