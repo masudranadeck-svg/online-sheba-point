@@ -1,99 +1,162 @@
 'use client'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function AdminPanel() {
+  const [activeTab, setActiveTab] = useState('add');
+  const [products, setProducts] = useState([]);
+  const [orders, setOrders] = useState([]);
+  
   const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
+  const [desc, setDesc] = useState('');
   const [price, setPrice] = useState('');
-  const [category, setCategory] = useState('');
-  const [softwareKey, setSoftwareKey] = useState('');
+  const [category, setCategory] = useState('software');
+  const [key, setKey] = useState('');
   const [message, setMessage] = useState('');
 
+  const API_URL = "https://online-sheba-point.onrender.com/api";
+
+  // প্রোডাক্ট এবং অর্ডার আনার ফাংশন
+  const fetchData = async () => {
+    try {
+      const prodRes = await fetch(`${API_URL}/products`);
+      setProducts(await prodRes.json());
+      
+      const ordRes = await fetch(`${API_URL}/orders`);
+      setOrders(await ordRes.json());
+    } catch (error) {
+      console.log("ডাটা আনতে সমস্যা");
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // প্রোডাক্ট অ্যাড করার ফাংশন
   const handleAddProduct = async (e) => {
     e.preventDefault();
     setMessage('যোগ করা হচ্ছে...');
-
     try {
-      const res = await fetch('https://online-sheba-point.onrender.com/api/products/add', {
+      const res = await fetch(`${API_URL}/products/add`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          name, 
-          description, 
-          price: Number(price), 
-          category, 
-          softwareKey 
-        })
+        body: JSON.stringify({ name, description: desc, price: Number(price), category, softwareKey: key })
       });
-
       const data = await res.json();
       setMessage(data.message);
-
-      // সফল হলে ইনপুট বক্স খালি করা
       if (res.ok) {
-        setName('');
-        setDescription('');
-        setPrice('');
-        setCategory('');
-        setSoftwareKey('');
+        setName(''); setDesc(''); setPrice(''); setKey('');
+        fetchData(); // লিস্ট আপডেট করার জন্য
       }
     } catch (error) {
-      setMessage('সার্ভারের সাথে কানেক্ট করা যায়নি!');
+      setMessage('সার্ভার এরর!');
+    }
+  };
+
+  // প্রোডাক্ট ডিলিট করার ফাংশন
+  const handleDelete = async (id) => {
+    if (window.confirm("আপনি কি এই প্রোডাক্টটি ডিলিট করতে চান?")) {
+      try {
+        await fetch(`${API_URL}/products/${id}`, { method: 'DELETE' });
+        fetchData(); // লিস্ট আপডেট করার জন্য
+      } catch (error) {
+        console.log("ডিলিট এরর");
+      }
     }
   };
 
   return (
-    <div style={{ padding: '50px', maxWidth: '500px', margin: 'auto' }}>
-      <h2>🛠️ অ্যাডমিন প্যানেল (প্রোডাক্ট অ্যাড করুন)</h2>
-      <form onSubmit={handleAddProduct} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-        <input 
-          type="text" 
-          placeholder="প্রোডাক্টের নাম (যেমন: Windows 11 Pro)" 
-          value={name} 
-          onChange={(e) => setName(e.target.value)} 
-          required 
-          style={{ padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
-        />
-        <textarea 
-          placeholder="বিবরণ (Description)" 
-          value={description} 
-          onChange={(e) => setDescription(e.target.value)} 
-          required 
-          style={{ padding: '10px', borderRadius: '5px', border: '1px solid #ccc', minHeight: '80px' }}
-        />
-        <input 
-          type="number" 
-          placeholder="মূল্য (টাকা)" 
-          value={price} 
-          onChange={(e) => setPrice(e.target.value)} 
-          required 
-          style={{ padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
-        />
-        <input 
-          type="text" 
-          placeholder="ক্যাটাগরি (যেমন: Software / Subscription)" 
-          value={category} 
-          onChange={(e) => setCategory(e.target.value)} 
-          required 
-          style={{ padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
-        />
-        <input 
-          type="text" 
-          placeholder="সফটওয়্যার কী (License Key)" 
-          value={softwareKey} 
-          onChange={(e) => setSoftwareKey(e.target.value)} 
-          required 
-          style={{ padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
-        />
-        <button 
-          type="submit" 
-          style={{ padding: '10px', background: '#28a745', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', fontSize: '16px' }}
-        >
-          প্রোডাক্ট অ্যাড করুন
-        </button>
-      </form>
-      
-      {message && <p style={{ marginTop: '15px', color: 'green', textAlign: 'center' }}>{message}</p>}
+    <div style={{ minHeight: '100vh', background: '#f5f7fa', paddingTop: '100px', paddingBottom: '40px' }}>
+      <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '0 20px' }}>
+        <h1 style={{ textAlign: 'center', marginBottom: '30px', color: '#1a1a2e' }}>🛠️ অ্যাডমিন ড্যাশবোর্ড</h1>
+        
+        {/* ট্যাব মেন্যু */}
+        <div style={{ display: 'flex', gap: '10px', marginBottom: '30px', borderBottom: '2px solid #e8ecf1' }}>
+          <button onClick={() => setActiveTab('add')} style={{ padding: '12px 20px', background: activeTab === 'add' ? '#4e6ef2' : 'white', color: activeTab === 'add' ? 'white' : '#888', border: 'none', borderRadius: '8px 8px 0 0', cursor: 'pointer', fontWeight: '600' }}>➕ প্রোডাক্ট অ্যাড করুন</button>
+          <button onClick={() => setActiveTab('list')} style={{ padding: '12px 20px', background: activeTab === 'list' ? '#4e6ef2' : 'white', color: activeTab === 'list' ? 'white' : '#888', border: 'none', borderRadius: '8px 8px 0 0', cursor: 'pointer', fontWeight: '600' }}>📋 প্রোডাক্ট লিস্ট ({products.length})</button>
+          <button onClick={() => setActiveTab('orders')} style={{ padding: '12px 20px', background: activeTab === 'orders' ? '#4e6ef2' : 'white', color: activeTab === 'orders' ? 'white' : '#888', border: 'none', borderRadius: '8px 8px 0 0', cursor: 'pointer', fontWeight: '600' }}>🛒 অর্ডার হিস্ট্রি ({orders.length})</button>
+        </div>
+
+        {/* ১. প্রোডাক্ট অ্যাড করার ফর্ম */}
+        {activeTab === 'add' && (
+          <div className="d-card glow-card" style={{ padding: '30px' }}>
+            <h2 style={{ marginTop: 0, marginBottom: '20px' }}>নতুন প্রোডাক্ট অ্যাড করুন</h2>
+            <form onSubmit={handleAddProduct} style={{ display: 'grid', gap: '15px' }}>
+              <input type="text" placeholder="প্রোডাক্টের নাম (যেমন: Windows 11 Pro)" value={name} onChange={(e) => setName(e.target.value)} required style={{ padding: '12px', borderRadius: '8px', border: '1px solid #ccc' }} />
+              <textarea placeholder="বিবরণ (Description)" value={desc} onChange={(e) => setDesc(e.target.value)} required style={{ padding: '12px', borderRadius: '8px', border: '1px solid #ccc', minHeight: '80px' }} />
+              <div style={{ display: 'flex', gap: '15px' }}>
+                <input type="number" placeholder="মূল্য (টাকা)" value={price} onChange={(e) => setPrice(e.target.value)} required style={{ flex: 1, padding: '12px', borderRadius: '8px', border: '1px solid #ccc' }} />
+                <select value={category} onChange={(e) => setCategory(e.target.value)} style={{ flex: 1, padding: '12px', borderRadius: '8px', border: '1px solid #ccc', background: 'white' }}>
+                  <option value="software">Software Key</option>
+                  <option value="subscription">Subscription</option>
+                  <option value="remote">Remote Service</option>
+                </select>
+              </div>
+              <input type="text" placeholder="সফটওয়্যার কী (License Key)" value={key} onChange={(e) => setKey(e.target.value)} required style={{ padding: '12px', borderRadius: '8px', border: '1px solid #ccc' }} />
+              <button type="submit" style={{ padding: '12px', background: '#4e6ef2', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600', fontSize: '16px' }}>প্রোডাক্ট অ্যাড করুন</button>
+            </form>
+            {message && <p style={{ color: 'green', textAlign: 'center', marginTop: '15px' }}>{message}</p>}
+          </div>
+        )}
+
+        {/* ২. প্রোডাক্ট লিস্ট */}
+        {activeTab === 'list' && (
+          <div className="d-card glow-card" style={{ padding: '20px', overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '600px' }}>
+              <thead>
+                <tr style={{ borderBottom: '2px solid #e8ecf1', textAlign: 'left' }}>
+                  <th style={{ padding: '12px' }}>নাম</th>
+                  <th style={{ padding: '12px' }}>মূল্য</th>
+                  <th style={{ padding: '12px' }}>ক্যাটাগরি</th>
+                  <th style={{ padding: '12px' }}>স্ট্যাটাস</th>
+                  <th style={{ padding: '12px' }}>অ্যাকশন</th>
+                </tr>
+              </thead>
+              <tbody>
+                {products.map((p) => (
+                  <tr key={p._id} style={{ borderBottom: '1px solid #f0f0f0' }}>
+                    <td style={{ padding: '12px', fontWeight: '600' }}>{p.name}</td>
+                    <td style={{ padding: '12px', color: '#2dce89' }}>৳{p.price}</td>
+                    <td style={{ padding: '12px' }}>{p.category}</td>
+                    <td style={{ padding: '12px' }}>
+                      {p.isSold ? <span style={{ color: '#e2136e', fontWeight: '600' }}>বিক্রি হয়েছে</span> : <span style={{ color: '#2dce89', fontWeight: '600' }}>Available</span>}
+                    </td>
+                    <td style={{ padding: '12px' }}>
+                      <button onClick={() => handleDelete(p._id)} style={{ padding: '8px 12px', background: '#ff6b6b', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>ডিলিট</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* ৩. অর্ডার হিস্ট্রি */}
+        {activeTab === 'orders' && (
+          <div className="d-card glow-card" style={{ padding: '20px', overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '600px' }}>
+              <thead>
+                <tr style={{ borderBottom: '2px solid #e8ecf1', textAlign: 'left' }}>
+                  <th style={{ padding: '12px' }}>কাস্টমার ইমেইল</th>
+                  <th style={{ padding: '12px' }}>প্রোডাক্ট</th>
+                  <th style={{ padding: '12px' }}>মূল্য</th>
+                  <th style={{ padding: '12px' }}>ডেলিভার করা কী</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orders.map((o) => (
+                  <tr key={o._id} style={{ borderBottom: '1px solid #f0f0f0' }}>
+                    <td style={{ padding: '12px' }}>{o.buyerEmail}</td>
+                    <td style={{ padding: '12px', fontWeight: '600' }}>{o.productName}</td>
+                    <td style={{ padding: '12px', color: '#2dce89' }}>৳{o.price}</td>
+                    <td style={{ padding: '12px', fontFamily: 'monospace', background: '#f9f9f9' }}>{o.deliveredKey}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
