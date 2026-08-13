@@ -50,7 +50,6 @@ export default function Navbar() {
             <Link href="/login" className="d-btn glow-btn" style={{padding:'10px 28px',fontSize:14,textDecoration:'none'}}>লগইন / রেজিস্টার</Link>
           </div>
 
-          {/* মোবাইল হ্যামবার্গার মেন্যু */}
           <button className="lg:hidden" onClick={()=>setOpen(!open)} style={{padding:8,borderRadius:12,border:'none',background:'transparent',cursor:'pointer'}}>
             <div style={{width:20,height:16,display:'flex',flexDirection:'column',justifyContent:'center',gap:4}}>
               <span style={{width:20,height:2,background:'#666',borderRadius:2,transition:'all 0.3s',transform:open?'rotate(45deg) translateY(6px)':'none'}} />
@@ -60,10 +59,10 @@ export default function Navbar() {
           </button>
         </div>
 
-        {/* ২য় লাইন: ডেস্কটপ মেন্যু লিস্ট */}
-        <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:4,marginTop:12,borderTop:'1px solid #f0f0f0',paddingTop:12}} className="hidden lg:flex">
+        {/* ২য় লাইন: ডেস্কটপ মেন্যু লিস্ট (নিচের লাইনে চলে যাওয়ার জন্য flexWrap যোগ করা হয়েছে) */}
+        <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:'8px 16px',marginTop:12,borderTop:'1px solid #f0f0f0',paddingTop:12,flexWrap:'wrap'}} className="hidden lg:flex">
           {menuItems.map(x=>(
-            <Link key={x.href} href={x.href} style={{padding:'6px 10px',borderRadius:8,fontSize:13.5,fontWeight:600,color:'#555',textDecoration:'none',transition:'all 0.2s',whiteSpace:'nowrap'}}>{x.l}</Link>
+            <Link key={x.href} href={x.href} style={{padding:'4px 8px',borderRadius:8,fontSize:13.5,fontWeight:600,color:'#555',textDecoration:'none',transition:'all 0.2s',whiteSpace:'nowrap'}}>{x.l}</Link>
           ))}
         </div>
 
