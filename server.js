@@ -21,9 +21,14 @@ app.use('/api/auth', authRoutes);
 const productRoutes = require('./routes/productRoutes');
 app.use('/api/products', productRoutes);
 
-// নতুন অর্ডার রুট যোগ করা হয়েছে এখানে
-const orderRoutes = require('./routes/orderRoutes'); 
-app.use('/api/orders', orderRoutes); 
+const orderRoutes = require('./routes/orderRoutes');
+app.use('/api/orders', orderRoutes);
+
+const gigRoutes = require('./routes/gigRoutes'); 
+app.use('/api/gigs', gigRoutes); 
+
+const jobRoutes = require('./routes/jobRoutes'); 
+app.use('/api/jobs', jobRoutes); 
 
 app.get('/', (req, res) => {
     res.send('সার্ভার সফলভাবে চলছে।');
