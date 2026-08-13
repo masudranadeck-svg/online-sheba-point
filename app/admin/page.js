@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 export default function AdminPanel() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [inputPass, setInputPass] = useState('');
-  const ADMIN_PASSWORD = "admin123"; // আপনার পাসওয়ার্ড এখানে
+  const ADMIN_PASSWORD = "Masud890@"; // আপনার পাসওয়ার্ড এখানে
 
   const [activeTab, setActiveTab] = useState('add');
   const [products, setProducts] = useState([]);
