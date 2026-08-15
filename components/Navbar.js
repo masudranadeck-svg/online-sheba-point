@@ -12,12 +12,13 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', h);
   }, []);
 
+  // নাম পরিবর্তন করা হয়েছে এখানে
   const menuItems = [
     {href:'/',l:'হোম'},
     {href:'/shop',l:'শপ'},
     {href:'/marketplace',l:'মার্কেটপ্লেস'},
-    {href:'/remote-jobs',l:'Remote Jobs'},
-    {href:'/dev-services',l:'ডেভলপমেন্ট'},
+    {href:'/remote-jobs',l:'রিমোট জবস'},
+    {href:'/dev-services',l:'ডেভেলপমেন্ট সার্ভিস'},
     {href:'/online-sheba',l:'অনলাইন সেবা'},
     {href:'/dollar-exchange',l:'ডলার এক্সচেঞ্জ'},
     {href:'/cards',l:'কার্ড সেবা'},
@@ -26,7 +27,7 @@ export default function Navbar() {
     {href:'/pc-solution',l:'পিসি সলিউশন'},
     {href:'/dashboard',l:'ড্যাশবোর্ড'},
     {href:'/subscription',l:'সাবস্ক্রিপশন'},
-    {href:'/remote',l:'রিমোট'}
+    {href:'/remote',l:'রিমোট সার্ভিস'}
   ];
 
   return (
@@ -59,7 +60,7 @@ export default function Navbar() {
           </button>
         </div>
 
-        {/* ২য় লাইন: ডেস্কটপ মেন্যু লিস্ট (নিচের লাইনে চলে যাওয়ার জন্য flexWrap যোগ করা হয়েছে) */}
+        {/* ২য় লাইন: ডেস্কটপ মেন্যু লিস্ট */}
         <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:'8px 16px',marginTop:12,borderTop:'1px solid #f0f0f0',paddingTop:12,flexWrap:'wrap'}} className="hidden lg:flex">
           {menuItems.map(x=>(
             <Link key={x.href} href={x.href} style={{padding:'4px 8px',borderRadius:8,fontSize:13.5,fontWeight:600,color:'#555',textDecoration:'none',transition:'all 0.2s',whiteSpace:'nowrap'}}>{x.l}</Link>
