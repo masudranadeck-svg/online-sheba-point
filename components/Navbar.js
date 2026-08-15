@@ -12,11 +12,12 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', h);
   }, []);
 
-  // নাম পরিবর্তন করা হয়েছে এখানে
+  // 'পুরোনো পণ্য' যোগ করা হয়েছে
   const menuItems = [
     {href:'/',l:'হোম'},
     {href:'/shop',l:'শপ'},
     {href:'/marketplace',l:'মার্কেটপ্লেস'},
+    {href:'/resell',l:'পুরোনো পণ্য'}, // নতুন অপশন
     {href:'/remote-jobs',l:'রিমোট জবস'},
     {href:'/dev-services',l:'ডেভেলপমেন্ট সার্ভিস'},
     {href:'/online-sheba',l:'অনলাইন সেবা'},
@@ -40,7 +41,6 @@ export default function Navbar() {
     }}>
       <div style={{maxWidth:1280,margin:'0 auto',padding:'0 24px'}}>
         
-        {/* ১ম লাইন: লোগো এবং লগইন বাটন */}
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
           <Link href="/" style={{display:'flex',alignItems:'center',gap:8,textDecoration:'none',flexShrink:0}}>
             <div style={{width:36,height:36,borderRadius:12,background:'linear-gradient(135deg,#4e6ef2,#a855f7)',display:'flex',alignItems:'center',justifyContent:'center',color:'white',fontWeight:'bold',fontSize:14}}>O</div>
@@ -60,14 +60,12 @@ export default function Navbar() {
           </button>
         </div>
 
-        {/* ২য় লাইন: ডেস্কটপ মেন্যু লিস্ট */}
         <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:'8px 16px',marginTop:12,borderTop:'1px solid #f0f0f0',paddingTop:12,flexWrap:'wrap'}} className="hidden lg:flex">
           {menuItems.map(x=>(
             <Link key={x.href} href={x.href} style={{padding:'4px 8px',borderRadius:8,fontSize:13.5,fontWeight:600,color:'#555',textDecoration:'none',transition:'all 0.2s',whiteSpace:'nowrap'}}>{x.l}</Link>
           ))}
         </div>
 
-        {/* মোবাইল মেন্যু */}
         <div className="lg:hidden" style={{overflow:'hidden',transition:'all 0.3s',maxHeight:open?600:0,marginTop:12}}>
           <div style={{background:'white',margin:'0 16px',borderRadius:16,boxShadow:'0 4px 20px rgba(0,0,0,0.1)',padding:12}}>
             {menuItems.map(x=>(
