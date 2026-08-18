@@ -4,21 +4,14 @@ import Link from 'next/link';
 import { auth } from '@/lib/firebase';
 import { 
   createUserWithEmailAndPassword, 
-  signInWithPopup, 
-  GoogleAuthProvider,
-  RecaptchaVerifier,
-  signInWithPhoneNumber
+  signInWithRedirect, 
+  GoogleAuthProvider 
 } from 'firebase/auth';
 
 export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
-  
-  // Phone Auth State
-  const [phone, setPhone] = useState('');
-  const [otp, setOtp] = useState('');
-  const [showOtp, setShowOtp] = useState(false);
 
   // ১. Email/Password দিয়ে রেজিস্টার
   const handleRegister = async (e) => {
@@ -34,48 +27,14 @@ export default function Register() {
     }
   };
 
-  // ২. Google দিয়ে রেজিস্টার
+  // ২. Google দিয়ে রেজিস্টার (Redirect পদ্ধতি)
   const handleGoogle = async () => {
     setMessage('Google দিয়ে লগইন হচ্ছে...');
     const provider = new GoogleAuthProvider();
     try {
-      await signInWithPopup(auth, provider);
-      setMessage('Google দিয়ে লগইন সফল!');
+      await signInWithRedirect(auth, provider);
     } catch (error) {
       setMessage(error.message);
-    }
-  };
-
-  // ৩. Phone OTP পাঠানো
-  const handleSendOtp = async (e) => {
-    e.preventDefault();
-    setMessage('OTP পাঠানো হচ্ছে...');
-    try {
-      if (!window.recaptchaVerifier) {
-        window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-          'size': 'normal',
-          'callback': () => {}
-        });
-      }
-      const appVerifier = window.recaptchaVerifier;
-      const confirmationResult = await signInWithPhoneNumber(auth, phone, appVerifier);
-      window.confirmationResult = confirmationResult;
-      setMessage('OTP পাঠানো হয়েছে, নিচে কোড দিন।');
-      setShowOtp(true);
-    } catch (error) {
-      setMessage(error.message);
-    }
-  };
-
-  // ৪. OTP ভেরিফাই করা
-  const handleVerifyOtp = async (e) => {
-    e.preventDefault();
-    setMessage('ভেরিফাই হচ্ছে...');
-    try {
-      await window.confirmationResult.confirm(otp);
-      setMessage('Phone ভেরিফাই সফল!');
-    } catch (error) {
-      setMessage('ভুল OTP কোড!');
     }
   };
 
@@ -117,46 +76,6 @@ export default function Register() {
             রেজিস্টার
           </button>
         </form>
-
-        <div style={{ textAlign: 'center', color: '#aaa', margin: '20px 0' }}>অথবা ফোন নম্বর দিয়ে</div>
-        
-        <div id="recaptcha-container" style={{ marginBottom: '15px', display: 'flex', justifyContent: 'center' }}></div>
-        
-        {!showOtp ? (
-          <form onSubmit={handleSendOtp} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-            <input 
-              type="tel" 
-              placeholder="+8801XXXXXXXXX" 
-              value={phone} 
-              onChange={(e) => setPhone(e.target.value)} 
-              required 
-              style={{ padding: '12px', borderRadius: '8px', border: '1px solid #ccc' }}
-            />
-            <button 
-              type="submit" 
-              style={{ padding: '12px', background: '#42b72a', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600' }}
-            >
-              📱 OTP পাঠান
-            </button>
-          </form>
-        ) : (
-          <form onSubmit={handleVerifyOtp} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-            <input 
-              type="text" 
-              placeholder="৬ ডিজিটের কোড" 
-              value={otp} 
-              onChange={(e) => setOtp(e.target.value)} 
-              required 
-              style={{ padding: '12px', borderRadius: '8px', border: '1px solid #ccc' }}
-            />
-            <button 
-              type="submit" 
-              style={{ padding: '12px', background: '#4e6ef2', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600' }}
-            >
-              ✅ ভেরিফাই করুন
-            </button>
-          </form>
-        )}
 
         {message && <p style={{ marginTop: '15px', color: 'blue', textAlign: 'center', fontSize: '14px' }}>{message}</p>}
         

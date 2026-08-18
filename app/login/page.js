@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { auth } from '@/lib/firebase';
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { signInWithEmailAndPassword, signInWithRedirect, GoogleAuthProvider, getRedirectResult } from 'firebase/auth';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -26,8 +26,8 @@ export default function Login() {
     setMessage('Google দিয়ে লগইন হচ্ছে...');
     const provider = new GoogleAuthProvider();
     try {
-      await signInWithPopup(auth, provider);
-      setMessage('Google দিয়ে লগইন সফল!');
+      // Redirect পদ্ধতি ব্যবহার করা হলো
+      await signInWithRedirect(auth, provider);
     } catch (error) {
       setMessage(error.message);
     }
