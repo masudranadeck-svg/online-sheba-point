@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { auth } from '@/lib/firebase';
 import { 
   createUserWithEmailAndPassword, 
-  signInWithRedirect, 
+  signInWithPopup, 
   GoogleAuthProvider 
 } from 'firebase/auth';
 
@@ -13,7 +13,6 @@ export default function Register() {
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
 
-  // ১. Email/Password দিয়ে রেজিস্টার
   const handleRegister = async (e) => {
     e.preventDefault();
     setMessage('লোডিং...');
@@ -27,12 +26,12 @@ export default function Register() {
     }
   };
 
-  // ২. Google দিয়ে রেজিস্টার (Redirect পদ্ধতি)
   const handleGoogle = async () => {
     setMessage('Google দিয়ে লগইন হচ্ছে...');
     const provider = new GoogleAuthProvider();
     try {
-      await signInWithRedirect(auth, provider);
+      await signInWithPopup(auth, provider);
+      setMessage('Google দিয়ে লগইন সফল!');
     } catch (error) {
       setMessage(error.message);
     }
