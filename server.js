@@ -30,6 +30,10 @@ app.use('/api/gigs', gigRoutes);
 const jobRoutes = require('./routes/jobRoutes'); 
 app.use('/api/jobs', jobRoutes); 
 
+// নতুন Resell রুট যোগ করা হয়েছে এখানে
+const resellRoutes = require('./routes/resellRoutes'); 
+app.use('/api/resell', resellRoutes); 
+
 app.get('/', (req, res) => {
     res.send('সার্ভার সফলভাবে চলছে।');
 });
