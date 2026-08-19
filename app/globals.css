@@ -6,125 +6,79 @@
   box-sizing: border-box;
 }
 
+/* --- DEEPIN OS DARK MODE BACKGROUND --- */
 body {
-  background: #f5f7fa !important;
-  color: #1a1a2e !important;
+  background: radial-gradient(circle at 50% 0%, #1a1c2e 0%, #0a0b14 100%) !important;
+  color: #ffffff !important; /* Text e sada color */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
+/* --- GLASSMORPHISM CARDS (Shop page er d-card gulo jeno 3D look pay) --- */
 .d-card {
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.05) !important; /* Glass effect */
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1) !important;
   transition: all 0.4s ease;
-  border: 1px solid #f0f0f0;
+  border: 1px solid rgba(255,255,255,0.1) !important;
   padding: 24px;
 }
 
 .d-card:hover {
-  box-shadow: 0 8px 30px rgba(0,0,0,0.1);
-  transform: translateY(-4px);
+  box-shadow: 0 30px 60px rgba(78,110,242,0.2), inset 0 1px 0 rgba(255,255,255,0.2) !important;
+  transform: translateY(-8px);
+  border-color: rgba(78,110,242,0.4) !important;
 }
 
-.d-btn {
-  background: #4e6ef2 !important;
-  color: #ffffff !important;
+/* --- BUTTONS (3D Neon Style) --- */
+.d-btn, .d-btn-purple, .d-btn-green, .d-btn-orange, .d-btn-outline {
   border: none !important;
   border-radius: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.4s ease;
-  box-shadow: 0 4px 14px rgba(78,110,242,0.25);
+  transition: all 0.3s ease;
   display: inline-block;
   text-decoration: none !important;
   text-align: center;
-  padding: 10px 20px;
+  padding: 12px 24px;
   font-size: 14px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.2) !important;
 }
 
-.d-btn:hover {
-  background: #3d5ce0 !important;
-  transform: translateY(-1px);
+.d-btn {
+  background: linear-gradient(135deg, #4e6ef2, #6c5ce7) !important;
+  color: #ffffff !important;
 }
+.d-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(78,110,242,0.4) !important; }
 
 .d-btn-purple {
-  background: #a855f7 !important;
+  background: linear-gradient(135deg, #a855f7, #6c5ce7) !important;
   color: #ffffff !important;
-  border: none !important;
-  border-radius: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.4s ease;
-  box-shadow: 0 4px 14px rgba(168,85,247,0.25);
-  display: inline-block;
-  text-align: center;
-  padding: 10px 20px;
-  font-size: 14px;
 }
-
-.d-btn-purple:hover {
-  background: #9333ea !important;
-  transform: translateY(-1px);
-}
+.d-btn-purple:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(168,85,247,0.4) !important; }
 
 .d-btn-green {
-  background: #2dce89 !important;
+  background: linear-gradient(135deg, #2dce89, #1abc9c) !important;
   color: #ffffff !important;
-  border: none !important;
-  border-radius: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.4s ease;
-  box-shadow: 0 4px 14px rgba(45,206,137,0.25);
-  display: inline-block;
-  text-align: center;
-  padding: 10px 20px;
-  font-size: 14px;
 }
-
-.d-btn-green:hover {
-  background: #24b77a !important;
-  transform: translateY(-1px);
-}
+.d-btn-green:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(45,206,137,0.4) !important; }
 
 .d-btn-orange {
-  background: #fb6340 !important;
+  background: linear-gradient(135deg, #fb6340, #ff9f43) !important;
   color: #ffffff !important;
-  border: none !important;
-  border-radius: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.4s ease;
-  box-shadow: 0 4px 14px rgba(251,99,64,0.25);
-  display: inline-block;
-  text-align: center;
-  padding: 10px 20px;
-  font-size: 14px;
 }
-
-.d-btn-orange:hover {
-  background: #e5553a !important;
-  transform: translateY(-1px);
-}
+.d-btn-orange:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(251,99,64,0.4) !important; }
 
 .d-btn-outline {
-  background: #ffffff !important;
-  color: #4e6ef2 !important;
-  border: 2px solid #4e6ef2 !important;
-  border-radius: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.4s ease;
-  display: inline-block;
-  text-align: center;
-  padding: 10px 20px;
-  font-size: 14px;
-}
-
-.d-btn-outline:hover {
-  background: #4e6ef2 !important;
+  background: rgba(255, 255, 255, 0.1) !important;
   color: #ffffff !important;
+  border: 1px solid rgba(255,255,255,0.2) !important;
+}
+.d-btn-outline:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  transform: translateY(-3px);
 }
 
 .d-tag {
@@ -136,77 +90,57 @@ body {
 }
 
 .d-input {
-  background: #ffffff;
-  border: 2px solid #e8ecf1;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
   border-radius: 12px;
   padding: 12px 16px;
-  color: #1a1a2e;
+  color: #ffffff !important;
   font-size: 14px;
   transition: all 0.3s ease;
   outline: none;
   width: 100%;
 }
-
+.d-input::placeholder { color: rgba(255,255,255,0.4); }
 .d-input:focus {
-  border-color: #4e6ef2;
-  box-shadow: 0 0 0 4px rgba(78,110,242,0.1);
-}
-
-.d-input::placeholder {
-  color: #b0b8c4;
+  border-color: #4e6ef2 !important;
+  box-shadow: 0 0 0 4px rgba(78,110,242,0.2);
 }
 
 /* ===== Border Glow Effect ===== */
-
-.glow-card {
-  transition: all 0.4s ease;
-}
-
-.glow-card:hover {
-  border-color: #4e6ef2 !important;
-  box-shadow: 0 0 15px rgba(78,110,242,0.3), 0 0 30px rgba(78,110,242,0.15), 0 0 45px rgba(78,110,242,0.08) !important;
-}
-
-.glow-purple:hover {
-  border-color: #a855f7 !important;
-  box-shadow: 0 0 15px rgba(168,85,247,0.3), 0 0 30px rgba(168,85,247,0.15), 0 0 45px rgba(168,85,247,0.08) !important;
-}
-
-.glow-green:hover {
-  border-color: #2dce89 !important;
-  box-shadow: 0 0 15px rgba(45,206,137,0.3), 0 0 30px rgba(45,206,137,0.15), 0 0 45px rgba(45,206,137,0.08) !important;
-}
-
-.glow-orange:hover {
-  border-color: #fb6340 !important;
-  box-shadow: 0 0 15px rgba(251,99,64,0.3), 0 0 30px rgba(251,99,64,0.15), 0 0 45px rgba(251,99,64,0.08) !important;
-}
-
-.glow-btn {
-  transition: all 0.4s ease;
-}
-
-.glow-btn:hover {
-  box-shadow: 0 0 15px rgba(78,110,242,0.4), 0 0 30px rgba(78,110,242,0.2), 0 0 45px rgba(78,110,242,0.1) !important;
-}
-
-.glow-btn-purple:hover {
-  box-shadow: 0 0 15px rgba(168,85,247,0.4), 0 0 30px rgba(168,85,247,0.2), 0 0 45px rgba(168,85,247,0.1) !important;
-}
-
-.glow-btn-green:hover {
-  box-shadow: 0 0 15px rgba(45,206,137,0.4), 0 0 30px rgba(45,206,137,0.2), 0 0 45px rgba(45,206,137,0.1) !important;
-}
-
-.glow-btn-orange:hover {
-  box-shadow: 0 0 15px rgba(251,99,64,0.4), 0 0 30px rgba(251,99,64,0.2), 0 0 45px rgba(251,99,64,0.1) !important;
-}
-
-.glow-btn-white:hover {
-  box-shadow: 0 0 15px rgba(255,255,255,0.4), 0 0 30px rgba(255,255,255,0.2), 0 0 45px rgba(255,255,255,0.1) !important;
-}
+.glow-card { transition: all 0.4s ease; }
+.glow-card:hover { border-color: #4e6ef2 !important; box-shadow: 0 0 15px rgba(78,110,242,0.3), 0 0 30px rgba(78,110,242,0.15) !important; }
+.glow-purple:hover { border-color: #a855f7 !important; box-shadow: 0 0 15px rgba(168,85,247,0.3), 0 0 30px rgba(168,85,247,0.15) !important; }
+.glow-green:hover { border-color: #2dce89 !important; box-shadow: 0 0 15px rgba(45,206,137,0.3), 0 0 30px rgba(45,206,137,0.15) !important; }
+.glow-orange:hover { border-color: #fb6340 !important; box-shadow: 0 0 15px rgba(251,99,64,0.3), 0 0 30px rgba(251,99,64,0.15) !important; }
+.glow-btn { transition: all 0.4s ease; }
+.glow-btn:hover { box-shadow: 0 0 15px rgba(78,110,242,0.4), 0 0 30px rgba(78,110,242,0.2) !important; }
+.glow-btn-purple:hover { box-shadow: 0 0 15px rgba(168,85,247,0.4), 0 0 30px rgba(168,85,247,0.2) !important; }
+.glow-btn-green:hover { box-shadow: 0 0 15px rgba(45,206,137,0.4), 0 0 30px rgba(45,206,137,0.2) !important; }
+.glow-btn-orange:hover { box-shadow: 0 0 15px rgba(251,99,64,0.4), 0 0 30px rgba(251,99,64,0.2) !important; }
+.glow-btn-white:hover { box-shadow: 0 0 15px rgba(255,255,255,0.4), 0 0 30px rgba(255,255,255,0.2) !important; }
 
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #f5f7fa; }
-::-webkit-scrollbar-thumb { background: #d0d5dd; border-radius: 3px; }
+::-webkit-scrollbar-track { background: #0a0b14; }
+::-webkit-scrollbar-thumb { background: #4e6ef2; border-radius: 3px; }
 html { scroll-behavior: smooth; }
+
+/* ===============================================
+   DEEPIN OS 3D HOME PAGE CLASSES 
+   =============================================== */
+
+.deepin-body {
+  background: radial-gradient(circle at 50% 0%, #1a1c2e 0%, #0a0b14 100%);
+  min-height: 100vh;
+  color: white;
+}
+
+/* 3D Glass Card for Home Page */
+.glass-3d {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 
+    0 20px 40
