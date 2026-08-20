@@ -6,17 +6,15 @@
   box-sizing: border-box;
 }
 
-/* --- DEEPIN OS DARK MODE BACKGROUND --- */
 body {
   background: radial-gradient(circle at 50% 0%, #1a1c2e 0%, #0a0b14 100%) !important;
-  color: #ffffff !important; /* Text e sada color */
+  color: #ffffff !important;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
-/* --- GLASSMORPHISM CARDS (Shop page er d-card gulo jeno 3D look pay) --- */
 .d-card {
-  background: rgba(255, 255, 255, 0.05) !important; /* Glass effect */
+  background: rgba(255, 255, 255, 0.05) !important;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-radius: 16px;
@@ -32,7 +30,6 @@ body {
   border-color: rgba(78,110,242,0.4) !important;
 }
 
-/* --- BUTTONS (3D Neon Style) --- */
 .d-btn, .d-btn-purple, .d-btn-green, .d-btn-orange, .d-btn-outline {
   border: none !important;
   border-radius: 12px;
@@ -106,7 +103,6 @@ body {
   box-shadow: 0 0 0 4px rgba(78,110,242,0.2);
 }
 
-/* ===== Border Glow Effect ===== */
 .glow-card { transition: all 0.4s ease; }
 .glow-card:hover { border-color: #4e6ef2 !important; box-shadow: 0 0 15px rgba(78,110,242,0.3), 0 0 30px rgba(78,110,242,0.15) !important; }
 .glow-purple:hover { border-color: #a855f7 !important; box-shadow: 0 0 15px rgba(168,85,247,0.3), 0 0 30px rgba(168,85,247,0.15) !important; }
@@ -124,17 +120,12 @@ body {
 ::-webkit-scrollbar-thumb { background: #4e6ef2; border-radius: 3px; }
 html { scroll-behavior: smooth; }
 
-/* ===============================================
-   DEEPIN OS 3D HOME PAGE CLASSES 
-   =============================================== */
-
 .deepin-body {
   background: radial-gradient(circle at 50% 0%, #1a1c2e 0%, #0a0b14 100%);
   min-height: 100vh;
   color: white;
 }
 
-/* 3D Glass Card for Home Page */
 .glass-3d {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(20px);
@@ -142,5 +133,46 @@ html { scroll-behavior: smooth; }
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 24px;
   padding: 32px;
-  box-shadow: 
-    0 20px 40
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2); 
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.glass-3d:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 30px 60px rgba(78, 110, 242, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  border-color: rgba(78, 110, 242, 0.4);
+}
+
+.neon-3d-btn {
+  background: linear-gradient(135deg, #4e6ef2, #6c5ce7);
+  color: white;
+  padding: 14px 32px;
+  border-radius: 14px;
+  font-weight: 600;
+  border: none;
+  text-decoration: none;
+  display: inline-block;
+  box-shadow: 0 10px 20px rgba(78, 110, 242, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.neon-3d-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(78, 110, 242, 0.6);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  background: #2dce89;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #2dce89;
+  animation: pulse 2s infinite;
+  display: inline-block;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(45, 206, 137, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(45, 206, 137, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(45, 206, 137, 0); }
+}
