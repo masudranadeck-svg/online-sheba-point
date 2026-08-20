@@ -14,7 +14,7 @@ app.use(express.json());
 
 connectDB();
 
-// রুট কানেক্ট করা
+// রুট কানেক্ট করা (শুধু যে ফাইল গুলো আছে)
 const authRoutes = require('./routes/authRoutes');
 app.use('/api/auth', authRoutes);
 
@@ -24,10 +24,6 @@ app.use('/api/products', productRoutes);
 const orderRoutes = require('./routes/orderRoutes');
 app.use('/api/orders', orderRoutes);
 
-const jobRoutes = require('./routes/jobRoutes'); 
-app.use('/api/jobs', jobRoutes); 
-
-// নতুন Resell রুট যোগ করা হয়েছে এখানে
 const resellRoutes = require('./routes/resellRoutes'); 
 app.use('/api/resell', resellRoutes); 
 
