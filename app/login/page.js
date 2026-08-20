@@ -11,52 +11,52 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setMessage('লোডিং...');
+    setMessage('লগইন হচ্ছে...');
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      setMessage('লগইন সফল হয়েছে!');
-      setEmail(''); 
-      setPassword('');
+      setMessage('লগইন সফল! ড্যাশবোর্ডে নিয়ে যাওয়া হচ্ছে...');
+      
+      // Next.js router er bodole amra direct redirect korlam
+      setTimeout(() => {
+        window.location.href = '/dashboard';
+      }, 1000); // 1 second por redirect hobe jate message ta dekhte paren
+
     } catch (error) {
-      setMessage(error.message);
+      setMessage('ভুল ইমেইল বা পাসওয়ার্ড!');
     }
   };
 
   return (
-    <div style={{ padding: '100px 20px', maxWidth: '450px', margin: 'auto' }}>
-      <div className="d-card glow-card" style={{ padding: '30px' }}>
-        <h2 style={{ textAlign: 'center', marginBottom: '20px', color: '#1a1a2e' }}>🔐 লগইন করুন</h2>
-        
-        <div style={{ textAlign: 'center', color: '#aaa', margin: '20px 0' }}>ইমেইল ও পাসওয়ার্ড দিয়ে লগইন করুন</div>
+    <div className="deepin-body" style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', padding:24 }}>
+      <div className="glass-3d" style={{ width:'100%', maxWidth:400 }}>
+        <h2 style={{ textAlign: 'center', marginBottom: '8px', color: 'white' }}>🔐 কাস্টমার লগইন</h2>
+        <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.4)', marginBottom: '32px' }}>আপনার একাউন্টে লগইন করুন</p>
 
-        <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+        <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <input 
             type="email" 
             placeholder="ইমেইল" 
             value={email} 
             onChange={(e) => setEmail(e.target.value)} 
             required 
-            style={{ padding: '12px', borderRadius: '8px', border: '1px solid #ccc', fontSize: '14px' }}
+            className="d-input"
           />
           <input 
             type="password" 
-            placeholder="পাসওয়ার্ড" 
+            placeholder="পাসওয়ার্ড" 
             value={password} 
             onChange={(e) => setPassword(e.target.value)} 
             required 
-            style={{ padding: '12px', borderRadius: '8px', border: '1px solid #ccc', fontSize: '14px' }}
+            className="d-input"
           />
-          <button 
-            type="submit" 
-            style={{ padding: '12px', background: '#4e6ef2', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '16px', fontWeight: '600' }}
-          >
-            লগইন
+          <button type="submit" className="neon-3d-btn" style={{ width:'100%' }}>
+            লগইন করুন
           </button>
         </form>
-        
-        {message && <p style={{ marginTop: '15px', color: 'blue', textAlign: 'center', fontSize: '14px' }}>{message}</p>}
 
-        <p style={{ textAlign: 'center', marginTop: '20px', color: '#888', fontSize: '14px' }}>
+        {message && <p style={{ marginTop: '15px', color: '#4e6ef2', textAlign: 'center', fontSize: '14px' }}>{message}</p>}
+
+        <p style={{ textAlign: 'center', marginTop: '20px', color: 'rgba(255,255,255,0.4)', fontSize: '14px' }}>
           নতুন ইউজার? <Link href="/register" style={{ color: '#4e6ef2', textDecoration: 'none', fontWeight: '600' }}>রেজিস্টার করুন</Link>
         </p>
       </div>
