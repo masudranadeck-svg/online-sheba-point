@@ -24,9 +24,6 @@ app.use('/api/products', productRoutes);
 const orderRoutes = require('./routes/orderRoutes');
 app.use('/api/orders', orderRoutes);
 
-const gigRoutes = require('./routes/gigRoutes'); 
-app.use('/api/gigs', gigRoutes); 
-
 const jobRoutes = require('./routes/jobRoutes'); 
 app.use('/api/jobs', jobRoutes); 
 
