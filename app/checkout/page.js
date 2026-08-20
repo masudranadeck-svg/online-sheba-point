@@ -139,10 +139,10 @@ export default function Checkout() {
               </div>
             </div>
 
-            {/* Instructions Box */}
+            {/* Instructions Box (Apnar Number Add Kore Dewa Holo) */}
             <div style={{ background: 'rgba(78,110,242,0.1)', padding: 12, borderRadius: 8, marginBottom: 20, border: '1px solid rgba(78,110,242,0.2)' }}>
               <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 12, margin: 0, textAlign: 'center' }}>
-                ⚠️ <span style={{ fontWeight: 'bold', color: '#2dce89' }}>{paymentMethod}</span> এ <span style={{ fontWeight: 'bold', color: 'white' }}>01700000000</span> নম্বরে <span style={{ fontWeight: 'bold', color: '#2dce89' }}>৳{total}</span> পাঠান।
+                ⚠️ <span style={{ fontWeight: 'bold', color: '#2dce89' }}>{paymentMethod}</span> এ <span style={{ fontWeight: 'bold', color: 'white' }}>01790242308</span> নম্বরে <span style={{ fontWeight: 'bold', color: '#2dce89' }}>৳{total}</span> পাঠান।
               </p>
             </div>
 
