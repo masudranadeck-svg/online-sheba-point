@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 export default function ShopPage() {
-  const [products, setProducts] = useState([]); // ডাটাবেস থেকে আসা প্রোডাক্ট এখানে থাকবে
+  const [products, setProducts] = useState([]);
   const [cat,setCat]=useState('all');
   const [search,setSearch]=useState('');
   const [sort,setSort]=useState('default');
@@ -35,9 +35,20 @@ export default function ShopPage() {
   if(sort==='low')items=[...items].sort((a,b)=>a.price-b.price);
   if(sort==='high')items=[...items].sort((a,b)=>b.price-a.price);
 
-  // কার্টে যোগ করার সময় _id ব্যবহার করা হয়েছে
-  const addCart=(p)=>{const e=cart.find(c=>c._id===p._id);e?setCart(cart.map(c=>c._id===p._id?{...c,qty:c.qty+1}:c)):setCart([...cart,{...p,qty:1}])};
-  const removeCart=(id)=>setCart(cart.filter(c=>c._id!==id));
+  // নতুন কার্টে যোগ করার লজিক (ID না পেলেও কাজ করবে)
+  const addCart = (p) => {
+    const id = p._id || p.id || Date.now(); 
+    const e = cart.find(c => (c._id || c.id) === id);
+    if (e) {
+      setCart(cart.map(c => (c._id || c.id) === id ? { ...c, qty: c.qty + 1 } : c));
+    } else {
+      setCart([...cart, { ...p, _id: id, qty: 1 }]);
+    }
+    // কার্টে ক্লিক করলে সাথে সাথে কার্ট পপআপ দেখাবে
+    setShowCart(true);
+  };
+
+  const removeCart=(id)=>setCart(cart.filter(c => (c._id || c.id) !== id));
   const total=cart.reduce((s,c)=>s+c.price*c.qty,0);
   
   const typeColor=(t)=>t==='software'?'#4e6ef2':t==='subscription'?'#a855f7':'#fb6340';
@@ -72,7 +83,7 @@ export default function ShopPage() {
 
         <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(260px, 1fr))',gap:20}}>
           {items.map(p=>(
-            <div key={p._id} className={`d-card ${typeGlow(p.category)}`}>
+            <div key={p._id || p.id} className={`d-card ${typeGlow(p.category)}`}>
               <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:16}}>
                 <span className="d-tag" style={{background:typeColor(p.category),color:'white'}}>{p.category === 'software' ? 'কী' : p.category === 'subscription' ? 'সাব' : 'রিমোট'}</span>
                 <span className="d-tag" style={{background:'rgba(255,255,255,0.1)',color:'rgba(255,255,255,0.6)'}}>নতুন</span>
@@ -80,7 +91,7 @@ export default function ShopPage() {
               <h3 style={{fontSize:14,fontWeight:700,marginBottom:4,color:'white',margin:'0 0 4px 0'}}>{p.name}</h3>
               <p style={{fontSize:12,color:'rgba(255,255,255,0.4)',marginBottom:12,margin:'0 0 12px 0'}}>{p.description}</p>
               <p style={{fontSize:24,fontWeight:700,color:'#2dce89',marginBottom:16,margin:'0 0 16px 0'}}>৳{p.price}</p>
-              <button onClick={()=>addCart(p)} className={typeBtn(p.category)} style={{width:'100%'}}>কার্টে যোগ</button>
+              <button onClick={()=>addCart(p)} className={typeBtn(p.category)} style={{width:'100%'}}>কার্টে যোগ করুন</button>
             </div>
           ))}
         </div>
@@ -97,16 +108,15 @@ export default function ShopPage() {
             </div>
             {cart.length===0?<div style={{textAlign:'center',padding:32}}><p style={{fontSize:40,marginBottom:8}}>🛒</p><p style={{color:'rgba(255,255,255,0.4)'}}>কার্ট খালি!</p></div>:(
               <>
-                <div style={{marginBottom:24}}>{cart.map(c=>(<div key={c._id} style={{background:'rgba(255,255,255,0.05)',borderRadius:12,padding:16,marginBottom:8,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                <div style={{marginBottom:24}}>{cart.map(c=>(<div key={c._id || c.id} style={{background:'rgba(255,255,255,0.05)',borderRadius:12,padding:16,marginBottom:8,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
                   <div><h4 style={{fontWeight:600,fontSize:14,color:'white',margin:'0 0 4px 0'}}>{c.name}</h4><p style={{color:'#2dce89',fontWeight:700,fontSize:14,margin:0}}>৳{c.price} × {c.qty}</p></div>
-                  <button onClick={()=>removeCart(c._id)} style={{background:'none',border:'none',fontSize:18,cursor:'pointer',color:'#ff6b6b'}}>🗑</button>
+                  <button onClick={()=>removeCart(c._id || c.id)} style={{background:'none',border:'none',fontSize:18,cursor:'pointer',color:'#ff6b6b'}}>🗑</button>
                 </div>))}</div>
                 <div style={{borderTop:'1px solid rgba(255,255,255,0.1)',paddingTop:16,marginBottom:16,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
                   <span style={{fontWeight:700,color:'white'}}>মোট：</span>
                   <span style={{fontSize:24,fontWeight:700,color:'#2dce89'}}>৳{total}</span>
                 </div>
                 
-                {/* EITA APNAR NOTUN CHECKOUT BUTTON (localStorage e save korbe) */}
                 <button 
                   onClick={() => {
                       localStorage.setItem('cart', JSON.stringify(cart));
