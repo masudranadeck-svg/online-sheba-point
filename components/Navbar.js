@@ -11,14 +11,12 @@ export default function Navbar() {
   const [user, setUser] = useState(null);
   const router = useRouter();
 
-  // Scroll effect
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', h);
     return () => window.removeEventListener('scroll', h);
   }, []);
 
-  // Firebase Auth State Check
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -29,7 +27,7 @@ export default function Navbar() {
   const handleLogout = async () => {
     await signOut(auth);
     router.push('/login');
-    setOpen(false); // Close mobile menu on logout
+    setOpen(false);
   };
 
   const menuItems = [
@@ -53,28 +51,31 @@ export default function Navbar() {
   return (
     <nav style={{
       position:'fixed',top:0,left:0,right:0,zIndex:50,transition:'all 0.3s',
-      background:scrolled?'rgba(10, 11, 20, 0.8)':'transparent', // Dark theme background
+      background:scrolled?'rgba(10, 11, 20, 0.8)':'transparent',
       backdropFilter:scrolled?'blur(20px)':'none',
-      borderBottom:scrolled?'1px solid rgba(255,255,255,0.1)':'none', // Dark theme border
+      borderBottom:scrolled?'1px solid rgba(255,255,255,0.1)':'none',
       padding:scrolled?'10px 0':'20px 0',
     }}>
       <div style={{maxWidth:1280,margin:'0 auto',padding:'0 24px'}}>
         
-        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+        {/* Fix: Flex layout adjusted to prevent overlapping */}
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:'16px'}}>
+          
+          {/* Logo Section */}
           <Link href="/" style={{display:'flex',alignItems:'center',gap:8,textDecoration:'none',flexShrink:0}}>
             <div style={{width:36,height:36,borderRadius:12,background:'linear-gradient(135deg,#4e6ef2,#a855f7)',display:'flex',alignItems:'center',justifyContent:'center',color:'white',fontWeight:'bold',fontSize:14}}>O</div>
             <span style={{fontSize:18,fontWeight:700,color:'white',whiteSpace:'nowrap'}}>Online Sheba<span style={{color:'#4e6ef2'}}>Point</span></span>
           </Link>
 
           {/* Desktop Login/Logout Section */}
-          <div style={{display:'flex',alignItems:'center',gap:12,flexShrink:0}} className="hidden lg:flex">
+          <div style={{display:'flex',alignItems:'center',gap:12,flexShrink:0, marginLeft: 'auto'}} className="hidden lg:flex">
             {user ? (
               <>
-                <Link href="/dashboard" style={{color:'rgba(255,255,255,0.7)',textDecoration:'none',fontSize:14,fontWeight:600}}>ড্যাশবোর্ড</Link>
-                <button onClick={handleLogout} className="d-btn-orange glow-btn-orange" style={{padding:'10px 28px',fontSize:14,textDecoration:'none',border:'none',cursor:'pointer'}}>লগআউট</button>
+                <Link href="/dashboard" style={{color:'rgba(255,255,255,0.7)',textDecoration:'none',fontSize:14,fontWeight:600, whiteSpace:'nowrap'}}>ড্যাশবোর্ড</Link>
+                <button onClick={handleLogout} className="d-btn-orange glow-btn-orange" style={{padding:'8px 20px',fontSize:14,textDecoration:'none',border:'none',cursor:'pointer', whiteSpace:'nowrap'}}>লগআউট</button>
               </>
             ) : (
-              <Link href="/login" className="d-btn glow-btn" style={{padding:'10px 28px',fontSize:14,textDecoration:'none'}}>লগইন / রেজিস্টার</Link>
+              <Link href="/login" className="d-btn glow-btn" style={{padding:'8px 20px',fontSize:14,textDecoration:'none', whiteSpace:'nowrap'}}>লগইন / রেজিস্টার</Link>
             )}
           </div>
 
@@ -102,7 +103,6 @@ export default function Navbar() {
               <Link key={x.href} href={x.href} onClick={()=>setOpen(false)} style={{display:'block',padding:'12px 16px',borderRadius:12,color:'rgba(255,255,255,0.7)',textDecoration:'none',fontSize:14,fontWeight:500}}>{x.l}</Link>
             ))}
             
-            {/* Mobile Login/Logout Section */}
             <div style={{marginTop:8, borderTop:'1px solid rgba(255,255,255,0.1)', paddingTop:12}}>
               {user ? (
                 <button onClick={handleLogout} className="d-btn-orange glow-btn-orange" style={{display:'block',width:'100%',textAlign:'center',padding:'12px 16px',fontSize:14,textDecoration:'none',border:'none',cursor:'pointer'}}>লগআউট</button>
