@@ -1,23 +1,42 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { auth } from '@/lib/firebase';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const router = useRouter();
 
+  // Scroll effect
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', h);
     return () => window.removeEventListener('scroll', h);
   }, []);
 
-  // 'পুরোনো পণ্য' যোগ করা হয়েছে
+  // Firebase Auth State Check
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    router.push('/login');
+    setOpen(false); // Close mobile menu on logout
+  };
+
   const menuItems = [
     {href:'/',l:'হোম'},
     {href:'/shop',l:'শপ'},
     {href:'/marketplace',l:'মার্কেটপ্লেস'},
-    {href:'/resell',l:'পুরোনো পণ্য'}, // নতুন অপশন
+    {href:'/resell',l:'পুরোনো পণ্য'},
     {href:'/remote-jobs',l:'রিমোট জবস'},
     {href:'/dev-services',l:'ডেভেলপমেন্ট সার্ভিস'},
     {href:'/online-sheba',l:'অনলাইন সেবা'},
@@ -34,9 +53,9 @@ export default function Navbar() {
   return (
     <nav style={{
       position:'fixed',top:0,left:0,right:0,zIndex:50,transition:'all 0.3s',
-      background:scrolled?'rgba(255,255,255,0.95)':'transparent',
+      background:scrolled?'rgba(10, 11, 20, 0.8)':'transparent', // Dark theme background
       backdropFilter:scrolled?'blur(20px)':'none',
-      borderBottom:scrolled?'1px solid #f0f0f0':'none',
+      borderBottom:scrolled?'1px solid rgba(255,255,255,0.1)':'none', // Dark theme border
       padding:scrolled?'10px 0':'20px 0',
     }}>
       <div style={{maxWidth:1280,margin:'0 auto',padding:'0 24px'}}>
@@ -44,34 +63,53 @@ export default function Navbar() {
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
           <Link href="/" style={{display:'flex',alignItems:'center',gap:8,textDecoration:'none',flexShrink:0}}>
             <div style={{width:36,height:36,borderRadius:12,background:'linear-gradient(135deg,#4e6ef2,#a855f7)',display:'flex',alignItems:'center',justifyContent:'center',color:'white',fontWeight:'bold',fontSize:14}}>O</div>
-            <span style={{fontSize:18,fontWeight:700,color:'#1a1a2e',whiteSpace:'nowrap'}}>Online Sheba<span style={{color:'#4e6ef2'}}>Point</span></span>
+            <span style={{fontSize:18,fontWeight:700,color:'white',whiteSpace:'nowrap'}}>Online Sheba<span style={{color:'#4e6ef2'}}>Point</span></span>
           </Link>
 
+          {/* Desktop Login/Logout Section */}
           <div style={{display:'flex',alignItems:'center',gap:12,flexShrink:0}} className="hidden lg:flex">
-            <Link href="/login" className="d-btn glow-btn" style={{padding:'10px 28px',fontSize:14,textDecoration:'none'}}>লগইন / রেজিস্টার</Link>
+            {user ? (
+              <>
+                <Link href="/dashboard" style={{color:'rgba(255,255,255,0.7)',textDecoration:'none',fontSize:14,fontWeight:600}}>ড্যাশবোর্ড</Link>
+                <button onClick={handleLogout} className="d-btn-orange glow-btn-orange" style={{padding:'10px 28px',fontSize:14,textDecoration:'none',border:'none',cursor:'pointer'}}>লগআউট</button>
+              </>
+            ) : (
+              <Link href="/login" className="d-btn glow-btn" style={{padding:'10px 28px',fontSize:14,textDecoration:'none'}}>লগইন / রেজিস্টার</Link>
+            )}
           </div>
 
+          {/* Mobile Menu Toggle Button */}
           <button className="lg:hidden" onClick={()=>setOpen(!open)} style={{padding:8,borderRadius:12,border:'none',background:'transparent',cursor:'pointer'}}>
             <div style={{width:20,height:16,display:'flex',flexDirection:'column',justifyContent:'center',gap:4}}>
-              <span style={{width:20,height:2,background:'#666',borderRadius:2,transition:'all 0.3s',transform:open?'rotate(45deg) translateY(6px)':'none'}} />
-              <span style={{width:20,height:2,background:'#666',borderRadius:2,transition:'all 0.3s',opacity:open?0:1}} />
-              <span style={{width:20,height:2,background:'#666',borderRadius:2,transition:'all 0.3s',transform:open?'rotate(-45deg) translateY(-6px)':'none'}} />
+              <span style={{width:20,height:2,background:'white',borderRadius:2,transition:'all 0.3s',transform:open?'rotate(45deg) translateY(6px)':'none'}} />
+              <span style={{width:20,height:2,background:'white',borderRadius:2,transition:'all 0.3s',opacity:open?0:1}} />
+              <span style={{width:20,height:2,background:'white',borderRadius:2,transition:'all 0.3s',transform:open?'rotate(-45deg) translateY(-6px)':'none'}} />
             </div>
           </button>
         </div>
 
-        <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:'8px 16px',marginTop:12,borderTop:'1px solid #f0f0f0',paddingTop:12,flexWrap:'wrap'}} className="hidden lg:flex">
+        {/* Desktop Menu Items */}
+        <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:'8px 16px',marginTop:12,borderTop:'1px solid rgba(255,255,255,0.1)',paddingTop:12,flexWrap:'wrap'}} className="hidden lg:flex">
           {menuItems.map(x=>(
-            <Link key={x.href} href={x.href} style={{padding:'4px 8px',borderRadius:8,fontSize:13.5,fontWeight:600,color:'#555',textDecoration:'none',transition:'all 0.2s',whiteSpace:'nowrap'}}>{x.l}</Link>
+            <Link key={x.href} href={x.href} style={{padding:'4px 8px',borderRadius:8,fontSize:13.5,fontWeight:600,color:'rgba(255,255,255,0.7)',textDecoration:'none',transition:'all 0.2s',whiteSpace:'nowrap'}}>{x.l}</Link>
           ))}
         </div>
 
-        <div className="lg:hidden" style={{overflow:'hidden',transition:'all 0.3s',maxHeight:open?600:0,marginTop:12}}>
-          <div style={{background:'white',margin:'0 16px',borderRadius:16,boxShadow:'0 4px 20px rgba(0,0,0,0.1)',padding:12}}>
+        {/* Mobile Menu Items */}
+        <div className="lg:hidden" style={{overflow:'hidden',transition:'all 0.3s',maxHeight:open?'600px':'0',marginTop:12}}>
+          <div style={{background:'rgba(255, 255, 255, 0.05)', border:'1px solid rgba(255,255,255,0.1)', backdropFilter:'blur(10px)', margin:'0 16px',borderRadius:16,padding:12}}>
             {menuItems.map(x=>(
-              <Link key={x.href} href={x.href} onClick={()=>setOpen(false)} style={{display:'block',padding:'12px 16px',borderRadius:12,color:'#555',textDecoration:'none',fontSize:14,fontWeight:500}}>{x.l}</Link>
+              <Link key={x.href} href={x.href} onClick={()=>setOpen(false)} style={{display:'block',padding:'12px 16px',borderRadius:12,color:'rgba(255,255,255,0.7)',textDecoration:'none',fontSize:14,fontWeight:500}}>{x.l}</Link>
             ))}
-            <Link href="/login" className="d-btn glow-btn" style={{display:'block',textAlign:'center',padding:'12px 16px',fontSize:14,textDecoration:'none',marginTop:8}}>লগইন / রেজিস্টার</Link>
+            
+            {/* Mobile Login/Logout Section */}
+            <div style={{marginTop:8, borderTop:'1px solid rgba(255,255,255,0.1)', paddingTop:12}}>
+              {user ? (
+                <button onClick={handleLogout} className="d-btn-orange glow-btn-orange" style={{display:'block',width:'100%',textAlign:'center',padding:'12px 16px',fontSize:14,textDecoration:'none',border:'none',cursor:'pointer'}}>লগআউট</button>
+              ) : (
+                <Link href="/login" onClick={()=>setOpen(false)} className="d-btn glow-btn" style={{display:'block',textAlign:'center',padding:'12px 16px',fontSize:14,textDecoration:'none'}}>লগইন / রেজিস্টার</Link>
+              )}
+            </div>
           </div>
         </div>
       </div>
