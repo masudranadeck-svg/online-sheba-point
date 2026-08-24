@@ -51,20 +51,23 @@ export default function Navbar() {
   return (
     <nav style={{
       position:'fixed',top:0,left:0,right:0,zIndex:50,transition:'all 0.3s',
-      background:scrolled?'rgba(10, 11, 20, 0.8)':'transparent',
-      backdropFilter:scrolled?'blur(20px)':'none',
-      borderBottom:scrolled?'1px solid rgba(255,255,255,0.1)':'none',
-      padding:scrolled?'10px 0':'20px 0',
+      // এখানে পরিবর্তন করা হয়েছে: সবসময় ডার্ক ব্যাকগ্রাউন্ড থাকবে
+      background: scrolled ? 'rgba(10, 11, 20, 0.95)' : 'rgba(10, 11, 20, 0.6)', 
+      backdropFilter:'blur(20px)',
+      WebkitBackdropFilter:'blur(20px)',
+      borderBottom: scrolled ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(255,255,255,0.05)',
+      padding: scrolled ? '10px 0' : '16px 0',
     }}>
       <div style={{maxWidth:1280,margin:'0 auto',padding:'0 24px'}}>
         
-        {/* Fix: Flex layout adjusted to prevent overlapping */}
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:'16px'}}>
           
           {/* Logo Section */}
           <Link href="/" style={{display:'flex',alignItems:'center',gap:8,textDecoration:'none',flexShrink:0}}>
-            <div style={{width:36,height:36,borderRadius:12,background:'linear-gradient(135deg,#4e6ef2,#a855f7)',display:'flex',alignItems:'center',justifyContent:'center',color:'white',fontWeight:'bold',fontSize:14}}>O</div>
-            <span style={{fontSize:18,fontWeight:700,color:'white',whiteSpace:'nowrap'}}>Online Sheba<span style={{color:'#4e6ef2'}}>Point</span></span>
+            <div style={{width:36,height:36,borderRadius:12,background:'linear-gradient(135deg,#4e6ef2,#a855f7)',display:'flex',alignItems:'center',justifyContent:'center',color:'white',fontWeight:'bold',fontSize:14,flexShrink:0}}>SH</div>
+            <span style={{fontSize:18,fontWeight:700,color:'white',whiteSpace:'nowrap',display:'flex',alignItems:'center'}}>
+              Online Sheba<span style={{color:'#4e6ef2',marginLeft:'4px'}}>Point</span>
+            </span>
           </Link>
 
           {/* Desktop Login/Logout Section */}
@@ -80,7 +83,7 @@ export default function Navbar() {
           </div>
 
           {/* Mobile Menu Toggle Button */}
-          <button className="lg:hidden" onClick={()=>setOpen(!open)} style={{padding:8,borderRadius:12,border:'none',background:'transparent',cursor:'pointer'}}>
+          <button className="lg:hidden" onClick={()=>setOpen(!open)} style={{padding:8,borderRadius:12,border:'none',background:'transparent',cursor:'pointer',flexShrink:0}}>
             <div style={{width:20,height:16,display:'flex',flexDirection:'column',justifyContent:'center',gap:4}}>
               <span style={{width:20,height:2,background:'white',borderRadius:2,transition:'all 0.3s',transform:open?'rotate(45deg) translateY(6px)':'none'}} />
               <span style={{width:20,height:2,background:'white',borderRadius:2,transition:'all 0.3s',opacity:open?0:1}} />
