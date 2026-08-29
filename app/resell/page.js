@@ -1,77 +1,125 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function ResellPage() {
-  const whatsappNumber = "8801610205062";
+  const [items, setItems] = useState([]);
+  const [showForm, setShowForm] = useState(false);
   
-  const [productName, setProductName] = useState('');
+  const [title, setTitle] = useState('');
   const [condition, setCondition] = useState('নতুনের মতো');
   const [price, setPrice] = useState('');
   const [details, setDetails] = useState('');
   const [sellerName, setSellerName] = useState('');
-  const [sellerLocation, setSellerLocation] = useState('');
+  const [sellerPhone, setSellerPhone] = useState('');
   const [message, setMessage] = useState('');
 
-  const handleSell = async (e) => {
-    e.preventDefault();
-    setMessage('আপনার অনুরোধ প্রসেস হচ্ছে...');
+  const API_URL = "https://online-sheba-point.onrender.com/api";
 
-    const msg = `🛍️ *পুরোনো পণ্য বিক্রির অনুরোধ*\n\n` +
-                `*পণ্যের নাম:* ${productName}\n` +
-                `*অবস্থা:* ${condition}\n` +
-                `*মূল্য:* ৳${price}\n` +
-                `*বিস্তারিত:* ${details}\n\n` +
-                `*বিক্রেতার নাম:* ${sellerName}\n` +
-                `*এলাকা:* ${sellerLocation}`;
-                
-    const waLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`;
-    
-    // ১ সেকেন্ড পর হোয়াটসঅ্যাপ ওপেন হবে
-    setTimeout(() => {
-      window.open(waLink, '_blank');
-      setMessage('আপনার তথ্য হোয়াটসঅ্যাপে পাঠানো হয়েছে! অ্যাডমিন যাচাই করে সাইটে পাবলিশ করবে।');
-      setProductName(''); setPrice(''); setDetails(''); setSellerName(''); setSellerLocation('');
-    }, 1000);
+  // সব পণ্য লোড করা
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const res = await fetch(`${API_URL}/resell`);
+        setItems(await res.json());
+      } catch (error) {}
+    };
+    fetchItems();
+  }, []);
+
+  // নতুন পণ্য পোস্ট করা
+  const handlePost = async (e) => {
+    e.preventDefault();
+    setMessage('পোস্ট হচ্ছে...');
+    try {
+      const res = await fetch(`${API_URL}/resell/add`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, description: details, price: Number(price), condition, sellerName, sellerPhone })
+      });
+      const data = await res.json();
+      setMessage(data.message);
+      if (res.ok) {
+        setTitle(''); setPrice(''); setDetails(''); setSellerName(''); setSellerPhone('');
+        setShowForm(false);
+        // লিস্ট আপডেট করার জন্য আবার ডাটা আনা
+        const resAgain = await fetch(`${API_URL}/resell`);
+        setItems(await resAgain.json());
+      }
+    } catch (error) {
+      setMessage('সার্ভার এরর!');
+    }
+  };
+
+  // ক্রেতা যখন Buy Now এ ক্লিক করবে, তখন বিক্রেতার হোয়াটসঅ্যাপে মেসেজ যাবে
+  const handleBuy = (item) => {
+    const cleanPhone = item.sellerPhone.replace(/[^0-9]/g, '').replace(/^0/, '880');
+    const msg = `আসসালামু আলাইকুম, আমি আপনার "${item.title}" পণ্যটি কিনতে আগ্রহী। মূল্য: ৳${item.price}`;
+    const waLink = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`;
+    window.open(waLink, '_blank');
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f5f7fa' }}>
-      <section style={{ background: 'linear-gradient(135deg, #4e6ef2, #6c5ce7)', paddingTop: 150, paddingBottom: 64, paddingLeft: 24, paddingRight: 24 }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', textAlign: 'center' }}>
-          <h1 style={{ fontSize: 36, fontWeight: 700, color: 'white', marginBottom: 8 }}>♻️ পুরোনো পণ্য ক্রয়-বিক্রয়</h1>
-          <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 15 }}>আপনার অব্যবহৃত বা পুরোনো ফোন, ল্যাপটপ, গ্যাজেট বিক্রি করুন অথবা কিনুন।</p>
-        </div>
-      </section>
-
-      <div style={{ maxWidth: '600px', margin: '0 auto', padding: '40px 24px' }}>
-        
-        {/* নির্দেশনা বক্স */}
-        <div style={{ background: '#e3f2fd', padding: '20px', borderRadius: '12px', marginBottom: '30px', color: '#1976d2', fontSize: '14px' }}>
-          <p style={{ margin: '0 0 5px 0', fontWeight: '700' }}>📌 কীভাবে কাজ করে?</p>
-          <p style={{ margin: 0 }}>নিচের ফর্মটি পূরণ করে বিক্রি করুন বাটনে ক্লিক করুন। আপনার পণ্যের ছবি ও বিবরণ সরাসরি আমাদের হোয়াটসঅ্যাপে চলে যাবে। যাচাই শেষে আমরা এটি আমাদের পেজে পাবলিশ করব।</p>
+    <div className="deepin-body" style={{ minHeight: '100vh', paddingTop: '150px', paddingBottom: '40px' }}>
+      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', flexWrap: 'wrap', gap: '15px' }}>
+          <h1 style={{ color: 'white', margin: 0 }}>♻️ পুরোনো পণ্য ক্রয়-বিক্রয়</h1>
+          <button onClick={() => setShowForm(!showForm)} className="d-btn glow-btn" style={{ padding: '10px 20px', border: 'none', cursor: 'pointer' }}>
+            {showForm ? '❌ বন্ধ করুন' : '➕ পণ্য পোস্ট করুন'}
+          </button>
         </div>
 
-        <div className="d-card glow-card" style={{ padding: '30px' }}>
-          <h2 style={{ marginTop: 0, marginBottom: '20px', color: '#1a1a2e' }}>পণ্য বিক্রি করুন</h2>
-          <form onSubmit={handleSell} style={{ display: 'grid', gap: '15px' }}>
-            <input type="text" placeholder="পণ্যের নাম (যেমন: iPhone 11 64GB)" value={productName} onChange={(e) => setProductName(e.target.value)} required style={{ padding: '12px', borderRadius: '8px', border: '1px solid #ccc' }} />
-            <div style={{ display: 'flex', gap: '15px' }}>
-              <select value={condition} onChange={(e) => setCondition(e.target.value)} style={{ flex: 1, padding: '12px', borderRadius: '8px', border: '1px solid #ccc', background: 'white' }}>
-                <option>নতুনের মতো</option>
-                <option>খুব ভালো</option>
-                <option>ভালো</option>
-                <option>মোটামুটি</option>
-              </select>
-              <input type="number" placeholder="মূল্য (টাকা)" value={price} onChange={(e) => setPrice(e.target.value)} required style={{ flex: 1, padding: '12px', borderRadius: '8px', border: '1px solid #ccc' }} />
+        {/* পণ্য পোস্ট করার ফর্ম */}
+        {showForm && (
+          <div className="glass-3d" style={{ marginBottom: '30px' }}>
+            <h2 style={{ marginTop: 0, marginBottom: '20px', color: 'white' }}>আপনার পণ্য বিক্রি করুন</h2>
+            <form onSubmit={handlePost} style={{ display: 'grid', gap: '15px' }}>
+              <input type="text" placeholder="পণ্যের নাম (যেমন: iPhone 11)" value={title} onChange={(e) => setTitle(e.target.value)} required className="d-input" />
+              <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
+                <select value={condition} onChange={(e) => setCondition(e.target.value)} className="d-input" style={{ flex: 1, minWidth: '200px' }}>
+                  <option style={{background: '#1a1c2e'}}>নতুনের মতো</option>
+                  <option style={{background: '#1a1c2e'}}>খুব ভালো</option>
+                  <option style={{background: '#1a1c2e'}}>ভালো</option>
+                  <option style={{background: '#1a1c2e'}}>মোটামুটি</option>
+                </select>
+                <input type="number" placeholder="মূল্য (টাকা)" value={price} onChange={(e) => setPrice(e.target.value)} required className="d-input" style={{ flex: 1, minWidth: '200px' }} />
+              </div>
+              <textarea placeholder="বিস্তারিত (ব্যাটারি, চার্জার, কোনো সমস্যা আছে কি না)" value={details} onChange={(e) => setDetails(e.target.value)} required className="d-input" style={{ minHeight: '80px' }} />
+              <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
+                <input type="text" placeholder="আপনার নাম" value={sellerName} onChange={(e) => setSellerName(e.target.value)} required className="d-input" style={{ flex: 1, minWidth: '200px' }} />
+                <input type="text" placeholder="আপনার হোয়াটসঅ্যাপ নাম্বার" value={sellerPhone} onChange={(e) => setSellerPhone(e.target.value)} required className="d-input" style={{ flex: 1, minWidth: '200px' }} />
+              </div>
+              <button type="submit" className="neon-3d-btn" style={{ width: '100%' }}>পোস্ট করুন</button>
+            </form>
+            {message && <p style={{ color: '#2dce89', textAlign: 'center', marginTop: '15px' }}>{message}</p>}
+          </div>
+        )}
+
+        {/* সব পণ্যের লিস্ট */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
+          {items.map((item) => (
+            <div key={item._id} className="glass-3d" style={{ display: 'flex', flexDirection: 'column' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+                <span style={{ background: 'rgba(45,206,137,0.2)', color: '#2dce89', padding: '4px 10px', borderRadius: '20px', fontSize: '12px', fontWeight: 700 }}>{item.condition}</span>
+              </div>
+              <h3 style={{ fontSize: '18px', fontWeight: 700, marginBottom: 8, color: 'white' }}>{item.title}</h3>
+              <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.6)', marginBottom: 16, flex: 1 }}>{item.description}</p>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '15px' }}>
+                <div>
+                  <p style={{ fontSize: 20, fontWeight: 700, color: '#2dce89', margin: 0 }}>৳{item.price}</p>
+                  <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)', margin: 0 }}>By {item.sellerName}</p>
+                </div>
+                <button onClick={() => handleBuy(item)} className="d-btn glow-btn" style={{ padding: '10px 20px', border: 'none', cursor: 'pointer' }}>
+                  🛒 Buy Now
+                </button>
+              </div>
             </div>
-            <textarea placeholder="বিস্তারিত (ব্যাটারি, চার্জার, কোনো সমস্যা আছে কি না)" value={details} onChange={(e) => setDetails(e.target.value)} required style={{ padding: '12px', borderRadius: '8px', border: '1px solid #ccc', minHeight: '80px' }} />
-            <div style={{ display: 'flex', gap: '15px' }}>
-              <input type="text" placeholder="আপনার নাম" value={sellerName} onChange={(e) => setSellerName(e.target.value)} required style={{ flex: 1, padding: '12px', borderRadius: '8px', border: '1px solid #ccc' }} />
-              <input type="text" placeholder="আপনার এলাকা" value={sellerLocation} onChange={(e) => setSellerLocation(e.target.value)} required style={{ flex: 1, padding: '12px', borderRadius: '8px', border: '1px solid #ccc' }} />
-            </div>
-            <button type="submit" style={{ padding: '12px', background: '#4e6ef2', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600', fontSize: '16px' }}>📤 বিক্রি করুন</button>
-          </form>
-          {message && <p style={{ color: 'green', textAlign: 'center', marginTop: '15px' }}>{message}</p>}
+          ))}
+          
+          {items.length === 0 && (
+            <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.4)', fontSize: '18px', gridColumn: '1 / -1' }}>
+              এখনো কোনো পণ্য পোস্ট করা হয়নি। আপনিই প্রথম হোন!
+            </p>
+          )}
         </div>
       </div>
     </div>
