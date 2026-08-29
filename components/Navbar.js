@@ -51,7 +51,6 @@ export default function Navbar() {
   return (
     <nav style={{
       position:'fixed',top:0,left:0,right:0,zIndex:50,transition:'all 0.3s',
-      // এখানে পরিবর্তন করা হয়েছে: সবসময় ডার্ক ব্যাকগ্রাউন্ড থাকবে
       background: scrolled ? 'rgba(10, 11, 20, 0.95)' : 'rgba(10, 11, 20, 0.6)', 
       backdropFilter:'blur(20px)',
       WebkitBackdropFilter:'blur(20px)',
@@ -62,11 +61,30 @@ export default function Navbar() {
         
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:'16px'}}>
           
-          {/* Logo Section */}
-          <Link href="/" style={{display:'flex',alignItems:'center',gap:8,textDecoration:'none',flexShrink:0}}>
-            <div style={{width:36,height:36,borderRadius:12,background:'linear-gradient(135deg,#4e6ef2,#a855f7)',display:'flex',alignItems:'center',justifyContent:'center',color:'white',fontWeight:'bold',fontSize:14,flexShrink:0}}>SH</div>
-            <span style={{fontSize:18,fontWeight:700,color:'white',whiteSpace:'nowrap',display:'flex',alignItems:'center'}}>
-              Online Sheba<span style={{color:'#4e6ef2',marginLeft:'4px'}}>Point</span>
+          {/* Logo Section with Icon and Glowing Text */}
+          <Link href="/" style={{display:'flex',alignItems:'center',gap:10,textDecoration:'none',flexShrink:0}}>
+            <div style={{
+              width:38, 
+              height:38, 
+              borderRadius:12, 
+              background:'linear-gradient(135deg,#4e6ef2,#a855f7)', 
+              display:'flex', 
+              alignItems:'center', 
+              justifyContent:'center', 
+              fontSize:20, 
+              flexShrink:0,
+              boxShadow: '0 0 15px rgba(78,110,242,0.5)' // Logo box e glow
+            }}>💠</div>
+            <span style={{
+              fontSize:18, 
+              fontWeight:800, 
+              whiteSpace:'nowrap', 
+              display:'flex', 
+              alignItems:'center'
+            }}>
+              <span style={{ color: 'white', textShadow: '0 0 8px rgba(255, 255, 255, 0.8)' }}>Online </span>
+              <span style={{ color: 'white', textShadow: '0 0 8px rgba(255, 255, 255, 0.8)' }}>Sheba </span>
+              <span style={{ color: '#4e6ef2', textShadow: '0 0 15px rgba(78, 110, 242, 1), 0 0 25px rgba(78, 110, 242, 0.6)' }}>Point</span>
             </span>
           </Link>
 
