@@ -8,7 +8,7 @@ export default function DevServicesPage() {
       id: 1,
       title: 'Website Development',
       icon: '🌐',
-      desc: 'E-commerce, Portfolio, Business, Custom Web Application ও হাই-সিকিউরিটি ওয়েবসাইট তৈরি।',
+      desc: 'E-commerce, Portfolio, Business, Custom Web Application ও হাই-সিকিউরিটি ওয়েবসাইট তৈরি।',
       features: ['Next.js / React', 'Node.js Backend', 'Database (MongoDB/SQL)', 'SSL & Hosting Setup'],
       price: '১০,০০০ টাকা থেকে শুরু'
     },
@@ -24,7 +24,7 @@ export default function DevServicesPage() {
       id: 3,
       title: 'OS & Software Dev',
       icon: '💻',
-      desc: 'নতুন অপারেটিং সিস্টেম, কাস্টম সফটওয়্যার বা সিস্টেম লেভেলের টুল তৈরি।',
+      desc: 'নতুন অপারেটিং সিস্টেম, কাস্টম সফটওয়্যার বা সিস্টেম লেভেলের টুল তৈরি।',
       features: ['Linux/Custom OS', 'Desktop Software (Win/Mac)', 'C++ / Python / Rust', 'System Driver'],
       price: '২৫,০০০ টাকা থেকে শুরু'
     }
@@ -37,11 +37,11 @@ export default function DevServicesPage() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f5f7fa' }}>
+    <div className="deepin-body" style={{ minHeight: '100vh' }}>
       <section style={{ background: 'linear-gradient(135deg, #4e6ef2, #6c5ce7)', paddingTop: 120, paddingBottom: 64, paddingLeft: 24, paddingRight: 24 }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', textAlign: 'center' }}>
           <h1 style={{ fontSize: 36, fontWeight: 700, color: 'white', marginBottom: 8 }}>🚀 ডেভেলপমেন্ট সার্ভিস</h1>
-          <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 15 }}>ওয়েবসাইট, মোবাইল অ্যাপ থেকে শুরু করে নতুন অপারেটিং সিস্টেম (OS) তৈরি পর্যন্ত - সব ধরনের সফটওয়্যার ডেভেলপমেন্ট সলিউশন।</p>
+          <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 15 }}>ওয়েবসাইট, মোবাইল অ্যাপ থেকে শুরু করে নতুন অপারেটিং সিস্টেম (OS) তৈরি পর্যন্ত - সব ধরনের সফটওয়্যার ডেভেলপমেন্ট সলিউশন।</p>
         </div>
       </section>
 
@@ -50,24 +50,24 @@ export default function DevServicesPage() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
           
           {services.map((service) => (
-            <div key={service.id} className="d-card glow-card" style={{ padding: '32px 24px', display: 'flex', flexDirection: 'column' }}>
+            <div key={service.id} className="glass-3d" style={{ padding: '32px 24px', display: 'flex', flexDirection: 'column' }}>
               <div style={{ fontSize: 50, marginBottom: 16 }}>{service.icon}</div>
-              <h3 style={{ fontSize: 22, fontWeight: 700, marginBottom: 12, color: '#1a1a2e' }}>{service.title}</h3>
-              <p style={{ fontSize: 14, color: '#666', marginBottom: 24, lineHeight: 1.6 }}>{service.desc}</p>
+              <h3 style={{ fontSize: 22, fontWeight: 700, marginBottom: 12, color: 'white' }}>{service.title}</h3>
+              <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', marginBottom: 24, lineHeight: 1.6 }}>{service.desc}</p>
               
               <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 24px 0', flex: 1 }}>
                 {service.features.map((feat, i) => (
-                  <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px', fontSize: 14, color: '#555' }}>
+                  <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px', fontSize: 14, color: 'rgba(255,255,255,0.7)' }}>
                     <span style={{ color: '#4e6ef2', fontWeight: 'bold' }}>▹</span> {feat}
                   </li>
                 ))}
               </ul>
 
-              <div style={{ borderTop: '1px solid #f0f0f0', paddingTop: '20px' }}>
-                <p style={{ fontSize: 18, fontWeight: 700, color: '#1a1a2e', marginBottom: 16 }}>{service.price}</p>
+              <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '20px' }}>
+                <p style={{ fontSize: 18, fontWeight: 700, color: '#2dce89', marginBottom: 16 }}>{service.price}</p>
                 <button 
                   onClick={() => handleOrder(service.title)} 
-                  className="d-btn glow-btn" 
+                  className="neon-3d-btn" 
                   style={{ width: '100%', padding: '14px', fontSize: 16, border: 'none', cursor: 'pointer', textAlign: 'center', display: 'block', textDecoration: 'none', boxSizing: 'border-box' }}
                 >
                   📲 অর্ডার বা কোটেশন নিন
@@ -78,17 +78,17 @@ export default function DevServicesPage() {
 
         </div>
 
-        {/* কাস্টম রিকোয়েস্ট সেকশন */}
-        <div style={{ background: 'linear-gradient(135deg, #4e6ef2, #6c5ce7)', padding: '32px', borderRadius: '16px', marginTop: '50px', textAlign: 'center', color: 'white' }}>
-          <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 12 }}>💡 আপনার কি অন্য কোনো কাস্টম আইডিয়া আছে?</h2>
-          <p style={{ fontSize: 15, marginBottom: 24, opacity: 0.9 }}>গেম তৈরি, এআই (AI) বট, সাইবার সিকিউরিটি টুল বা এর বাইরে যেকোনো সফটওয়্যার তৈরির আইডিয়া থাকলে আমাদের সাথে শেয়ার করুন। আমরা বানিয়ে দিব!</p>
+        {/* কাস্টম রিকোয়েস্ট সেকশন */}
+        <div className="glass-3d" style={{ background: 'linear-gradient(135deg, rgba(78,110,242,0.2), rgba(168,85,247,0.2))', marginTop: '50px', textAlign: 'center' }}>
+          <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 12, color: 'white' }}>💡 আপনার কি অন্য কোনো কাস্টম আইডিয়া আছে?</h2>
+          <p style={{ fontSize: 15, marginBottom: 24, color: 'rgba(255,255,255,0.7)' }}>গেম তৈরি, এআই (AI) বট, সাইবার সিকিউরিটি টুল বা এর বাইরে যেকোনো সফটওয়্যার তৈরির আইডিয়া থাকলে আমাদের সাথে শেয়ার করুন। আমরা বানিয়ে দিব!</p>
           <a 
-            href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("আসসালামু আলাইকুম, আমার একটি কাস্টম সফটওয়্যার তৈরির আইডিয়া আছে।")}`} 
+            href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("আসসালামু আলাইকুম, আমার একটি কাস্টম সফটওয়্যার তৈরির আইডিয়া আছে।")}`} 
             target="_blank" 
             rel="noopener noreferrer" 
-            style={{ display: 'inline-block', background: 'white', color: '#4e6ef2', fontWeight: 700, padding: '14px 40px', borderRadius: '30px', textDecoration: 'none', fontSize: 16 }}
+            style={{ display: 'inline-block', background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.2)', fontWeight: 700, padding: '14px 40px', borderRadius: '14px', textDecoration: 'none', fontSize: 16 }}
           >
-            💬 হোয়াটসঅ্যাপে আইডিয়া শেয়ার করুন
+            💬 হোয়াটসঅ্যাপে আইডিয়া শেয়ার করুন
           </a>
         </div>
 
