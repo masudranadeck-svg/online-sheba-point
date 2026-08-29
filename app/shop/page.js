@@ -57,8 +57,8 @@ export default function ShopPage() {
 
   return (
     <div className="deepin-body" style={{minHeight:'100vh'}}>
-      {/* এখানে paddingTop 150 করা হয়েছে */}
-      <section style={{background:'linear-gradient(135deg, #4e6ef2, #6c5ce7)', paddingTop:150, paddingBottom:64, paddingLeft:24, paddingRight:24}}>
+      {/* এখানে paddingTop 200 করা হয়েছে */}
+      <section style={{background:'linear-gradient(135deg, #4e6ef2, #6c5ce7)', paddingTop:200, paddingBottom:64, paddingLeft:24, paddingRight:24}}>
         <div style={{maxWidth:1100,margin:'0 auto',textAlign:'center'}}>
           <h1 style={{fontSize:36,fontWeight:700,color:'white',marginBottom:8}}>প্রোডাক্ট শপ</h1>
           <p style={{color:'rgba(255,255,255,0.6)',fontSize:15}}>সেরা ডিজিটাল প্রোডাক্ট ও সার্ভিস</p>
