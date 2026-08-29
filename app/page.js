@@ -22,7 +22,13 @@ export default function Home() {
         border: '1px solid rgba(255, 255, 255, 0.1)',
         boxShadow: '0 10px 30px rgba(0,0,0,0.3)'
       }}>
-        <h3 style={{ margin: 0, color: 'white', fontSize: 18, letterSpacing: 1 }}>SHEBAPPOINT</h3>
+        {/* Glowing Logo Text */}
+        <h3 style={{ margin: 0, fontSize: 18, letterSpacing: 1, fontWeight: 800 }}>
+          <span style={{ color: 'white', textShadow: '0 0 8px rgba(255,255,255,0.6)' }}>Online </span>
+          <span style={{ color: '#4e6ef2', textShadow: '0 0 10px rgba(78,110,242,0.9)' }}>Sheba</span>
+          <span style={{ color: '#a855f7', textShadow: '0 0 10px rgba(168,85,247,0.9)' }}> Point</span>
+        </h3>
+
         <div style={{ display: 'flex', gap: 20, fontSize: 14, color: 'rgba(255,255,255,0.7)' }}>
           <Link href="/" style={{ color: 'inherit', textDecoration: 'none' }}>হোম</Link>
           <Link href="/shop" style={{ color: 'inherit', textDecoration: 'none' }}>শপ</Link>
@@ -304,7 +310,7 @@ export default function Home() {
         fontSize:14, 
         borderTop:'1px solid rgba(255,255,255,0.05)'
       }}>
-        <p>© 2024 SHEBAPPOINT. All rights reserved.</p>
+        <p>© 2024 Online Sheba Point. All rights reserved.</p>
         <div style={{display:'flex', justifyContent:'center', gap:20, marginTop:12}}>
           <Link href="/" style={{color:'inherit', textDecoration:'none'}}>Facebook</Link>
           <Link href="/" style={{color:'inherit', textDecoration:'none'}}>Telegram</Link>
