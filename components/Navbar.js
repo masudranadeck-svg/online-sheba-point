@@ -61,7 +61,7 @@ export default function Navbar() {
         
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:'16px'}}>
           
-          {/* Logo Section with Icon and Glowing Text */}
+          {/* Logo Section with Icon and 3D Glowing Text */}
           <Link href="/" style={{display:'flex',alignItems:'center',gap:10,textDecoration:'none',flexShrink:0}}>
             <div style={{
               width:38, 
@@ -73,18 +73,30 @@ export default function Navbar() {
               justifyContent:'center', 
               fontSize:20, 
               flexShrink:0,
-              boxShadow: '0 0 15px rgba(78,110,242,0.5)' // Logo box e glow
+              boxShadow: '0 0 15px rgba(78,110,242,0.5)' 
             }}>💠</div>
             <span style={{
-              fontSize:18, 
+              fontSize:20, 
               fontWeight:800, 
               whiteSpace:'nowrap', 
               display:'flex', 
-              alignItems:'center'
+              alignItems:'center',
+              letterSpacing: 0.5
             }}>
-              <span style={{ color: 'white', textShadow: '0 0 8px rgba(255, 255, 255, 0.8)' }}>Online </span>
-              <span style={{ color: 'white', textShadow: '0 0 8px rgba(255, 255, 255, 0.8)' }}>Sheba </span>
-              <span style={{ color: '#4e6ef2', textShadow: '0 0 15px rgba(78, 110, 242, 1), 0 0 25px rgba(78, 110, 242, 0.6)' }}>Point</span>
+              {/* 3D White Text for Online Sheba */}
+              <span style={{ 
+                color: 'white', 
+                textShadow: '1px 1px 0 #444, 2px 2px 0 #333, 3px 3px 0 #222, 4px 4px 10px rgba(0,0,0,0.8)' 
+              }}>Online </span>
+              <span style={{ 
+                color: 'white', 
+                textShadow: '1px 1px 0 #444, 2px 2px 0 #333, 3px 3px 0 #222, 4px 4px 10px rgba(0,0,0,0.8)' 
+              }}>Sheba </span>
+              {/* 3D Blue Glowing Text for Point */}
+              <span style={{ 
+                color: '#4e6ef2', 
+                textShadow: '1px 1px 0 #1e3a8a, 2px 2px 0 #172554, 3px 3px 0 #0f172a, 4px 4px 10px rgba(0,0,0,0.7), 0 0 20px rgba(78,110,242,0.9), 0 0 30px rgba(78,110,242,0.5)' 
+              }}>Point</span>
             </span>
           </Link>
 
