@@ -18,30 +18,31 @@ export default function Home() {
   return (
     <div className="deepin-body" style={{ margin: 0, padding: 0, overflow: 'hidden' }}>
       
-      {/* 3D Background Elements */}
-      <div className={`digital-world-bg ${isEntering ? 'zoom-in' : ''}`}>
-        <div className="grid-floor"></div>
-        {/* Floating Shapes */}
-        <div className="shape-3d" style={{ top: '20%', left: '10%', width: '100px', height: '100px', background: '#4e6ef2', animationDelay: '0s' }}></div>
-        <div className="shape-3d" style={{ top: '60%', left: '80%', width: '150px', height: '150px', background: '#a855f7', animationDelay: '2s', borderRadius: '50%' }}></div>
-        <div className="shape-3d" style={{ top: '70%', left: '20%', width: '80px', height: '80px', background: '#2dce89', animationDelay: '4s' }}></div>
-        <div className="shape-3d" style={{ top: '15%', left: '75%', width: '120px', height: '120px', background: '#fb6340', animationDelay: '1s' }}></div>
-      </div>
-
       {/* HERO SECTION */}
       <section style={{
         minHeight:'90vh', 
         display:'flex', 
         alignItems:'center', 
         justifyContent: 'center',
-        paddingTop:120, 
+        paddingTop:200, // Overlapping fix korar jonno barano holo
         paddingBottom:80, 
         paddingLeft:24, 
         paddingRight:24,
         perspective: '1000px',
         position: 'relative'
       }}>
-        <div style={{maxWidth:800, margin: '0 auto', textAlign: 'center'}}>
+        
+        {/* 3D Background Elements (Shudhu Hero section er jonno) */}
+        <div className={`digital-world-bg ${isEntering ? 'zoom-in' : ''}`}>
+          <div className="grid-floor"></div>
+          {/* Floating Shapes */}
+          <div className="shape-3d" style={{ top: '20%', left: '10%', width: '100px', height: '100px', background: '#4e6ef2', animationDelay: '0s' }}></div>
+          <div className="shape-3d" style={{ top: '60%', left: '80%', width: '150px', height: '150px', background: '#a855f7', animationDelay: '2s', borderRadius: '50%' }}></div>
+          <div className="shape-3d" style={{ top: '70%', left: '20%', width: '80px', height: '80px', background: '#2dce89', animationDelay: '4s' }}></div>
+          <div className="shape-3d" style={{ top: '15%', left: '75%', width: '120px', height: '120px', background: '#fb6340', animationDelay: '1s' }}></div>
+        </div>
+
+        <div style={{maxWidth:800, margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 2}}>
           
           <div style={{
             display:'inline-flex', 
@@ -58,8 +59,8 @@ export default function Home() {
           </div>
           
           {/* 3D Neon Title */}
-          <h1 className="neon-3d-text" style={{ marginBottom: 20 }}>
-            ডিজিটাল স্টোর
+          <h1 className="neon-3d-text" style={{ marginBottom: 20, fontSize: 60 }}>
+            আপনার ডিজিটাল স্টোর
           </h1>
           
           <p style={{
