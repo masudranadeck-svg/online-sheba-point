@@ -4,47 +4,12 @@ export default function Home() {
   return (
     <div className="deepin-body" style={{ margin: 0, padding: 0 }}>
       
-      {/* Top Floating Glass Navigation */}
-      <nav style={{
-        position: 'fixed', 
-        top: 16, 
-        left: '50%', 
-        transform: 'translateX(-50%)', 
-        zIndex: 100,
-        display: 'flex', 
-        alignItems: 'center', 
-        gap: 24, 
-        padding: '10px 24px',
-        borderRadius: 50,
-        background: 'rgba(255, 255, 255, 0.05)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        boxShadow: '0 10px 30px rgba(0,0,0,0.3)'
-      }}>
-        {/* Glowing Logo Text */}
-        <h3 style={{ margin: 0, fontSize: 18, letterSpacing: 1, fontWeight: 800 }}>
-          <span style={{ color: 'white', textShadow: '0 0 8px rgba(255,255,255,0.6)' }}>Online </span>
-          <span style={{ color: '#4e6ef2', textShadow: '0 0 10px rgba(78,110,242,0.9)' }}>Sheba</span>
-          <span style={{ color: '#a855f7', textShadow: '0 0 10px rgba(168,85,247,0.9)' }}> Point</span>
-        </h3>
-
-        <div style={{ display: 'flex', gap: 20, fontSize: 14, color: 'rgba(255,255,255,0.7)' }}>
-          <Link href="/" style={{ color: 'inherit', textDecoration: 'none' }}>হোম</Link>
-          <Link href="/shop" style={{ color: 'inherit', textDecoration: 'none' }}>শপ</Link>
-          <Link href="/dashboard" style={{ color: 'inherit', textDecoration: 'none' }}>ড্যাশবোর্ড</Link>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#2dce89' }}>
-          <span className="status-dot"></span> Online
-        </div>
-      </nav>
-
       {/* HERO SECTION */}
       <section style={{
-        minHeight:'100vh', 
+        minHeight:'90vh', 
         display:'flex', 
         alignItems:'center', 
-        paddingTop:120, 
+        paddingTop:180, 
         paddingBottom:80, 
         paddingLeft:24, 
         paddingRight:24,
@@ -67,22 +32,26 @@ export default function Home() {
               <span style={{fontSize:13, color:'rgba(255,255,255,0.7)', fontWeight:500}}>সার্ভিস চালু আছে</span>
             </div>
             
+            {/* 3D Glowing Main Title */}
             <h1 style={{
-              fontSize:52, 
-              fontWeight:800, 
+              fontSize:60, 
+              fontWeight:900, 
               color:'white', 
-              lineHeight:1.15, 
+              lineHeight:1.1, 
               marginBottom:20,
-              textShadow: '0 10px 30px rgba(78, 110, 242, 0.3)'
+              textShadow: '2px 2px 0 #333, 3px 3px 0 #222, 4px 4px 0 #111, 5px 5px 15px rgba(0,0,0,0.9), 0 0 30px rgba(78, 110, 242, 0.5)'
             }}>আপনার ডিজিটাল স্টোর</h1>
             
+            {/* 3D Subtitle */}
             <p style={{
-              fontSize:18, 
-              color:'rgba(255,255,255,0.6)', 
+              fontSize:20, 
+              fontWeight: 500,
+              color:'rgba(255,255,255,0.8)', 
               lineHeight:1.7, 
               marginBottom:36, 
-              maxWidth:480, 
-              margin: '0 auto 36px auto'
+              maxWidth:500, 
+              margin: '0 auto 36px auto',
+              textShadow: '1px 1px 2px rgba(0,0,0,0.8)'
             }}>সফটওয়্যার কী, সাবস্ক্রিপশন ও রিমোট আনলক সার্ভিস — সব এক জায়গায়, সেরা দামে।</p>
             
             <div style={{display:'flex', gap:12, flexWrap:'wrap', justifyContent:'center'}}>
@@ -102,7 +71,7 @@ export default function Home() {
                 {n:'৯৯%',l:'সন্তুষ্টি'}
               ].map(s=>(
                 <div key={s.l}>
-                  <p style={{fontSize:28, fontWeight:700, color:'white', margin:0}}>{s.n}</p>
+                  <p style={{fontSize:32, fontWeight:800, color:'white', margin:0, textShadow: '2px 2px 4px rgba(0,0,0,0.8)'}}>{s.n}</p>
                   <p style={{fontSize:12, color:'rgba(255,255,255,0.4)', marginTop:4, marginBottom:0}}>{s.l}</p>
                 </div>
               ))}
@@ -116,7 +85,7 @@ export default function Home() {
         <div style={{maxWidth:1100, margin:'0 auto'}}>
           <div style={{textAlign:'center', marginBottom:48}}>
             <p style={{fontSize:11, fontWeight:700, letterSpacing:2, color:'#aaa', marginBottom:8, textTransform:'uppercase', margin:'0 0 8px 0'}}>সার্ভিস</p>
-            <h2 style={{fontSize:32, fontWeight:700, color:'white', margin:0}}>যা যা আমরা অফার করি</h2>
+            <h2 style={{fontSize:36, fontWeight:800, color:'white', margin:0, textShadow: '2px 2px 0 #333, 4px 4px 10px rgba(0,0,0,0.8)'}}>যা যা আমরা অফার করি</h2>
           </div>
           <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(240px, 1fr))', gap:20}}>
             {[
@@ -159,7 +128,7 @@ export default function Home() {
           }}>
             <div>
               <p style={{fontSize:11, fontWeight:700, letterSpacing:2, color:'#aaa', textTransform:'uppercase', margin:'0 0 8px 0'}}>প্রোডাক্ট</p>
-              <h2 style={{fontSize:32, fontWeight:700, color:'white', margin:0}}>সবচেয়ে জনপ্রিয়</h2>
+              <h2 style={{fontSize:36, fontWeight:800, color:'white', margin:0, textShadow: '2px 2px 0 #333, 4px 4px 10px rgba(0,0,0,0.8)'}}>সবচেয়ে জনপ্রিয়</h2>
             </div>
             <Link href="/shop" style={{fontSize:13, fontWeight:600, color:'#4e6ef2', textDecoration:'none'}}>সব দেখুন →</Link>
           </div>
@@ -183,7 +152,7 @@ export default function Home() {
                   <span style={{background:'rgba(255,255,255,0.1)', color:'#aaa', padding: '4px 12px', borderRadius: 50, fontSize: 12}}>{p.badge}</span>
                 </div>
                 <h3 style={{fontSize:15, fontWeight:700, marginBottom:8, color:'white', margin:'0 0 8px 0'}}>{p.name}</h3>
-                <p style={{fontSize:28, fontWeight:700, color:'#2dce89', marginBottom:20, margin:'0 0 20px 0'}}>৳{p.price}</p>
+                <p style={{fontSize:28, fontWeight:700, color:'#2dce89', marginBottom:20, margin:'0 0 20px 0', textShadow: '1px 1px 2px rgba(0,0,0,0.8)'}}>৳{p.price}</p>
                 <button className="neon-3d-btn" style={{width:'100%', textAlign: 'center'}}>কার্টে যোগ করুন</button>
               </div>
             ))}
@@ -195,7 +164,7 @@ export default function Home() {
       <section style={{padding:'64px 24px'}}>
         <div style={{maxWidth:1100, margin:'0 auto'}}>
           <div style={{textAlign:'center', marginBottom:48}}>
-            <h2 style={{fontSize:32, fontWeight:700, color:'white', margin:0}}>সাবস্ক্রিপশন প্ল্যান</h2>
+            <h2 style={{fontSize:36, fontWeight:800, color:'white', margin:0, textShadow: '2px 2px 0 #333, 4px 4px 10px rgba(0,0,0,0.8)'}}>সাবস্ক্রিপশন প্ল্যান</h2>
           </div>
           <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(280px, 1fr))', gap:24}}>
             {[
@@ -228,7 +197,8 @@ export default function Home() {
                   fontWeight:700, 
                   color:'#a855f7', 
                   marginBottom:24, 
-                  margin:'0 0 24px 0'
+                  margin:'0 0 24px 0',
+                  textShadow: '1px 1px 2px rgba(0,0,0,0.8)'
                 }}>৳{pl.price}<span style={{fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:400}}>/মাস</span></p>
                 <div style={{marginBottom:32}}>
                   {pl.f.map((f,j)=>(
@@ -259,12 +229,13 @@ export default function Home() {
       <section style={{padding:'64px 24px'}}>
         <div style={{maxWidth:1100, margin:'0 auto'}}>
           <h2 style={{
-            fontSize:32, 
-            fontWeight:700, 
+            fontSize:36, 
+            fontWeight:800, 
             color:'white', 
             textAlign:'center', 
             marginBottom:48, 
-            margin:'0 auto 48px auto'
+            margin:'0 auto 48px auto',
+            textShadow: '2px 2px 0 #333, 4px 4px 10px rgba(0,0,0,0.8)'
           }}>কেন আমাদের বেছে নেবেন</h2>
           <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(220px, 1fr))', gap:20}}>
             {[
@@ -290,7 +261,7 @@ export default function Home() {
             background:'linear-gradient(135deg, rgba(78,110,242,0.2), rgba(168,85,247,0.2))', 
             textAlign:'center'
           }}>
-            <h2 style={{fontSize:28, fontWeight:700, color:'white', marginBottom:12, margin:'0 0 12px 0'}}>আজই শুরু করুন!</h2>
+            <h2 style={{fontSize:28, fontWeight:800, color:'white', marginBottom:12, margin:'0 0 12px 0', textShadow: '2px 2px 0 #333, 4px 4px 10px rgba(0,0,0,0.8)'}}>আজই শুরু করুন!</h2>
             <p style={{
               fontSize:14, 
               color:'rgba(255,255,255,0.6)', 
