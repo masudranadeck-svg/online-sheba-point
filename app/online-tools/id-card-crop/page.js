@@ -82,7 +82,7 @@ export default function IdCardCropToPDF() {
         canvas.height = img.height * 2;
         const ctx = canvas.getContext('2d');
         
-        // Apply Magic Filter (Contrast, Saturation, Brightness, Sharpness)
+        // Apply Magic Filter (Contrast, Saturation, Brightness)
         ctx.filter = 'contrast(125%) saturate(130%) brightness(105%)';
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
@@ -190,7 +190,8 @@ export default function IdCardCropToPDF() {
                     </div>
                   ) : (
                     <div>
-                      <ReactCrop crop={frontCrop} onChange={(c) => setFrontCrop(c)} aspect={85.6 / 54}>
+                      {/* aspect রিমুভ করা হয়েছে, এখন ফ্রি ক্রপ করা যাবে */}
+                      <ReactCrop crop={frontCrop} onChange={(c) => setFrontCrop(c)}>
                         <img ref={frontImgRef} src={frontImage} alt="Front" style={{ maxHeight: '300px' }} />
                       </ReactCrop>
                       <button onClick={handleConfirmFront} className="d-btn glow-btn" style={{ marginTop: '10px', padding: '8px 16px', border: 'none', cursor: 'pointer', fontSize: '12px', width: '100%' }}>
@@ -222,7 +223,8 @@ export default function IdCardCropToPDF() {
                     </div>
                   ) : (
                     <div>
-                      <ReactCrop crop={backCrop} onChange={(c) => setBackCrop(c)} aspect={85.6 / 54}>
+                      {/* aspect রিমুভ করা হয়েছে, এখন ফ্রি ক্রপ করা যাবে */}
+                      <ReactCrop crop={backCrop} onChange={(c) => setBackCrop(c)}>
                         <img ref={backImgRef} src={backImage} alt="Back" style={{ maxHeight: '300px' }} />
                       </ReactCrop>
                       <button onClick={handleConfirmBack} className="d-btn-purple glow-btn-purple" style={{ marginTop: '10px', padding: '8px 16px', border: 'none', cursor: 'pointer', fontSize: '12px', width: '100%' }}>
