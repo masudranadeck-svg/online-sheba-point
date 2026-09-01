@@ -19,7 +19,7 @@ export default function Home() {
     <div className="deepin-body" style={{ margin: 0, padding: 0, overflow: 'hidden' }}>
       
       {/* HERO SECTION */}
-      <section style={{
+      <section className="home-hero-section" style={{
         minHeight:'90vh', 
         display:'flex', 
         alignItems:'center', 
@@ -92,6 +92,7 @@ export default function Home() {
           <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(240px, 1fr))', gap:20}}>
             {[
               {name:'প্রোডাক্ট শপ',desc:'দারাজের মতো সব প্রোডাক্ট',link:'/shop',icon:'🛒'},
+              {name:'রিয়েল এস্টেট',desc:'ফ্ল্যাট, বাড়ি ও জমি কেনা-বেচা',link:'/properties',icon:'🏠'}, // নতুন কার্ড এখানে যোগ করা হলো
               {name:'সাবস্ক্রিপশন',desc:'বঙ্গ ডিজিটালের মতো প্ল্যান',link:'/subscription',icon:'📺'},
               {name:'সফটওয়্যার কী',desc:'ইনস্ট্যান্ট কী ডেলিভারি',link:'/keys',icon:'🔑'},
               {name:'রিমোট সার্ভিস',desc:'ফোন আনলক রিমোটলি',link:'/remote',icon:'📱'}
