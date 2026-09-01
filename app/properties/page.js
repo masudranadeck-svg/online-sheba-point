@@ -17,13 +17,11 @@ export default function PropertiesPage() {
 
   const API_URL = "https://online-sheba-point.onrender.com/api";
 
-  // সব প্রপার্টি লোড করা (সেফটি গার্ড সহ)
   useEffect(() => {
     const fetchItems = async () => {
       try {
         const res = await fetch(`${API_URL}/properties`);
         const data = await res.json();
-        // ডাটা যদি এরে (Array) হয় তবেই সেট করবে, নাহলে এরর মেসেজ এলে খালি রাখবে
         if (Array.isArray(data)) {
           setItems(data);
         } else {
@@ -36,7 +34,6 @@ export default function PropertiesPage() {
     fetchItems();
   }, []);
 
-  // নতুন বিজ্ঞাপন পোস্ট করা
   const handlePost = async (e) => {
     e.preventDefault();
     setMessage('পোস্ট হচ্ছে...');
@@ -60,7 +57,6 @@ export default function PropertiesPage() {
     }
   };
 
-  // ক্রেতা যখন Contact এ ক্লিক করবে
   const handleContact = (item) => {
     const cleanPhone = item.ownerPhone.replace(/[^0-9]/g, '').replace(/^0/, '880');
     const msg = `আসসালামু আলাইকুম, আপনার "${item.title}" (${item.location}) এর বিজ্ঞাপনটি দেখে যোগাযোগ করছি। বিস্তারিত জানাবেন।`;
@@ -68,11 +64,12 @@ export default function PropertiesPage() {
     window.open(waLink, '_blank');
   };
 
-  // ক্যাটাগরি অনুযায়ী ফিল্টার
   const filteredItems = filter === 'all' ? items : items.filter(item => item.type === filter);
 
+  // এখানে 'sell' (ফ্ল্যাট বিক্রি) যোগ করা হয়েছে
   const typeLabels = {
     rent: { label: 'ফ্ল্যাট ভাড়া', color: '#4e6ef2' },
+    sell: { label: 'ফ্ল্যাট বিক্রি', color: '#fb6340' }, 
     house: { label: 'বাড়ি কেনা-বেচা', color: '#a855f7' },
     land: { label: 'জমি বিক্রি', color: '#2dce89' }
   };
@@ -87,11 +84,12 @@ export default function PropertiesPage() {
           </button>
         </div>
 
-        {/* ফিল্টার বাটন */}
+        {/* ফিল্টার বাটন (এখানে ফ্ল্যাট বিক্রি যোগ করা হয়েছে) */}
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '30px' }}>
           {[
             { id: 'all', label: '🎯 সব' },
             { id: 'rent', label: '🏢 ফ্ল্যাট ভাড়া' },
+            { id: 'sell', label: '🔑 ফ্ল্যাট বিক্রি' },
             { id: 'house', label: '🏡 বাড়ি' },
             { id: 'land', label: '🌍 জমি' }
           ].map(cat => (
@@ -106,17 +104,17 @@ export default function PropertiesPage() {
           ))}
         </div>
 
-        {/* বিজ্ঞাপন পোস্ট করার ফর্ম */}
         {showForm && (
           <div className="glass-3d" style={{ marginBottom: '30px' }}>
             <h2 style={{ marginTop: 0, marginBottom: '20px', color: 'white' }}>আপনার প্রপার্টির বিজ্ঞাপন দিন</h2>
             <form onSubmit={handlePost} style={{ display: 'grid', gap: '15px' }}>
-              <input type="text" placeholder="শিরোনাম (যেমন: ৩ বেডরুমের ফ্ল্যাট ভাড়া)" value={title} onChange={(e) => setTitle(e.target.value)} required className="d-input" />
+              <input type="text" placeholder="শিরোনাম (যেমন: ৩ বেডরুমের ফ্ল্যাট বিক্রি)" value={title} onChange={(e) => setTitle(e.target.value)} required className="d-input" />
               <textarea placeholder="বিস্তারিত (সাইজ, ফ্লোর, এমেনিটিজ ইত্যাদি)" value={desc} onChange={(e) => setDesc(e.target.value)} required className="d-input" style={{ minHeight: '80px' }} />
               
               <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
                 <select value={type} onChange={(e) => setType(e.target.value)} className="d-input" style={{ flex: 1, minWidth: '200px' }}>
                   <option value="rent" style={{background: '#1a1c2e'}}>ফ্ল্যাট ভাড়া</option>
+                  <option value="sell" style={{background: '#1a1c2e'}}>ফ্ল্যাট বিক্রি</option>
                   <option value="house" style={{background: '#1a1c2e'}}>বাড়ি কেনা-বেচা</option>
                   <option value="land" style={{background: '#1a1c2e'}}>জমি বিক্রি</option>
                 </select>
@@ -135,13 +133,13 @@ export default function PropertiesPage() {
           </div>
         )}
 
-        {/* প্রপার্টির লিস্ট (সেফটি গার্ড সহ) */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
           {filteredItems.length > 0 ? (
             filteredItems.map((item) => (
               <div key={item._id} className="glass-3d" style={{ display: 'flex', flexDirection: 'column' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                  <span style={{ background: `rgba(${item.type === 'rent' ? '78,110,242' : item.type === 'house' ? '168,85,247' : '45,206,137'}, 0.2)`, color: typeLabels[item.type]?.color, padding: '4px 10px', borderRadius: '20px', fontSize: '12px', fontWeight: 700 }}>
+                  {/* কালার এখানে আপডেট করা হয়েছে */}
+                  <span style={{ background: `rgba(${item.type === 'rent' ? '78,110,242' : item.type === 'sell' ? '251,99,64' : item.type === 'house' ? '168,85,247' : '45,206,137'}, 0.2)`, color: typeLabels[item.type]?.color, padding: '4px 10px', borderRadius: '20px', fontSize: '12px', fontWeight: 700 }}>
                     {typeLabels[item.type]?.label}
                   </span>
                 </div>
