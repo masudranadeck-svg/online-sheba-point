@@ -1,22 +1,27 @@
 'use client';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function OnlineTools() {
-  const [message, setMessage] = useState('');
+  const router = useRouter();
 
   const tools = [
-    { name: 'ID Card Crop to PDF', icon: '🆔', color: '#4e6ef2' },
-    { name: 'Passport Crop to PDF', icon: '🛂', color: '#a855f7' },
-    { name: 'NID Front-Back Joiner', icon: '📄', color: '#2dce89' },
-    { name: 'Professional CV Maker', icon: '💼', color: '#fb6340' },
-    { name: 'AI Passport Photo Maker', icon: '🤖', color: '#4e6ef2' },
-    { name: 'Passport Photo Maker', icon: '📸', color: '#a855f7' },
-    { name: 'Studio Photo Print Layout', icon: '🖼️', color: '#2dce89' },
-    { name: 'Joint Photo Maker', icon: '👥', color: '#fb6340' }
+    { name: 'ID Card Crop to PDF', link: '/online-tools/id-card-crop', icon: '🆔', color: '#4e6ef2' },
+    { name: 'Passport Crop to PDF', link: '#', icon: '🛂', color: '#a855f7' },
+    { name: 'NID Front-Back Joiner', link: '#', icon: '📄', color: '#2dce89' },
+    { name: 'Professional CV Maker', link: '#', icon: '💼', color: '#fb6340' },
+    { name: 'AI Passport Photo Maker', link: '#', icon: '🤖', color: '#4e6ef2' },
+    { name: 'Passport Photo Maker', link: '#', icon: '📸', color: '#a855f7' },
+    { name: 'Studio Photo Print Layout', link: '#', icon: '🖼️', color: '#2dce89' },
+    { name: 'Joint Photo Maker', link: '#', icon: '👥', color: '#fb6340' }
   ];
 
-  const handleClick = (toolName) => {
-    setMessage(`"${toolName}" টুলটি শীঘ্রই লাইভ হতে যাচ্ছে! সাথেই থাকুন। 🚀`);
+  const handleClick = (tool) => {
+    if (tool.link !== '#') {
+      router.push(tool.link);
+    } else {
+      alert(`"${tool.name}" টুলটি শীঘ্রই আসছে! 🚀`);
+    }
   };
 
   return (
@@ -31,21 +36,15 @@ export default function OnlineTools() {
           {tools.map((tool, i) => (
             <div 
               key={i} 
-              onClick={() => handleClick(tool.name)} 
+              onClick={() => handleClick(tool)} 
               className="glass-3d" 
               style={{ cursor: 'pointer', textAlign: 'center' }}
             >
               <div style={{
-                width: 60,
-                height: 60,
-                borderRadius: 16,
+                width: 60, height: 60, borderRadius: 16,
                 background: `rgba(${tool.color === '#4e6ef2' ? '78,110,242' : tool.color === '#a855f7' ? '168,85,247' : tool.color === '#2dce89' ? '45,206,137' : '251,99,64'}, 0.1)`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: 28,
-                margin: '0 auto 16px auto',
-                border: `1px solid ${tool.color}30`
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 28, margin: '0 auto 16px auto', border: `1px solid ${tool.color}30`
               }}>
                 {tool.icon}
               </div>
@@ -56,21 +55,6 @@ export default function OnlineTools() {
             </div>
           ))}
         </div>
-
-        {message && (
-          <div style={{ 
-            marginTop: '30px', 
-            background: 'rgba(78,110,242,0.1)', 
-            border: '1px solid rgba(78,110,242,0.2)', 
-            padding: '16px', 
-            borderRadius: '12px', 
-            textAlign: 'center', 
-            color: '#4e6ef2', 
-            fontWeight: 600 
-          }}>
-            {message}
-          </div>
-        )}
       </div>
     </div>
   );
