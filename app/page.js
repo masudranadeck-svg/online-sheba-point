@@ -24,7 +24,7 @@ export default function Home() {
         display:'flex', 
         alignItems:'center', 
         justifyContent: 'center',
-        paddingTop:200, // Overlapping fix korar jonno barano holo
+        paddingTop:200, 
         paddingBottom:80, 
         paddingLeft:24, 
         paddingRight:24,
@@ -32,10 +32,9 @@ export default function Home() {
         position: 'relative'
       }}>
         
-        {/* 3D Background Elements (Shudhu Hero section er jonno) */}
+        {/* 3D Background Elements */}
         <div className={`digital-world-bg ${isEntering ? 'zoom-in' : ''}`}>
           <div className="grid-floor"></div>
-          {/* Floating Shapes */}
           <div className="shape-3d" style={{ top: '20%', left: '10%', width: '100px', height: '100px', background: '#4e6ef2', animationDelay: '0s' }}></div>
           <div className="shape-3d" style={{ top: '60%', left: '80%', width: '150px', height: '150px', background: '#a855f7', animationDelay: '2s', borderRadius: '50%' }}></div>
           <div className="shape-3d" style={{ top: '70%', left: '20%', width: '80px', height: '80px', background: '#2dce89', animationDelay: '4s' }}></div>
@@ -92,7 +91,8 @@ export default function Home() {
           <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(240px, 1fr))', gap:20}}>
             {[
               {name:'প্রোডাক্ট শপ',desc:'দারাজের মতো সব প্রোডাক্ট',link:'/shop',icon:'🛒'},
-              {name:'রিয়েল এস্টেট',desc:'ফ্ল্যাট, বাড়ি ও জমি কেনা-বেচা',link:'/properties',icon:'🏠'}, // নতুন কার্ড এখানে যোগ করা হলো
+              {name:'রিয়েল এস্টেট',desc:'ফ্ল্যাট, বাড়ি ও জমি কেনা-বেচা',link:'/properties',icon:'🏠'},
+              {name:'অনলাইন টুলস',desc:'ফ্রি টুলস ও পিডিএফ মেকার',link:'/online-tools',icon:'🛠️'}, // নতুন কার্ড এখানে যোগ করা হলো
               {name:'সাবস্ক্রিপশন',desc:'বঙ্গ ডিজিটালের মতো প্ল্যান',link:'/subscription',icon:'📺'},
               {name:'সফটওয়্যার কী',desc:'ইনস্ট্যান্ট কী ডেলিভারি',link:'/keys',icon:'🔑'},
               {name:'রিমোট সার্ভিস',desc:'ফোন আনলক রিমোটলি',link:'/remote',icon:'📱'}

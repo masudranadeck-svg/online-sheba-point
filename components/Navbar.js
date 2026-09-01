@@ -30,10 +30,12 @@ export default function Navbar() {
     setOpen(false);
   };
 
+  // এখানে 🛠️ টুলস যোগ করা হয়েছে
   const menuItems = [
     {href:'/',l:'হোম'},
     {href:'/shop',l:'শপ'},
-    {href:'/properties',l:'🏠 রিয়েল এস্টেট'}, // নতুন লিংক এখানে যোগ করা হলো
+    {href:'/properties',l:'🏠 রিয়েল এস্টেট'},
+    {href:'/online-tools',l:'🛠️ টুলস'}, 
     {href:'/marketplace',l:'মার্কেটপ্লেস'},
     {href:'/resell',l:'পুরোনো পণ্য'},
     {href:'/remote-jobs',l:'রিমোট জবস'},
