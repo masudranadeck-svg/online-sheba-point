@@ -100,7 +100,7 @@ export default function IdCardCropToPDF() {
     setIsProcessing(false);
   };
 
-  // A4 Canvas Generate
+  // A4 Canvas Generate (Smart Layout - ছবি কাটা যাবে না)
   const buildA4Canvas = async () => {
     const canvas = document.createElement('canvas');
     // A4 size at 150 DPI (1240x1754 px)
@@ -112,20 +112,41 @@ export default function IdCardCropToPDF() {
     ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-    const drawImage = (url, x, y, w) => {
-      return new Promise(resolve => {
-        const img = new Image();
-        img.onload = () => {
-          const h = w * (img.height / img.width);
-          ctx.drawImage(img, x, y, w, h);
-          resolve();
-        };
-        img.src = url;
-      });
+    const loadImage = (url) => new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.src = url;
+    });
+
+    const frontImg = finalFront ? await loadImage(finalFront) : null;
+    const backImg = finalBack ? await loadImage(finalBack) : null;
+
+    const maxWidth = 700;
+    const maxHeight = 600;
+    const gap = 150;
+    let currentY = 150;
+
+    const drawImage = (img) => {
+      let w = img.width;
+      let h = img.height;
+      
+      // ছবি যদি বড় হয় তবলে স্কেল করা হচ্ছে
+      if (w > maxWidth) {
+        h = (maxWidth / w) * h;
+        w = maxWidth;
+      }
+      if (h > maxHeight) {
+        w = (maxHeight / h) * w;
+        h = maxHeight;
+      }
+      
+      const x = (canvas.width - w) / 2; // মাঝ বরাবর রাখা হচ্ছে
+      ctx.drawImage(img, x, currentY, w, h);
+      currentY += h + gap; // পরের ছবির জন্য জায়গা তৈরি
     };
 
-    if (finalFront) await drawImage(finalFront, 320, 300, 600);
-    if (finalBack) await drawImage(finalBack, 320, 800, 600);
+    if (frontImg) drawImage(frontImg);
+    if (backImg) drawImage(backImg);
     
     return canvas;
   };
@@ -190,7 +211,6 @@ export default function IdCardCropToPDF() {
                     </div>
                   ) : (
                     <div>
-                      {/* aspect রিমুভ করা হয়েছে, এখন ফ্রি ক্রপ করা যাবে */}
                       <ReactCrop crop={frontCrop} onChange={(c) => setFrontCrop(c)}>
                         <img ref={frontImgRef} src={frontImage} alt="Front" style={{ maxHeight: '300px' }} />
                       </ReactCrop>
@@ -223,7 +243,6 @@ export default function IdCardCropToPDF() {
                     </div>
                   ) : (
                     <div>
-                      {/* aspect রিমুভ করা হয়েছে, এখন ফ্রি ক্রপ করা যাবে */}
                       <ReactCrop crop={backCrop} onChange={(c) => setBackCrop(c)}>
                         <img ref={backImgRef} src={backImage} alt="Back" style={{ maxHeight: '300px' }} />
                       </ReactCrop>
