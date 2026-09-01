@@ -17,13 +17,21 @@ export default function PropertiesPage() {
 
   const API_URL = "https://online-sheba-point.onrender.com/api";
 
-  // সব প্রপার্টি লোড করা
+  // সব প্রপার্টি লোড করা (সেফটি গার্ড সহ)
   useEffect(() => {
     const fetchItems = async () => {
       try {
         const res = await fetch(`${API_URL}/properties`);
-        setItems(await res.json());
-      } catch (error) {}
+        const data = await res.json();
+        // ডাটা যদি এরে (Array) হয় তবেই সেট করবে, নাহলে এরর মেসেজ এলে খালি রাখবে
+        if (Array.isArray(data)) {
+          setItems(data);
+        } else {
+          setItems([]);
+        }
+      } catch (error) {
+        setItems([]);
+      }
     };
     fetchItems();
   }, []);
@@ -44,7 +52,8 @@ export default function PropertiesPage() {
         setTitle(''); setDesc(''); setPrice(''); setLocation(''); setOwnerName(''); setOwnerPhone('');
         setShowForm(false);
         const resAgain = await fetch(`${API_URL}/properties`);
-        setItems(await resAgain.json());
+        const newData = await resAgain.json();
+        if (Array.isArray(newData)) setItems(newData);
       }
     } catch (error) {
       setMessage('সার্ভার এরর!');
@@ -59,7 +68,7 @@ export default function PropertiesPage() {
     window.open(waLink, '_blank');
   };
 
-  // ক্যাটাগরি অনুযায়ী ফিল্টার
+  // ক্যাটাগরি অনুযায়ী ফিল্টার
   const filteredItems = filter === 'all' ? items : items.filter(item => item.type === filter);
 
   const typeLabels = {
@@ -126,32 +135,32 @@ export default function PropertiesPage() {
           </div>
         )}
 
-        {/* প্রপার্টির লিস্ট */}
+        {/* প্রপার্টির লিস্ট (সেফটি গার্ড সহ) */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
-          {filteredItems.map((item) => (
-            <div key={item._id} className="glass-3d" style={{ display: 'flex', flexDirection: 'column' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                <span style={{ background: `rgba(${item.type === 'rent' ? '78,110,242' : item.type === 'house' ? '168,85,247' : '45,206,137'}, 0.2)`, color: typeLabels[item.type]?.color, padding: '4px 10px', borderRadius: '20px', fontSize: '12px', fontWeight: 700 }}>
-                  {typeLabels[item.type]?.label}
-                </span>
-              </div>
-              <h3 style={{ fontSize: '18px', fontWeight: 700, marginBottom: 8, color: 'white' }}>{item.title}</h3>
-              <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.6)', marginBottom: 8, flex: 1 }}>{item.description}</p>
-              <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.8)', marginBottom: 16 }}>📍 {item.location}</p>
-              
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '15px' }}>
-                <div>
-                  <p style={{ fontSize: 20, fontWeight: 700, color: '#2dce89', margin: 0 }}>৳{item.price}</p>
-                  <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)', margin: 0 }}>By {item.ownerName}</p>
+          {filteredItems.length > 0 ? (
+            filteredItems.map((item) => (
+              <div key={item._id} className="glass-3d" style={{ display: 'flex', flexDirection: 'column' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+                  <span style={{ background: `rgba(${item.type === 'rent' ? '78,110,242' : item.type === 'house' ? '168,85,247' : '45,206,137'}, 0.2)`, color: typeLabels[item.type]?.color, padding: '4px 10px', borderRadius: '20px', fontSize: '12px', fontWeight: 700 }}>
+                    {typeLabels[item.type]?.label}
+                  </span>
                 </div>
-                <button onClick={() => handleContact(item)} className="d-btn-green glow-btn-green" style={{ padding: '10px 20px', border: 'none', cursor: 'pointer' }}>
-                  💬 যোগাযোগ করুন
-                </button>
+                <h3 style={{ fontSize: '18px', fontWeight: 700, marginBottom: 8, color: 'white' }}>{item.title}</h3>
+                <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.6)', marginBottom: 8, flex: 1 }}>{item.description}</p>
+                <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.8)', marginBottom: 16 }}>📍 {item.location}</p>
+                
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '15px' }}>
+                  <div>
+                    <p style={{ fontSize: 20, fontWeight: 700, color: '#2dce89', margin: 0 }}>৳{item.price}</p>
+                    <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)', margin: 0 }}>By {item.ownerName}</p>
+                  </div>
+                  <button onClick={() => handleContact(item)} className="d-btn-green glow-btn-green" style={{ padding: '10px 20px', border: 'none', cursor: 'pointer' }}>
+                    💬 যোগাযোগ করুন
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
-          
-          {filteredItems.length === 0 && (
+            ))
+          ) : (
             <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.4)', fontSize: '18px', gridColumn: '1 / -1' }}>
               এই ক্যাটাগরিতে এখনো কোনো বিজ্ঞাপন নেই।
             </p>
