@@ -12,7 +12,6 @@ export default function IdCardCropToPDF() {
   const [croppedFront, setCroppedFront] = useState(null);
   const [croppedBack, setCroppedBack] = useState(null);
   
-  // Enhanced State
   const [isEnhanced, setIsEnhanced] = useState(false);
   const [finalFront, setFinalFront] = useState(null);
   const [finalBack, setFinalBack] = useState(null);
@@ -29,7 +28,35 @@ export default function IdCardCropToPDF() {
       setIsEnhanced(false);
       setFinalFront(null);
       setFinalBack(null);
+      setCroppedFront(null);
+      setCroppedBack(null);
     }
+  };
+
+  // Image Rotate Function
+  const rotateImage = (imgSrc, deg, setter) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      if (deg === 90 || deg === -90) {
+        canvas.width = img.height;
+        canvas.height = img.width;
+      } else {
+        canvas.width = img.width;
+        canvas.height = img.height;
+      }
+      
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate(deg * Math.PI / 180);
+      ctx.drawImage(img, -img.width / 2, -img.height / 2);
+      
+      setter(canvas.toDataURL('image/jpeg', 0.95));
+      setFrontCrop(null);
+      setBackCrop(null);
+    };
+    img.src = imgSrc;
   };
 
   const makeClientCrop = async (crop, image) => {
@@ -77,17 +104,13 @@ export default function IdCardCropToPDF() {
       const img = new Image();
       img.onload = () => {
         const canvas = document.createElement('canvas');
-        // 2x Upscale
         canvas.width = img.width * 2;
         canvas.height = img.height * 2;
         const ctx = canvas.getContext('2d');
-        
-        // Apply Magic Filter (Contrast, Saturation, Brightness)
         ctx.filter = 'contrast(125%) saturate(130%) brightness(105%)';
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        
         resolve(canvas.toDataURL('image/jpeg', 0.95));
       };
       img.src = imgUrl;
@@ -103,12 +126,10 @@ export default function IdCardCropToPDF() {
   // A4 Canvas Generate (Smart Layout - ছবি কাটা যাবে না)
   const buildA4Canvas = async () => {
     const canvas = document.createElement('canvas');
-    // A4 size at 150 DPI (1240x1754 px)
     canvas.width = 1240;
     canvas.height = 1754;
     const ctx = canvas.getContext('2d');
     
-    // White Background
     ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
@@ -130,7 +151,6 @@ export default function IdCardCropToPDF() {
       let w = img.width;
       let h = img.height;
       
-      // ছবি যদি বড় হয় তবলে স্কেল করা হচ্ছে
       if (w > maxWidth) {
         h = (maxWidth / w) * h;
         w = maxWidth;
@@ -140,9 +160,9 @@ export default function IdCardCropToPDF() {
         h = maxHeight;
       }
       
-      const x = (canvas.width - w) / 2; // মাঝ বরাবর রাখা হচ্ছে
+      const x = (canvas.width - w) / 2;
       ctx.drawImage(img, x, currentY, w, h);
-      currentY += h + gap; // পরের ছবির জন্য জায়গা তৈরি
+      currentY += h + gap;
     };
 
     if (frontImg) drawImage(frontImg);
@@ -186,7 +206,7 @@ export default function IdCardCropToPDF() {
     <div className="deepin-body" style={{ minHeight: '100vh', paddingTop: '150px', paddingBottom: '40px' }}>
       <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 20px', textAlign: 'center' }}>
         <h1 style={{ color: 'white', marginBottom: '10px' }}>🆔 ID Card to A4 (Free Crop)</h1>
-        <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '30px' }}>ছবি ক্রপ করুন, ম্যাজিক ফিল্টার দিন, এবং A4 পেজে সেভ বা প্রিন্ট করুন।</p>
+        <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '30px' }}>ছবি সোজা করতে ঘোরান, ক্রপ করুন, ম্যাজিক ফিল্টার দিন, এবং A4 পেজে সেভ বা প্রিন্ট করুন।</p>
         
         <div className="glass-3d" style={{ padding: '30px' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', marginBottom: '30px' }}>
@@ -211,6 +231,12 @@ export default function IdCardCropToPDF() {
                     </div>
                   ) : (
                     <div>
+                      {/* Rotate Buttons */}
+                      <div style={{ display: 'flex', gap: '10px', marginBottom: '10px', justifyContent: 'center' }}>
+                        <button onClick={() => rotateImage(frontImage, -90, setFrontImage)} className="d-btn-outline" style={{ padding: '5px 10px', fontSize: '12px', cursor: 'pointer' }}>⟲ বামে ঘোরান</button>
+                        <button onClick={() => rotateImage(frontImage, 90, setFrontImage)} className="d-btn-outline" style={{ padding: '5px 10px', fontSize: '12px', cursor: 'pointer' }}>⟳ ডানে ঘোরান</button>
+                      </div>
+
                       <ReactCrop crop={frontCrop} onChange={(c) => setFrontCrop(c)}>
                         <img ref={frontImgRef} src={frontImage} alt="Front" style={{ maxHeight: '300px' }} />
                       </ReactCrop>
@@ -243,6 +269,12 @@ export default function IdCardCropToPDF() {
                     </div>
                   ) : (
                     <div>
+                      {/* Rotate Buttons */}
+                      <div style={{ display: 'flex', gap: '10px', marginBottom: '10px', justifyContent: 'center' }}>
+                        <button onClick={() => rotateImage(backImage, -90, setBackImage)} className="d-btn-outline" style={{ padding: '5px 10px', fontSize: '12px', cursor: 'pointer' }}>⟲ বামে ঘোরান</button>
+                        <button onClick={() => rotateImage(backImage, 90, setBackImage)} className="d-btn-outline" style={{ padding: '5px 10px', fontSize: '12px', cursor: 'pointer' }}>⟳ ডানে ঘোরান</button>
+                      </div>
+
                       <ReactCrop crop={backCrop} onChange={(c) => setBackCrop(c)}>
                         <img ref={backImgRef} src={backImage} alt="Back" style={{ maxHeight: '300px' }} />
                       </ReactCrop>
