@@ -257,3 +257,35 @@ html { scroll-behavior: smooth; }
   }
   20%, 24%, 55% { text-shadow: none; }
 }
+/* Premium Crop Box Styling */
+.ReactCrop__crop-selection {
+  border: 2px solid #a855f7 !important; /* বেগুনি রঙের সীমানা */
+  box-shadow: 0 0 0 9999em rgba(0, 0, 0, 0.7) !important; /* বাইরের অংশ ডার্ক */
+}
+
+/* Grid Lines inside Crop */
+.ReactCrop__crop-selection::before, .ReactCrop__crop-selection::after {
+  content: "" !important;
+  position: absolute !important;
+  background-color: rgba(255, 255, 255, 0.3) !important;
+}
+.ReactCrop__crop-selection::before {
+  top: 33.33% !important; bottom: 33.33% !important; left: 0 !important; right: 0 !important;
+  border-top: 1px dashed rgba(255, 255, 255, 0.5) !important;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.5) !important;
+}
+.ReactCrop__crop-selection::after {
+  left: 33.33% !important; right: 33.33% !important; top: 0 !important; bottom: 0 !important;
+  border-left: 1px dashed rgba(255, 255, 255, 0.5) !important;
+  border-right: 1px dashed rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Big Corner Handles */
+.ReactCrop__drag-handle {
+  width: 16px !important;
+  height: 16px !important;
+  background: #a855f7 !important;
+  border: 2px solid white !important;
+  border-radius: 50% !important;
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.8) !important;
+}
