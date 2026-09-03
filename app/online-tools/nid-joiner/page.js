@@ -28,7 +28,35 @@ export default function NidJoiner() {
       setIsEnhanced(false);
       setFinalFront(null);
       setFinalBack(null);
+      setCroppedFront(null);
+      setCroppedBack(null);
     }
+  };
+
+  // Image Rotate Function
+  const rotateImage = (imgSrc, deg, setter) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      if (deg === 90 || deg === 270) {
+        canvas.width = img.height;
+        canvas.height = img.width;
+      } else {
+        canvas.width = img.width;
+        canvas.height = img.height;
+      }
+      
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate(deg * Math.PI / 180);
+      ctx.drawImage(img, -img.width / 2, -img.height / 2);
+      
+      setter(canvas.toDataURL('image/jpeg', 0.95));
+      setFrontCrop(null); // Reset crop on rotate
+      setBackCrop(null);
+    };
+    img.src = imgSrc;
   };
 
   const makeClientCrop = async (crop, image) => {
@@ -92,14 +120,11 @@ export default function NidJoiner() {
     setIsProcessing(false);
   };
 
-  // Canvas Generate (Exact 3.4" x 2.1" size for each card at 300 DPI)
   const buildCanvas = async () => {
-    // 3.4 inch * 300 DPI = 1020 px (Width)
-    // 2.1 inch * 300 DPI = 630 px (Height)
     const cardW = 1020;
     const cardH = 630;
-    const gap = 60; // 0.2 inch white gap for cutting
-    const border = 5; // thin border
+    const gap = 60;
+    const border = 5;
     
     const totalW = cardW;
     const totalH = (cardH * 2) + gap + (border * 2);
@@ -109,7 +134,6 @@ export default function NidJoiner() {
     canvas.height = totalH;
     const ctx = canvas.getContext('2d');
     
-    // White Background
     ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
@@ -123,7 +147,6 @@ export default function NidJoiner() {
     const backImg = finalBack ? await loadImage(finalBack) : null;
 
     const drawImage = (img, yStart) => {
-      // Draw thin border line
       ctx.strokeStyle = '#CCCCCC';
       ctx.lineWidth = 2;
       ctx.strokeRect(1, yStart + 1, cardW - 2, cardH - 2);
@@ -166,14 +189,10 @@ export default function NidJoiner() {
     const imgData = canvas.toDataURL('image/jpeg', 0.95);
     const pdf = new jsPDF('p', 'mm', 'a4');
     
-    // A4 Size: 210mm x 297mm
-    // 3.4 inch = 86.36 mm
-    // 2.1 inch = 53.34 mm
-    // Total height = 53.34 (front) + 5 (gap) + 53.34 (back) = 111.68 mm
     const pdfW = 86.36;
     const pdfH = 111.68; 
-    const x = (210 - pdfW) / 2; // Center horizontally on A4
-    const y = (297 - pdfH) / 2; // Center vertically on A4
+    const x = (210 - pdfW) / 2;
+    const y = (297 - pdfH) / 2;
 
     pdf.addImage(imgData, 'JPEG', x, y, pdfW, pdfH);
     pdf.save('nid-joined-exact-size.pdf');
@@ -183,7 +202,6 @@ export default function NidJoiner() {
     const canvas = await buildCanvas();
     const dataUrl = canvas.toDataURL('image/png');
     const win = window.open('', '_blank');
-    // Using CSS to force exact physical print size (86.36mm x 111.68mm)
     win.document.write(`
       <html>
         <head>
@@ -207,7 +225,7 @@ export default function NidJoiner() {
     <div className="deepin-body" style={{ minHeight: '100vh', paddingTop: '150px', paddingBottom: '40px' }}>
       <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 20px', textAlign: 'center' }}>
         <h1 style={{ color: 'white', marginBottom: '10px' }}>📄 NID Front-Back Joiner (3.4" x 2.1")</h1>
-        <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '30px' }}>সামনে ও পিছনের ছবি ক্রপ করুন, একসাথে জোড়া লাগিয়ে সঠিক সাইজে সেভ বা প্রিন্ট করুন।</p>
+        <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '30px' }}>ছবি সোজা করতে ঘোরান, ক্রপ করুন, একসাথে জোড়া লাগিয়ে সঠিক সাইজে সেভ বা প্রিন্ট করুন।</p>
         
         <div className="glass-3d" style={{ padding: '30px' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', marginBottom: '30px' }}>
@@ -232,7 +250,12 @@ export default function NidJoiner() {
                     </div>
                   ) : (
                     <div>
-                      {/* Aspect Ratio 3.4 : 2.1 = 34 : 21 */}
+                      {/* Rotate Buttons */}
+                      <div style={{ display: 'flex', gap: '10px', marginBottom: '10px', justifyContent: 'center' }}>
+                        <button onClick={() => rotateImage(frontImage, -90, setFrontImage)} className="d-btn-outline" style={{ padding: '5px 10px', fontSize: '12px', cursor: 'pointer' }}>⟲ বামে ঘোরান</button>
+                        <button onClick={() => rotateImage(frontImage, 90, setFrontImage)} className="d-btn-outline" style={{ padding: '5px 10px', fontSize: '12px', cursor: 'pointer' }}>⟳ ডানে ঘোরান</button>
+                      </div>
+                      
                       <ReactCrop crop={frontCrop} onChange={(c) => setFrontCrop(c)} aspect={34 / 21}>
                         <img ref={frontImgRef} src={frontImage} alt="Front" style={{ maxHeight: '300px' }} />
                       </ReactCrop>
@@ -265,7 +288,12 @@ export default function NidJoiner() {
                     </div>
                   ) : (
                     <div>
-                      {/* Aspect Ratio 3.4 : 2.1 = 34 : 21 */}
+                      {/* Rotate Buttons */}
+                      <div style={{ display: 'flex', gap: '10px', marginBottom: '10px', justifyContent: 'center' }}>
+                        <button onClick={() => rotateImage(backImage, -90, setBackImage)} className="d-btn-outline" style={{ padding: '5px 10px', fontSize: '12px', cursor: 'pointer' }}>⟲ বামে ঘোরান</button>
+                        <button onClick={() => rotateImage(backImage, 90, setBackImage)} className="d-btn-outline" style={{ padding: '5px 10px', fontSize: '12px', cursor: 'pointer' }}>⟳ ডানে ঘোরান</button>
+                      </div>
+
                       <ReactCrop crop={backCrop} onChange={(c) => setBackCrop(c)} aspect={34 / 21}>
                         <img ref={backImgRef} src={backImage} alt="Back" style={{ maxHeight: '300px' }} />
                       </ReactCrop>
