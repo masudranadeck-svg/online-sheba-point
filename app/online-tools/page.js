@@ -8,8 +8,8 @@ export default function OnlineTools() {
   const tools = [
     { name: 'ID Card Crop to PDF', link: '/online-tools/id-card-crop', icon: '🆔', color: '#4e6ef2' },
     { name: 'Passport Photo Maker', link: '/online-tools/passport-photo-maker', icon: '📸', color: '#a855f7' },
-    { name: 'Stamp Photo Maker', link: '/online-tools/stamp-photo-maker', icon: '🟫', color: '#2dce89' }, // নতুন টুল এখানে
-    { name: 'NID Front-Back Joiner', link: '#', icon: '📄', color: '#2dce89' },
+    { name: 'Stamp Photo Maker', link: '/online-tools/stamp-photo-maker', icon: '🟫', color: '#2dce89' },
+    { name: 'NID Front-Back Joiner', link: '/online-tools/nid-joiner', icon: '📄', color: '#2dce89' },
     { name: 'Professional CV Maker', link: '#', icon: '💼', color: '#fb6340' },
     { name: 'AI Passport Photo Maker', link: '#', icon: '🤖', color: '#4e6ef2' },
     { name: 'Studio Photo Print Layout', link: '#', icon: '🖼️', color: '#2dce89' },
