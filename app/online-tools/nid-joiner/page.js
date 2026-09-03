@@ -92,15 +92,17 @@ export default function NidJoiner() {
     setIsProcessing(false);
   };
 
-  // Canvas Generate (Exact 3.4" x 2.1" size for each card, 300 DPI)
+  // Canvas Generate (Exact 3.4" x 2.1" size for each card at 300 DPI)
   const buildCanvas = async () => {
     // 3.4 inch * 300 DPI = 1020 px (Width)
     // 2.1 inch * 300 DPI = 630 px (Height)
     const cardW = 1020;
     const cardH = 630;
-    const gap = 60; // 0.2 inch gap for cutting
+    const gap = 60; // 0.2 inch white gap for cutting
+    const border = 5; // thin border
+    
     const totalW = cardW;
-    const totalH = (cardH * 2) + gap;
+    const totalH = (cardH * 2) + gap + (border * 2);
 
     const canvas = document.createElement('canvas');
     canvas.width = totalW;
@@ -120,8 +122,12 @@ export default function NidJoiner() {
     const frontImg = finalFront ? await loadImage(finalFront) : null;
     const backImg = finalBack ? await loadImage(finalBack) : null;
 
-    // Draw Image Centered in the exact card frame
-    const drawImage = (img, y) => {
+    const drawImage = (img, yStart) => {
+      // Draw thin border line
+      ctx.strokeStyle = '#CCCCCC';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(1, yStart + 1, cardW - 2, cardH - 2);
+
       let w = cardW;
       let h = (img.height / img.width) * w;
       if (h > cardH) {
@@ -129,8 +135,8 @@ export default function NidJoiner() {
         w = (img.width / img.height) * h;
       }
       const x = (cardW - w) / 2;
-      const yOffset = y + (cardH - h) / 2;
-      ctx.drawImage(img, x, yOffset, w, h);
+      const y = yStart + (cardH - h) / 2;
+      ctx.drawImage(img, x, y, w, h);
     };
 
     if (frontImg) drawImage(frontImg, 0);
@@ -161,22 +167,40 @@ export default function NidJoiner() {
     const pdf = new jsPDF('p', 'mm', 'a4');
     
     // A4 Size: 210mm x 297mm
-    // 3.4 inch = 86.36 mm, 2.1 inch = 53.34 mm
-    // Total Height with gap = 53.34 + 5(approx gap) + 53.34 = ~111.76 mm
+    // 3.4 inch = 86.36 mm
+    // 2.1 inch = 53.34 mm
+    // Total height = 53.34 (front) + 5 (gap) + 53.34 (back) = 111.68 mm
     const pdfW = 86.36;
-    const pdfH = 111.76; 
-    const x = (210 - pdfW) / 2; // Center on A4
-    const y = 60; // Top margin
+    const pdfH = 111.68; 
+    const x = (210 - pdfW) / 2; // Center horizontally on A4
+    const y = (297 - pdfH) / 2; // Center vertically on A4
 
     pdf.addImage(imgData, 'JPEG', x, y, pdfW, pdfH);
-    pdf.save('nid-joined.pdf');
+    pdf.save('nid-joined-exact-size.pdf');
   };
 
   const handlePrint = async () => {
     const canvas = await buildCanvas();
     const dataUrl = canvas.toDataURL('image/png');
     const win = window.open('', '_blank');
-    win.document.write(`<img src="${dataUrl}" style="width:100%;" onload="window.print();">`);
+    // Using CSS to force exact physical print size (86.36mm x 111.68mm)
+    win.document.write(`
+      <html>
+        <head>
+          <title>Print NID</title>
+          <style>
+            @media print {
+              @page { size: A4; margin: 0; }
+              body { margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+              img { width: 86.36mm; height: 111.68mm; }
+            }
+          </style>
+        </head>
+        <body onload="window.print();">
+          <img src="${dataUrl}" />
+        </body>
+      </html>
+    `);
   };
 
   return (
