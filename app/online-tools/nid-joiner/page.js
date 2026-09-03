@@ -92,11 +92,19 @@ export default function NidJoiner() {
     setIsProcessing(false);
   };
 
-  // Canvas Generate (Front & Back Joined Vertically)
+  // Canvas Generate (Exact 3.4" x 2.1" size for each card, 300 DPI)
   const buildCanvas = async () => {
+    // 3.4 inch * 300 DPI = 1020 px (Width)
+    // 2.1 inch * 300 DPI = 630 px (Height)
+    const cardW = 1020;
+    const cardH = 630;
+    const gap = 60; // 0.2 inch gap for cutting
+    const totalW = cardW;
+    const totalH = (cardH * 2) + gap;
+
     const canvas = document.createElement('canvas');
-    canvas.width = 1000;
-    canvas.height = 1200; // Enough space for two cards vertically
+    canvas.width = totalW;
+    canvas.height = totalH;
     const ctx = canvas.getContext('2d');
     
     // White Background
@@ -112,24 +120,21 @@ export default function NidJoiner() {
     const frontImg = finalFront ? await loadImage(finalFront) : null;
     const backImg = finalBack ? await loadImage(finalBack) : null;
 
-    const maxW = 800;
-    const gap = 50;
-    let currentY = 50;
-
-    const drawImage = (img) => {
-      let w = img.width;
-      let h = img.height;
-      if (w > maxW) {
-        h = (maxW / w) * h;
-        w = maxW;
+    // Draw Image Centered in the exact card frame
+    const drawImage = (img, y) => {
+      let w = cardW;
+      let h = (img.height / img.width) * w;
+      if (h > cardH) {
+        h = cardH;
+        w = (img.width / img.height) * h;
       }
-      const x = (canvas.width - w) / 2;
-      ctx.drawImage(img, x, currentY, w, h);
-      currentY += h + gap;
+      const x = (cardW - w) / 2;
+      const yOffset = y + (cardH - h) / 2;
+      ctx.drawImage(img, x, yOffset, w, h);
     };
 
-    if (frontImg) drawImage(frontImg);
-    if (backImg) drawImage(backImg);
+    if (frontImg) drawImage(frontImg, 0);
+    if (backImg) drawImage(backImg, cardH + gap);
     
     return canvas;
   };
@@ -154,7 +159,16 @@ export default function NidJoiner() {
     const canvas = await buildCanvas();
     const imgData = canvas.toDataURL('image/jpeg', 0.95);
     const pdf = new jsPDF('p', 'mm', 'a4');
-    pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+    
+    // A4 Size: 210mm x 297mm
+    // 3.4 inch = 86.36 mm, 2.1 inch = 53.34 mm
+    // Total Height with gap = 53.34 + 5(approx gap) + 53.34 = ~111.76 mm
+    const pdfW = 86.36;
+    const pdfH = 111.76; 
+    const x = (210 - pdfW) / 2; // Center on A4
+    const y = 60; // Top margin
+
+    pdf.addImage(imgData, 'JPEG', x, y, pdfW, pdfH);
     pdf.save('nid-joined.pdf');
   };
 
@@ -168,8 +182,8 @@ export default function NidJoiner() {
   return (
     <div className="deepin-body" style={{ minHeight: '100vh', paddingTop: '150px', paddingBottom: '40px' }}>
       <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 20px', textAlign: 'center' }}>
-        <h1 style={{ color: 'white', marginBottom: '10px' }}>📄 NID Front-Back Joiner</h1>
-        <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '30px' }}>সামনে ও পিছনের ছবি ক্রপ করুন, একসাথে জোড়া লাগিয়ে সেভ বা প্রিন্ট করুন।</p>
+        <h1 style={{ color: 'white', marginBottom: '10px' }}>📄 NID Front-Back Joiner (3.4" x 2.1")</h1>
+        <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '30px' }}>সামনে ও পিছনের ছবি ক্রপ করুন, একসাথে জোড়া লাগিয়ে সঠিক সাইজে সেভ বা প্রিন্ট করুন।</p>
         
         <div className="glass-3d" style={{ padding: '30px' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', marginBottom: '30px' }}>
@@ -194,7 +208,8 @@ export default function NidJoiner() {
                     </div>
                   ) : (
                     <div>
-                      <ReactCrop crop={frontCrop} onChange={(c) => setFrontCrop(c)} aspect={8.5 / 5.4}>
+                      {/* Aspect Ratio 3.4 : 2.1 = 34 : 21 */}
+                      <ReactCrop crop={frontCrop} onChange={(c) => setFrontCrop(c)} aspect={34 / 21}>
                         <img ref={frontImgRef} src={frontImage} alt="Front" style={{ maxHeight: '300px' }} />
                       </ReactCrop>
                       <button onClick={handleConfirmFront} className="d-btn-green glow-btn-green" style={{ marginTop: '10px', padding: '8px 16px', border: 'none', cursor: 'pointer', fontSize: '12px', width: '100%' }}>
@@ -226,7 +241,8 @@ export default function NidJoiner() {
                     </div>
                   ) : (
                     <div>
-                      <ReactCrop crop={backCrop} onChange={(c) => setBackCrop(c)} aspect={8.5 / 5.4}>
+                      {/* Aspect Ratio 3.4 : 2.1 = 34 : 21 */}
+                      <ReactCrop crop={backCrop} onChange={(c) => setBackCrop(c)} aspect={34 / 21}>
                         <img ref={backImgRef} src={backImage} alt="Back" style={{ maxHeight: '300px' }} />
                       </ReactCrop>
                       <button onClick={handleConfirmBack} className="d-btn-green glow-btn-green" style={{ marginTop: '10px', padding: '8px 16px', border: 'none', cursor: 'pointer', fontSize: '12px', width: '100%' }}>
