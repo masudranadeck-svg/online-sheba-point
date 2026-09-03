@@ -78,10 +78,10 @@ export default function PassportPhotoMaker() {
     img.src = croppedImage;
   };
 
-  // A4 Canvas Generate (20 Copies Grid with White Border)
+  // A4 Canvas Generate (Perfectly Centered - No Cut Off)
   const buildA4Canvas = async () => {
-    // High Quality A4 Canvas (300 DPI: 2480x3508)
     const canvas = document.createElement('canvas');
+    // High Quality A4 Canvas (300 DPI: 2480x3508)
     canvas.width = 2480;
     canvas.height = 3508;
     const ctx = canvas.getContext('2d');
@@ -96,37 +96,37 @@ export default function PassportPhotoMaker() {
         // 1.6 inch x 2 inch at 300 DPI = 480px x 600px
         const photoW = 480;
         const photoH = 600;
-        const borderW = 40; // White thin border around photo
+        const borderW = 20; // Thin white border around photo
         
-        const blockW = photoW + (2 * borderW);
-        const blockH = photoH + (2 * borderW);
+        const blockW = photoW + (2 * borderW); // 520
+        const blockH = photoH + (2 * borderW); // 640
         
-        const cols = 4;
-        const rows = 5;
-        const gapX = 20;
-        const gapY = 20;
+        const cols = 4; // 4 photos per row
+        const rows = 5; // 5 rows total = 20 photos
+        const gapX = 30; // Horizontal gap
+        const gapY = 30; // Vertical gap
         
+        // Calculate Total Grid Width & Height to perfectly center it
         const totalGridW = (cols * blockW) + ((cols - 1) * gapX);
-        const startX = (canvas.width - totalGridW) / 2;
-        let startY = 200; // Top margin
+        const totalGridH = (rows * blockH) + ((rows - 1) * gapY);
+        
+        const startX = (canvas.width - totalGridW) / 2; // Centered horizontally
+        let startY = (canvas.height - totalGridH) / 2;   // Centered vertically (No top extra margin)
         
         let x = startX;
         let y = startY;
         
         for (let i = 0; i < 20; i++) {
-          // Draw White Border
+          // Draw White Border Background
           ctx.fillStyle = '#FFFFFF';
-          // Shadow effect (optional, commented out for pure white border)
-          // ctx.shadowColor = 'rgba(0,0,0,0.1)'; ctx.shadowBlur = 10;
           ctx.fillRect(x, y, blockW, blockH);
-          // ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0;
           
           // Draw thin border line
           ctx.strokeStyle = '#E0E0E0';
           ctx.lineWidth = 2;
           ctx.strokeRect(x, y, blockW, blockH);
           
-          // Draw Photo
+          // Draw Photo inside the border
           ctx.drawImage(img, x + borderW, y + borderW, photoW, photoH);
           
           x += blockW + gapX;
