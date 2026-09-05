@@ -110,6 +110,7 @@ export default function NidJoiner() {
 
   const dist = (p1, p2) => Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
 
+  // Perspective Crop Logic (Black Shadow Fixed)
   const handleConfirmCrop = (target) => {
     const imgRef = target === 'front' ? frontImgRef.current : backImgRef.current;
     const pts = target === 'front' ? frontPts : backPts;
@@ -125,18 +126,25 @@ export default function NidJoiner() {
     canvas.height = outH;
     const ctx = canvas.getContext('2d');
 
+    // ১. JPEG এ কালো দাগ দেখা যায় কারণ ট্রান্সপারেন্ট অংশ কালো হয়ে যায়। তাই পুরো ক্যানভাস সাদা করে দিচ্ছি।
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, outW, outH);
+
+    // Triangle 1
     ctx.save();
     ctx.beginPath();
-    ctx.moveTo(0, 0); ctx.lineTo(outW, 0); ctx.lineTo(outW, outH); ctx.closePath();
+    // ২. ১ পিক্সেল বড় করে ক্লিপ করছি যাতে দুই ত্রিভুজের মাঝে কোনো ফাঁকা লাইন না থাকে।
+    ctx.moveTo(-1, -1); ctx.lineTo(outW + 1, -1); ctx.lineTo(outW + 1, outH + 1); ctx.closePath();
     ctx.clip();
     const m1 = getAffineTransformMatrix([p1, p2, p3], [{x:0,y:0}, {x:outW,y:0}, {x:outW,y:outH}]);
     ctx.transform(m1[0], m1[2], m1[1], m1[3], m1[4], m1[5]);
     ctx.drawImage(imgRef, 0, 0);
     ctx.restore();
 
+    // Triangle 2
     ctx.save();
     ctx.beginPath();
-    ctx.moveTo(0, 0); ctx.lineTo(outW, outH); ctx.lineTo(0, outH); ctx.closePath();
+    ctx.moveTo(-1, -1); ctx.lineTo(outW + 1, outH + 1); ctx.lineTo(-1, outH + 1); ctx.closePath();
     ctx.clip();
     const m2 = getAffineTransformMatrix([p1, p3, p4], [{x:0,y:0}, {x:outW,y:outH}, {x:0,y:outH}]);
     ctx.transform(m2[0], m2[2], m2[1], m2[3], m2[4], m2[5]);
@@ -376,7 +384,6 @@ export default function NidJoiner() {
             </button>
           )}
 
-          {/* এখানে ৪টি বাটন একসাথে দেওয়া হলো */}
           {isEnhanced && (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
               <button onClick={handleDownloadPNG} className="d-btn-green glow-btn-green" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>💾 Save as PNG</button>
