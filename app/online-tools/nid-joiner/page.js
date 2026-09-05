@@ -16,7 +16,6 @@ export default function NidJoiner() {
   const frontImgRef = useRef(null);
   const backImgRef = useRef(null);
 
-  // 4 Points state
   const [frontPts, setFrontPts] = useState(null);
   const [backPts, setBackPts] = useState(null);
   const [draggingIndex, setDraggingIndex] = useState(null);
@@ -56,7 +55,6 @@ export default function NidJoiner() {
     }
   };
 
-  // Dragging Logic
   const handleMouseDown = (e, index, target) => {
     e.preventDefault();
     setDraggingIndex(index);
@@ -91,7 +89,6 @@ export default function NidJoiner() {
     setActiveTarget(null);
   };
 
-  // Math: Affine Transform Matrix
   const getAffineTransformMatrix = (src, dst) => {
     const x1 = src[0].x, y1 = src[0].y;
     const x2 = src[1].x, y2 = src[1].y;
@@ -113,7 +110,6 @@ export default function NidJoiner() {
 
   const dist = (p1, p2) => Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
 
-  // Perspective Crop Logic
   const handleConfirmCrop = (target) => {
     const imgRef = target === 'front' ? frontImgRef.current : backImgRef.current;
     const pts = target === 'front' ? frontPts : backPts;
@@ -129,7 +125,6 @@ export default function NidJoiner() {
     canvas.height = outH;
     const ctx = canvas.getContext('2d');
 
-    // Triangle 1
     ctx.save();
     ctx.beginPath();
     ctx.moveTo(0, 0); ctx.lineTo(outW, 0); ctx.lineTo(outW, outH); ctx.closePath();
@@ -139,7 +134,6 @@ export default function NidJoiner() {
     ctx.drawImage(imgRef, 0, 0);
     ctx.restore();
 
-    // Triangle 2
     ctx.save();
     ctx.beginPath();
     ctx.moveTo(0, 0); ctx.lineTo(outW, outH); ctx.lineTo(0, outH); ctx.closePath();
@@ -178,14 +172,11 @@ export default function NidJoiner() {
     setIsProcessing(false);
   };
 
-  // Canvas Generate (Fixed 3.4" x 2.1" size per card at 300 DPI)
   const buildCanvas = async () => {
-    // 3.4 inch * 300 DPI = 1020 px (Width)
-    // 2.1 inch * 300 DPI = 630 px (Height)
     const cardW = 1020;
     const cardH = 630;
-    const gap = 60; // 0.2 inch white gap for cutting
-    const border = 5; // thin border
+    const gap = 60;
+    const border = 5;
     
     const totalW = cardW;
     const totalH = (cardH * 2) + gap + (border * 2);
@@ -208,12 +199,10 @@ export default function NidJoiner() {
     const backImg = finalBack ? await loadImage(finalBack) : null;
 
     const drawImage = (img, yStart) => {
-      // Draw thin border line
       ctx.strokeStyle = '#CCCCCC';
       ctx.lineWidth = 2;
       ctx.strokeRect(1, yStart + 1, cardW - 2, cardH - 2);
 
-      // Cover Fit Image into the exact card frame
       const imgRatio = img.width / img.height;
       const cardRatio = cardW / cardH;
       let w, h, x, y;
@@ -259,14 +248,10 @@ export default function NidJoiner() {
     const imgData = canvas.toDataURL('image/jpeg', 0.95);
     const pdf = new jsPDF('p', 'mm', 'a4');
     
-    // A4 Size: 210mm x 297mm
-    // 3.4 inch = 86.36 mm
-    // 2.1 inch = 53.34 mm
-    // Total height = 53.34 (front) + 5 (gap) + 53.34 (back) = 111.68 mm
     const pdfW = 86.36;
     const pdfH = 111.68; 
-    const x = (210 - pdfW) / 2; // Center horizontally on A4
-    const y = (297 - pdfH) / 2; // Center vertically on A4
+    const x = (210 - pdfW) / 2;
+    const y = (297 - pdfH) / 2;
 
     pdf.addImage(imgData, 'JPEG', x, y, pdfW, pdfH);
     pdf.save('nid-joined-exact-size.pdf');
@@ -276,7 +261,6 @@ export default function NidJoiner() {
     const canvas = await buildCanvas();
     const dataUrl = canvas.toDataURL('image/png');
     const win = window.open('', '_blank');
-    // Using CSS to force exact physical print size (86.36mm x 111.68mm)
     win.document.write(`
       <html>
         <head>
@@ -392,6 +376,7 @@ export default function NidJoiner() {
             </button>
           )}
 
+          {/* এখানে ৪টি বাটন একসাথে দেওয়া হলো */}
           {isEnhanced && (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
               <button onClick={handleDownloadPNG} className="d-btn-green glow-btn-green" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>💾 Save as PNG</button>
