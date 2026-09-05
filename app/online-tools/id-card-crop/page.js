@@ -40,11 +40,13 @@ export default function IdCardCropToPDF() {
             setFrontPts(pts);
             setCroppedFront(null);
             setIsEnhanced(false);
+            setFinalFront(null);
           } else {
             setBackImage(ev.target.result);
             setBackPts(pts);
             setCroppedBack(null);
             setIsEnhanced(false);
+            setFinalBack(null);
           }
         };
         img.src = ev.target.result;
@@ -61,8 +63,6 @@ export default function IdCardCropToPDF() {
 
   const handleMouseMove = (e) => {
     if (draggingIndex === null || !activeTarget) return;
-    if (!frontImgRef.current && !backImgRef.current) return;
-    
     const imgRef = activeTarget === 'front' ? frontImgRef.current : backImgRef.current;
     if (!imgRef) return;
 
@@ -93,7 +93,6 @@ export default function IdCardCropToPDF() {
     const x1 = src[0].x, y1 = src[0].y;
     const x2 = src[1].x, y2 = src[1].y;
     const x3 = src[2].x, y3 = src[2].y;
-
     const u1 = dst[0].x, v1 = dst[0].y;
     const u2 = dst[1].x, v2 = dst[1].y;
     const u3 = dst[2].x, v3 = dst[2].y;
@@ -111,6 +110,7 @@ export default function IdCardCropToPDF() {
 
   const dist = (p1, p2) => Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
 
+  // Perspective Crop Logic (Black Shadow Fixed)
   const handleConfirmCrop = (target) => {
     const imgRef = target === 'front' ? frontImgRef.current : backImgRef.current;
     const pts = target === 'front' ? frontPts : backPts;
@@ -126,24 +126,25 @@ export default function IdCardCropToPDF() {
     canvas.height = outH;
     const ctx = canvas.getContext('2d');
 
+    // ১. ক্যানভাস সাদা করে দিচ্ছি যাতে কালো দাগ না আসে
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, outW, outH);
+
+    // Triangle 1
     ctx.save();
     ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(outW, 0);
-    ctx.lineTo(outW, outH);
-    ctx.closePath();
+    // ২. ১ পিক্সেল বড় করে ক্লিপ করছি যাতে ফাঁকা লাইন না থাকে
+    ctx.moveTo(-1, -1); ctx.lineTo(outW + 1, -1); ctx.lineTo(outW + 1, outH + 1); ctx.closePath();
     ctx.clip();
     const m1 = getAffineTransformMatrix([p1, p2, p3], [{x:0,y:0}, {x:outW,y:0}, {x:outW,y:outH}]);
     ctx.transform(m1[0], m1[2], m1[1], m1[3], m1[4], m1[5]);
     ctx.drawImage(imgRef, 0, 0);
     ctx.restore();
 
+    // Triangle 2
     ctx.save();
     ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(outW, outH);
-    ctx.lineTo(0, outH);
-    ctx.closePath();
+    ctx.moveTo(-1, -1); ctx.lineTo(outW + 1, outH + 1); ctx.lineTo(-1, outH + 1); ctx.closePath();
     ctx.clip();
     const m2 = getAffineTransformMatrix([p1, p3, p4], [{x:0,y:0}, {x:outW,y:outH}, {x:0,y:outH}]);
     ctx.transform(m2[0], m2[2], m2[1], m2[3], m2[4], m2[5]);
@@ -210,7 +211,6 @@ export default function IdCardCropToPDF() {
     return canvas;
   };
 
-  // ৪টি ডাউনলোড অপশন এখানে যোগ করা হলো
   const handleDownloadA4PNG = async () => {
     const canvas = await buildA4Canvas();
     const link = document.createElement('a');
@@ -287,8 +287,7 @@ export default function IdCardCropToPDF() {
               key={i}
               onMouseDown={(e) => handleMouseDown(e, i, target)}
               style={{
-                position: 'absolute',
-                left: dispX - 12, top: dispY - 12,
+                position: 'absolute', left: dispX - 12, top: dispY - 12,
                 width: 24, height: 24, borderRadius: '50%',
                 background: '#a855f7', border: '2px solid white',
                 cursor: 'pointer', boxShadow: '0 0 10px rgba(168,85,247,0.8)',
@@ -339,21 +338,12 @@ export default function IdCardCropToPDF() {
             </button>
           )}
 
-          {/* এখানে ৪টি বাটন একসাথে দেওয়া হলো */}
           {isEnhanced && (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
-              <button onClick={handleDownloadA4PNG} className="d-btn-green glow-btn-green" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>
-                💾 Save as A4 PNG
-              </button>
-              <button onClick={handleDownloadA4JPG} className="d-btn-purple glow-btn-purple" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>
-                💾 Save as A4 JPG
-              </button>
-              <button onClick={handleDownloadA4PDF} className="d-btn-orange glow-btn-orange" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>
-                💾 Save as A4 PDF
-              </button>
-              <button onClick={handleDirectA4Print} className="d-btn glow-btn" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>
-                🖨️ Direct A4 Print
-              </button>
+              <button onClick={handleDownloadA4PNG} className="d-btn-green glow-btn-green" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>💾 Save as A4 PNG</button>
+              <button onClick={handleDownloadA4JPG} className="d-btn-purple glow-btn-purple" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>💾 Save as A4 JPG</button>
+              <button onClick={handleDownloadA4PDF} className="d-btn-orange glow-btn-orange" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>💾 Save as A4 PDF</button>
+              <button onClick={handleDirectA4Print} className="d-btn glow-btn" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>🖨️ Direct A4 Print</button>
             </div>
           )}
         </div>
