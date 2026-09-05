@@ -178,11 +178,21 @@ export default function NidJoiner() {
     setIsProcessing(false);
   };
 
-  // Canvas Generate (Front & Back Joined Vertically)
+  // Canvas Generate (Fixed 3.4" x 2.1" size per card at 300 DPI)
   const buildCanvas = async () => {
+    // 3.4 inch * 300 DPI = 1020 px (Width)
+    // 2.1 inch * 300 DPI = 630 px (Height)
+    const cardW = 1020;
+    const cardH = 630;
+    const gap = 60; // 0.2 inch white gap for cutting
+    const border = 5; // thin border
+    
+    const totalW = cardW;
+    const totalH = (cardH * 2) + gap + (border * 2);
+
     const canvas = document.createElement('canvas');
-    canvas.width = 1000;
-    canvas.height = 1300; // Enough space for two cards vertically with gap
+    canvas.width = totalW;
+    canvas.height = totalH;
     const ctx = canvas.getContext('2d');
     
     ctx.fillStyle = '#FFFFFF';
@@ -197,24 +207,33 @@ export default function NidJoiner() {
     const frontImg = finalFront ? await loadImage(finalFront) : null;
     const backImg = finalBack ? await loadImage(finalBack) : null;
 
-    const maxW = 900;
-    const gap = 50;
-    let currentY = 50;
+    const drawImage = (img, yStart) => {
+      // Draw thin border line
+      ctx.strokeStyle = '#CCCCCC';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(1, yStart + 1, cardW - 2, cardH - 2);
 
-    const drawImage = (img) => {
-      let w = img.width;
-      let h = img.height;
-      if (w > maxW) {
-        h = (maxW / w) * h;
-        w = maxW;
+      // Cover Fit Image into the exact card frame
+      const imgRatio = img.width / img.height;
+      const cardRatio = cardW / cardH;
+      let w, h, x, y;
+      
+      if (imgRatio > cardRatio) {
+        h = cardH;
+        w = h * imgRatio;
+        x = (cardW - w) / 2;
+        y = yStart;
+      } else {
+        w = cardW;
+        h = w / imgRatio;
+        x = 0;
+        y = yStart + (cardH - h) / 2;
       }
-      const x = (canvas.width - w) / 2;
-      ctx.drawImage(img, x, currentY, w, h);
-      currentY += h + gap;
+      ctx.drawImage(img, x, y, w, h);
     };
 
-    if (frontImg) drawImage(frontImg);
-    if (backImg) drawImage(backImg);
+    if (frontImg) drawImage(frontImg, 0);
+    if (backImg) drawImage(backImg, cardH + gap);
     
     return canvas;
   };
@@ -239,15 +258,42 @@ export default function NidJoiner() {
     const canvas = await buildCanvas();
     const imgData = canvas.toDataURL('image/jpeg', 0.95);
     const pdf = new jsPDF('p', 'mm', 'a4');
-    pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
-    pdf.save('nid-joined.pdf');
+    
+    // A4 Size: 210mm x 297mm
+    // 3.4 inch = 86.36 mm
+    // 2.1 inch = 53.34 mm
+    // Total height = 53.34 (front) + 5 (gap) + 53.34 (back) = 111.68 mm
+    const pdfW = 86.36;
+    const pdfH = 111.68; 
+    const x = (210 - pdfW) / 2; // Center horizontally on A4
+    const y = (297 - pdfH) / 2; // Center vertically on A4
+
+    pdf.addImage(imgData, 'JPEG', x, y, pdfW, pdfH);
+    pdf.save('nid-joined-exact-size.pdf');
   };
 
   const handlePrint = async () => {
     const canvas = await buildCanvas();
     const dataUrl = canvas.toDataURL('image/png');
     const win = window.open('', '_blank');
-    win.document.write(`<img src="${dataUrl}" style="width:100%;" onload="window.print();">`);
+    // Using CSS to force exact physical print size (86.36mm x 111.68mm)
+    win.document.write(`
+      <html>
+        <head>
+          <title>Print NID</title>
+          <style>
+            @media print {
+              @page { size: A4; margin: 0; }
+              body { margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+              img { width: 86.36mm; height: 111.68mm; }
+            }
+          </style>
+        </head>
+        <body onload="window.print();">
+          <img src="${dataUrl}" />
+        </body>
+      </html>
+    `);
   };
 
   const renderCropper = (target) => {
@@ -316,8 +362,8 @@ export default function NidJoiner() {
          onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}
     >
       <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 20px', textAlign: 'center' }}>
-        <h1 style={{ color: 'white', marginBottom: '10px' }}>📄 NID Front-Back Joiner (Perspective Crop)</h1>
-        <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '30px' }}>৪টি সবুজ বিন্দু টেনে কার্ড সোজা করুন, জোড়া লাগিয়ে ৪ ফরম্যাটে সেভ করুন।</p>
+        <h1 style={{ color: 'white', marginBottom: '10px' }}>📄 NID Front-Back Joiner (3.4" x 2.1")</h1>
+        <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '30px' }}>৪টি সবুজ বিন্দু টেনে কার্ড সোজা করুন, জোড়া লাগিয়ে সঠিক সাইজে সেভ বা প্রিন্ট করুন।</p>
         
         <div className="glass-3d" style={{ padding: '30px' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', marginBottom: '30px' }}>
