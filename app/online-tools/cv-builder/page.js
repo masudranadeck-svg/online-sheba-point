@@ -4,13 +4,13 @@ import { useState } from 'react';
 export default function CVBuilder() {
   const [template, setTemplate] = useState('modern-dark');
   const [bgColor, setBgColor] = useState('#ffffff');
+  const [photo, setPhoto] = useState(null);
   
   const colors = [
     '#ffffff', '#f0f2f5', '#e8f5e9', '#e3f2fd', '#fff3e0', 
     '#fce4ec', '#f3e5f5', '#e0f7fa', '#fff8e1', '#efebe9'
   ];
 
-  // ১০টি স্টাইলের থিম
   const themes = {
     'modern-dark': { name: 'Modern Dark', headerBg: '#2c3e50', headerColor: '#fff', subColor: '#bdc3c7', secBorder: '2px solid #ddd', secColor: '#2c3e50', skillBg: '#f0f0f0' },
     'modern-gradient': { name: 'Modern Gradient', headerBg: 'linear-gradient(135deg, #4e6ef2, #a855f7)', headerColor: '#fff', subColor: '#f0e6ff', secBorder: '2px solid #e0e0e0', secColor: '#4e6ef2', skillBg: '#eef2ff' },
@@ -53,8 +53,18 @@ export default function CVBuilder() {
   };
 
   const [data, setData] = useState(emptyData);
-  const loadDemo = () => setData(demoData);
-  const clearForm = () => setData(emptyData);
+  const loadDemo = () => { setData(demoData); setPhoto('https://i.pravatar.cc/150?img=12'); }; // Demo Photo Added
+  const clearForm = () => { setData(emptyData); setPhoto(null); };
+  
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => setPhoto(reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleChange = (e) => setData({ ...data, [e.target.name]: e.target.value });
   const handleArrayChange = (e, index, type) => {
     const items = [...data[type]];
@@ -84,7 +94,6 @@ export default function CVBuilder() {
     setTimeout(() => win.print(), 500);
   };
 
-  // বর্তমান সিলেক্টেড থিম
   const T = themes[template];
 
   return (
@@ -103,6 +112,19 @@ export default function CVBuilder() {
           {/* Left Side: Form */}
           <div className="glass-3d" style={{ padding: '30px', maxHeight: '85vh', overflowY: 'auto' }}>
             
+            {/* Profile Photo Upload */}
+            <div style={{ marginBottom: '20px', textAlign: 'center' }}>
+              <label style={{ color: 'white', display: 'block', marginBottom: '10px' }}>০. Profile Photo Upload</label>
+              {photo ? (
+                <div style={{ position: 'relative', display: 'inline-block' }}>
+                  <img src={photo} alt="Profile" style={{ width: '100px', height: '100px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #4e6ef2' }} />
+                  <button onClick={() => setPhoto(null)} style={{ position: 'absolute', top: '0', right: '0', background: '#fb6340', color: 'white', border: 'none', borderRadius: '50%', width: '25px', height: '25px', cursor: 'pointer', fontWeight: 'bold' }}>X</button>
+                </div>
+              ) : (
+                <input type="file" accept="image/*" onChange={handlePhotoUpload} className="d-input" style={{ padding: '10px', background: 'rgba(255,255,255,0.05)' }} />
+              )}
+            </div>
+
             <div style={{ marginBottom: '20px' }}>
               <label style={{ color: 'white', display: 'block', marginBottom: '5px' }}>১. টেমপ্লেট নির্বাচন করুন (10 Styles):</label>
               <select value={template} onChange={(e) => setTemplate(e.target.value)} className="d-input" style={{ marginBottom: '15px' }}>
@@ -195,13 +217,18 @@ export default function CVBuilder() {
           <div>
             <div style={{ background: bgColor, borderRadius: '8px', padding: '40px', color: '#333', minHeight: '85vh', boxShadow: '0 0 20px rgba(0,0,0,0.5)', transition: 'background 0.3s' }} id="cv-preview">
               
-              {/* Dynamic Header based on Theme */}
-              <div style={{ background: T.headerBg, padding: '30px', borderRadius: '8px', marginBottom: '20px', textAlign: 'center', border: template === 'modern-boxed' || template === 'cool-teal' || template === 'minimalist-line' || template === 'classic-simple' ? 'none' : 'none' }}>
-                <h1 className="cv-name" style={{ margin: 0, fontSize: '28px', color: T.headerColor }}>{data.name || 'Your Name'}</h1>
-                <p className="cv-title" style={{ margin: '5px 0', color: T.subColor }}>{data.title || 'Your Title'}</p>
-                <p className="cv-contact" style={{ margin: '10px 0 0 0', fontSize: '13px', color: T.subColor }}>
-                  {data.email} | {data.phone} | {data.address}
-                </p>
+              {/* Dynamic Header with Photo */}
+              <div style={{ background: T.headerBg, padding: '30px', borderRadius: '8px', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '20px' }}>
+                {photo && (
+                  <img src={photo} alt="Profile" style={{ width: '100px', height: '100px', borderRadius: '50%', objectFit: 'cover', border: '3px solid rgba(255,255,255,0.3)', flexShrink: 0 }} />
+                )}
+                <div style={{ textAlign: 'left', flex: 1 }}>
+                  <h1 className="cv-name" style={{ margin: 0, fontSize: '28px', color: T.headerColor }}>{data.name || 'Your Name'}</h1>
+                  <p className="cv-title" style={{ margin: '5px 0', color: T.subColor }}>{data.title || 'Your Title'}</p>
+                  <p className="cv-contact" style={{ margin: '10px 0 0 0', fontSize: '13px', color: T.subColor }}>
+                    {data.email} | {data.phone} | {data.address}
+                  </p>
+                </div>
               </div>
 
               {data.social.length > 0 && data.social[0].platform && (
