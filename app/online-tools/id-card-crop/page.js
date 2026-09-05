@@ -15,9 +15,7 @@ export default function IdCardCropToPDF() {
 
   const frontImgRef = useRef(null);
   const backImgRef = useRef(null);
-  const containerRef = useRef(null);
 
-  // 4 Points for Front (top-left, top-right, bottom-right, bottom-left)
   const [frontPts, setFrontPts] = useState(null);
   const [backPts, setBackPts] = useState(null);
   const [draggingIndex, setDraggingIndex] = useState(null);
@@ -29,7 +27,6 @@ export default function IdCardCropToPDF() {
       reader.onload = (ev) => {
         const img = new Image();
         img.onload = () => {
-          // Set initial points to image corners
           const w = img.width;
           const h = img.height;
           const pts = [
@@ -56,7 +53,6 @@ export default function IdCardCropToPDF() {
     }
   };
 
-  // Dragging Logic
   const handleMouseDown = (e, index, target) => {
     e.preventDefault();
     setDraggingIndex(index);
@@ -77,7 +73,6 @@ export default function IdCardCropToPDF() {
     let x = (e.clientX - rect.left) * scaleX;
     let y = (e.clientY - rect.top) * scaleY;
 
-    // Boundaries
     x = Math.max(0, Math.min(imgRef.naturalWidth, x));
     y = Math.max(0, Math.min(imgRef.naturalHeight, y));
 
@@ -94,7 +89,6 @@ export default function IdCardCropToPDF() {
     setActiveTarget(null);
   };
 
-  // Math: Affine Transform Matrix for Triangles
   const getAffineTransformMatrix = (src, dst) => {
     const x1 = src[0].x, y1 = src[0].y;
     const x2 = src[1].x, y2 = src[1].y;
@@ -117,7 +111,6 @@ export default function IdCardCropToPDF() {
 
   const dist = (p1, p2) => Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
 
-  // Perspective Crop Logic
   const handleConfirmCrop = (target) => {
     const imgRef = target === 'front' ? frontImgRef.current : backImgRef.current;
     const pts = target === 'front' ? frontPts : backPts;
@@ -133,7 +126,6 @@ export default function IdCardCropToPDF() {
     canvas.height = outH;
     const ctx = canvas.getContext('2d');
 
-    // Triangle 1: TL, TR, BR -> (0,0), (W,0), (W,H)
     ctx.save();
     ctx.beginPath();
     ctx.moveTo(0, 0);
@@ -146,7 +138,6 @@ export default function IdCardCropToPDF() {
     ctx.drawImage(imgRef, 0, 0);
     ctx.restore();
 
-    // Triangle 2: TL, BR, BL -> (0,0), (W,H), (0,H)
     ctx.save();
     ctx.beginPath();
     ctx.moveTo(0, 0);
@@ -219,6 +210,23 @@ export default function IdCardCropToPDF() {
     return canvas;
   };
 
+  // ৪টি ডাউনলোড অপশন এখানে যোগ করা হলো
+  const handleDownloadA4PNG = async () => {
+    const canvas = await buildA4Canvas();
+    const link = document.createElement('a');
+    link.download = 'id-card-a4.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  };
+
+  const handleDownloadA4JPG = async () => {
+    const canvas = await buildA4Canvas();
+    const link = document.createElement('a');
+    link.download = 'id-card-a4.jpg';
+    link.href = canvas.toDataURL('image/jpeg', 0.95);
+    link.click();
+  };
+
   const handleDownloadA4PDF = async () => {
     const canvas = await buildA4Canvas();
     const imgData = canvas.toDataURL('image/jpeg', 0.95);
@@ -268,7 +276,6 @@ export default function IdCardCropToPDF() {
           </svg>
         )}
         {pts && pts.map((pt, i) => {
-          // Scale display position
           const rect = imgRef.current ? imgRef.current.getBoundingClientRect() : { width: 300, height: 300 };
           const scaleX = imgRef.current ? imgRef.current.naturalWidth / rect.width : 1;
           const scaleY = imgRef.current ? imgRef.current.naturalHeight / rect.height : 1;
@@ -332,10 +339,21 @@ export default function IdCardCropToPDF() {
             </button>
           )}
 
+          {/* এখানে ৪টি বাটন একসাথে দেওয়া হলো */}
           {isEnhanced && (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
-              <button onClick={handleDownloadA4PDF} className="d-btn-orange glow-btn-orange" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>💾 Save as A4 PDF</button>
-              <button onClick={handleDirectA4Print} className="d-btn glow-btn" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>🖨️ Direct A4 Print</button>
+              <button onClick={handleDownloadA4PNG} className="d-btn-green glow-btn-green" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>
+                💾 Save as A4 PNG
+              </button>
+              <button onClick={handleDownloadA4JPG} className="d-btn-purple glow-btn-purple" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>
+                💾 Save as A4 JPG
+              </button>
+              <button onClick={handleDownloadA4PDF} className="d-btn-orange glow-btn-orange" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>
+                💾 Save as A4 PDF
+              </button>
+              <button onClick={handleDirectA4Print} className="d-btn glow-btn" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>
+                🖨️ Direct A4 Print
+              </button>
             </div>
           )}
         </div>
