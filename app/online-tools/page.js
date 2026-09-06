@@ -13,7 +13,7 @@ export default function OnlineTools() {
     { name: 'Professional CV Maker', link: '/online-tools/cv-builder', icon: '💼', color: '#fb6340' },
     { name: 'AI Passport Photo Maker', link: '/online-tools/ai-passport-photo-maker', icon: '🤖', color: '#4e6ef2' },
     { name: 'Studio Photo Print Layout', link: '#', icon: '🖼️', color: '#2dce89' },
-    { name: 'Joint Photo Maker', link: '#', icon: '👥', color: '#fb6340' }
+    { name: 'Joint Photo Maker', link: '/online-tools/joint-photo-maker', icon: '👥', color: '#fb6340' }
   ];
 
   const handleClick = (tool) => {
