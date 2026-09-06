@@ -1,92 +1,56 @@
 'use client';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-export default function AIPassportPhotoMaker() {
-  const [copiedCard, setCopiedCard] = useState('');
+export default function OnlineTools() {
+  const router = useRouter();
 
-  // AI Studio Link
-  const aiStudioUrl = "https://aistudio.google.com/prompts/new_chat?model=gemini-3.1-flash-lite-image";
+  const tools = [
+    { name: 'ID Card Crop to PDF', link: '/online-tools/id-card-crop', icon: '🆔', color: '#4e6ef2' },
+    { name: 'Passport Photo Maker', link: '/online-tools/passport-photo-maker', icon: '📸', color: '#a855f7' },
+    { name: 'Stamp Photo Maker', link: '/online-tools/stamp-photo-maker', icon: '🟫', color: '#2dce89' },
+    { name: 'NID Front-Back Joiner', link: '/online-tools/nid-joiner', icon: '📄', color: '#2dce89' },
+    { name: 'Professional CV Maker', link: '/online-tools/cv-builder', icon: '💼', color: '#fb6340' },
+    { name: 'AI Passport Photo Maker', link: '/online-tools/ai-passport-photo-maker', icon: '🤖', color: '#4e6ef2' },
+    { name: 'Studio Photo Print Layout', link: '#', icon: '🖼️', color: '#2dce89' },
+    { name: 'Joint Photo Maker', link: '#', icon: '👥', color: '#fb6340' }
+  ];
 
-  // Pre-defined Prompts
-  const prompts = {
-    male: "Generate a natural passport photo meeting official standards. Ensure the background is plain white, face is centered, looking straight at the camera, neutral expression, and proper lighting. Transform the uploaded image into this standard.",
-    female: "Create a passport headshot photo from the uploaded photo. Ensure ears are visible, plain white background, neutral expression, and official passport photo standards.",
-    hijab: "Create a perfect passport facial headshot from the uploaded photo, where the person is wearing a hijab. Ensure the face from forehead to chin is clearly visible, plain white background, and meets official passport standards."
-  };
-
-  const handleCardClick = async (type) => {
-    const promptText = prompts[type];
-    
-    try {
-      // 1. Copy prompt to clipboard
-      await navigator.clipboard.writeText(promptText);
-      setCopiedCard(type);
-      
-      // 2. Open Google AI Studio in a new tab
-      window.open(aiStudioUrl, '_blank');
-
-      // Reset copied text after 5 seconds
-      setTimeout(() => setCopiedCard(''), 5000);
-    } catch (err) {
-      alert('প্রম্পট কপি করতে সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।');
+  const handleClick = (tool) => {
+    if (tool.link !== '#') {
+      router.push(tool.link);
+    } else {
+      alert(`"${tool.name}" টুলটি শীঘ্রই আসছে! 🚀`);
     }
   };
 
-  const cards = [
-    { id: 'male', title: 'Male Passport Photo', desc: 'To automatically generate a natural passport photo meeting official standards.', icon: '👨', color: '#4e6ef2' },
-    { id: 'female', title: 'Female Passport Photo', desc: 'Creating a passport headshot photo from any photo, ears will be there.', icon: '👩', color: '#a855f7' },
-    { id: 'hijab', title: 'Hijab Passport Photo', desc: 'Creating passport - perfect facial headshots from any photo wearing a hijab.', icon: '🧕', color: '#2dce89' }
-  ];
-
   return (
     <div className="deepin-body" style={{ minHeight: '100vh', paddingTop: '150px', paddingBottom: '40px' }}>
-      <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 20px', textAlign: 'center' }}>
-        <h1 style={{ color: 'white', marginBottom: '10px' }}>🤖 AI Passport Photo Lab</h1>
-        <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '20px' }}>যেকোনো একটি কার্ডে ক্লিক করুন। প্রম্পট অটো-কপি হয়ে Google AI Studio ওপেন হবে।</p>
-        
-        {/* Instructions */}
-        <div className="glass-3d" style={{ padding: '15px', marginBottom: '30px', background: 'rgba(78,110,242,0.1)', border: '1px solid rgba(78,110,242,0.2)' }}>
-          <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px', margin: 0 }}>
-            📌 <strong>নিয়মাবলি:</strong> ১. কার্ডে ক্লিক করুন। ২. AI Studio তে গিয়ে Chat box এ প্রম্পট Paste করুন (Ctrl+V)। ৩. আপনার ছবি আপলোড করে Run দিন।
-          </p>
+      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 20px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+          <h1 style={{ fontSize: '36px', fontWeight: 800, color: 'white', margin: 0, textShadow: '2px 2px 0 #333, 4px 4px 10px rgba(0,0,0,0.8)' }}>🛠️ ফ্রি অনলাইন টুলস</h1>
+          <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.6)', marginTop: '10px' }}>আপনার দৈনন্দিন কাজের জন্য সেরা ওয়েব টুলস</p>
         </div>
 
-        {/* Cards Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
-          {cards.map((card) => (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px' }}>
+          {tools.map((tool, i) => (
             <div 
-              key={card.id} 
-              onClick={() => handleCardClick(card.id)} 
+              key={i} 
+              onClick={() => handleClick(tool)} 
               className="glass-3d" 
-              style={{ cursor: 'pointer', textAlign: 'center', borderColor: copiedCard === card.id ? card.color : 'rgba(255,255,255,0.1)' }}
+              style={{ cursor: 'pointer', textAlign: 'center' }}
             >
               <div style={{
-                width: 70, height: 70, borderRadius: '50%',
-                background: `rgba(${card.color === '#4e6ef2' ? '78,110,242' : card.color === '#a855f7' ? '168,85,247' : '45,206,137'}, 0.1)`,
+                width: 60, height: 60, borderRadius: 16,
+                background: `rgba(${tool.color === '#4e6ef2' ? '78,110,242' : tool.color === '#a855f7' ? '168,85,247' : tool.color === '#2dce89' ? '45,206,137' : '251,99,64'}, 0.1)`,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 36, margin: '0 auto 16px auto', border: `1px solid ${card.color}30`
+                fontSize: 28, margin: '0 auto 16px auto', border: `1px solid ${tool.color}30`
               }}>
-                {card.icon}
+                {tool.icon}
               </div>
-              <h3 style={{ fontSize: '18px', fontWeight: 700, color: 'white', margin: '0 0 10px 0' }}>{card.title}</h3>
-              <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.5, minHeight: '60px' }}>{card.desc}</p>
-              
-              <button 
-                className="d-btn-outline" 
-                style={{ 
-                  marginTop: '16px', 
-                  padding: '10px 16px', 
-                  fontSize: '14px', 
-                  width: '100%', 
-                  boxSizing: 'border-box', 
-                  border: 'none', 
-                  cursor: 'pointer',
-                  background: copiedCard === card.id ? card.color : 'rgba(255,255,255,0.05)',
-                  color: copiedCard === card.id ? 'white' : 'rgba(255,255,255,0.7)',
-                  transition: 'all 0.3s'
-                }}
-              >
-                {copiedCard === card.id ? '✅ কপি হয়েছে! AI Studio খুলুন' : 'অটো-কপি ও ওপেন করুন →'}
+              <h3 style={{ fontSize: '16px', fontWeight: 700, color: 'white', margin: 0 }}>{tool.name}</h3>
+              <button className="d-btn-outline" style={{ marginTop: '16px', padding: '8px 16px', fontSize: '12px', width: '100%', boxSizing: 'border-box' }}>
+                ব্যবহার করুন →
               </button>
             </div>
           ))}
