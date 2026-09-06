@@ -1,280 +1,95 @@
 'use client';
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 
 export default function AIPassportPhotoMaker() {
-  const [originalImage, setOriginalImage] = useState(null);
-  const [processedImage, setProcessedImage] = useState(null);
-  const [bgColor, setBgColor] = useState('#ffffff');
-  const [tolerance, setTolerance] = useState(30); // Color matching tolerance
-  const [isErasing, setIsErasing] = useState(false);
-  
-  const canvasRef = useRef(null);
-  const imgRef = useRef(null);
-  const fileInputRef = useRef(null);
+  const [copiedCard, setCopiedCard] = useState('');
 
-  const colors = [
-    { name: 'White', hex: '#ffffff' },
-    { name: 'Blue', hex: '#3b82f6' },
-    { name: 'Red', hex: '#ef4444' },
-    { name: 'Green', hex: '#22c55e' },
-    { name: 'Gray', hex: '#9ca3af' }
+  // AI Studio Link
+  const aiStudioUrl = "https://aistudio.google.com/prompts/new_chat?model=gemini-3.1-flash-lite-image";
+
+  // Pre-defined Prompts
+  const prompts = {
+    male: "Generate a natural passport photo meeting official standards. Ensure the background is plain white, face is centered, looking straight at the camera, neutral expression, and proper lighting. Transform the uploaded image into this standard.",
+    female: "Create a passport headshot photo from the uploaded photo. Ensure ears are visible, plain white background, neutral expression, and official passport photo standards.",
+    hijab: "Create a perfect passport facial headshot from the uploaded photo, where the person is wearing a hijab. Ensure the face from forehead to chin is clearly visible, plain white background, and meets official passport standards."
+  };
+
+  const handleCardClick = async (type) => {
+    const promptText = prompts[type];
+    
+    try {
+      // 1. Copy prompt to clipboard
+      await navigator.clipboard.writeText(promptText);
+      setCopiedCard(type);
+      
+      // 2. Open Google AI Studio in a new tab
+      window.open(aiStudioUrl, '_blank');
+
+      // Reset copied text after 5 seconds
+      setTimeout(() => setCopiedCard(''), 5000);
+    } catch (err) {
+      alert('প্রম্পট কপি করতে সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।');
+    }
+  };
+
+  const cards = [
+    { id: 'male', title: 'Male Passport Photo', desc: 'To automatically generate a natural passport photo meeting official standards.', icon: '👨', color: '#4e6ef2' },
+    { id: 'female', title: 'Female Passport Photo', desc: 'Creating a passport headshot photo from any photo, ears will be there.', icon: '👩', color: '#a855f7' },
+    { id: 'hijab', title: 'Hijab Passport Photo', desc: 'Creating passport - perfect facial headshots from any photo wearing a hijab.', icon: '🧕', color: '#2dce89' }
   ];
-
-  const handleFileChange = (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        setOriginalImage(ev.target.result);
-        setProcessedImage(ev.target.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  // Magic Eraser Logic (Flood Fill Algorithm)
-  const eraseBackground = (e) => {
-    if (!imgRef.current || isErasing) return;
-    setIsErasing(true);
-
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    
-    // Set canvas size to image size
-    canvas.width = imgRef.current.naturalWidth;
-    canvas.height = imgRef.current.naturalHeight;
-    ctx.drawImage(imgRef.current, 0, 0, canvas.width, canvas.height);
-
-    const rect = canvas.getBoundingClientRect();
-    const x = Math.floor((e.clientX - rect.left) * (canvas.width / rect.width));
-    const y = Math.floor((e.clientY - rect.top) * (canvas.height / rect.height));
-
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const data = imageData.data;
-    
-    const targetIdx = (y * canvas.width + x) * 4;
-    const targetR = data[targetIdx];
-    const targetG = data[targetIdx + 1];
-    const targetB = data[targetIdx + 2];
-
-    // Simple Stack-based Flood Fill
-    const stack = [[x, y]];
-    const visited = new Uint8Array(canvas.width * canvas.height);
-
-    while (stack.length > 0) {
-      const [cx, cy] = stack.pop();
-      if (cx < 0 || cx >= canvas.width || cy < 0 || cy >= canvas.height) continue;
-      
-      const idx = cy * canvas.width + cx;
-      if (visited[idx]) continue;
-
-      const pIdx = idx * 4;
-      const r = data[pIdx];
-      const g = data[pIdx + 1];
-      const b = data[pIdx + 2];
-
-      // Check color match
-      if (Math.abs(r - targetR) <= tolerance && 
-          Math.abs(g - targetG) <= tolerance && 
-          Math.abs(b - targetB) <= tolerance) {
-        
-        // Make transparent
-        data[pIdx + 3] = 0; 
-        visited[idx] = 1;
-
-        stack.push([cx + 1, cy]);
-        stack.push([cx - 1, cy]);
-        stack.push([cx, cy + 1]);
-        stack.push([cx, cy - 1]);
-      }
-    }
-
-    ctx.putImageData(imageData, 0, 0);
-    setProcessedImage(canvas.toDataURL('image/png'));
-    setIsErasing(false);
-  };
-
-  // Apply Solid Color Background
-  const applyBackgroundColor = (color) => {
-    setBgColor(color);
-    if (!processedImage) return;
-
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
-      
-      ctx.fillStyle = color;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0);
-      
-      setProcessedImage(canvas.toDataURL('image/png'));
-    };
-    img.src = processedImage; // Needs the transparent version
-  };
-
-  // To keep track of the transparent state before applying color
-  const [transparentImage, setTransparentImage] = useState(null);
-
-  const handleErase = (e) => {
-    setIsErasing(true);
-    // First, we save the transparent image
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    canvas.width = imgRef.current.naturalWidth;
-    canvas.height = imgRef.current.naturalHeight;
-    ctx.drawImage(imgRef.current, 0, 0, canvas.width, canvas.height);
-
-    const rect = canvas.getBoundingClientRect();
-    const x = Math.floor((e.clientX - rect.left) * (canvas.width / rect.width));
-    const y = Math.floor((e.clientY - rect.top) * (canvas.height / rect.height));
-
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const data = imageData.data;
-    
-    const targetIdx = (y * canvas.width + x) * 4;
-    const targetR = data[targetIdx];
-    const targetG = data[targetIdx + 1];
-    const targetB = data[targetIdx + 2];
-
-    const stack = [[x, y]];
-    const visited = new Uint8Array(canvas.width * canvas.height);
-
-    while (stack.length > 0) {
-      const [cx, cy] = stack.pop();
-      if (cx < 0 || cx >= canvas.width || cy < 0 || cy >= canvas.height) continue;
-      
-      const idx = cy * canvas.width + cx;
-      if (visited[idx]) continue;
-
-      const pIdx = idx * 4;
-      if (Math.abs(data[pIdx] - targetR) <= tolerance && 
-          Math.abs(data[pIdx + 1] - targetG) <= tolerance && 
-          Math.abs(data[pIdx + 2] - targetB) <= tolerance) {
-        
-        data[pIdx + 3] = 0; 
-        visited[idx] = 1;
-        stack.push([cx + 1, cy], [cx - 1, cy], [cx, cy + 1], [cx, cy - 1]);
-      }
-    }
-
-    ctx.putImageData(imageData, 0, 0);
-    const transparentUrl = canvas.toDataURL('image/png');
-    setTransparentImage(transparentUrl);
-    
-    // Apply default white background
-    const bgImg = new Image();
-    bgImg.onload = () => {
-      const bgCanvas = document.createElement('canvas');
-      bgCanvas.width = img.width;
-      bgCanvas.height = img.height;
-      const bgCtx = bgCanvas.getContext('2d');
-      bgCtx.fillStyle = bgColor;
-      bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
-      bgCtx.drawImage(img, 0, 0);
-      setProcessedImage(bgCanvas.toDataURL('image/png'));
-      setIsErasing(false);
-    };
-    bgImg.src = transparentUrl;
-  };
-
-  const changeColor = (color) => {
-    setBgColor(color);
-    if (!transparentImage) return;
-    
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = color;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0);
-      setProcessedImage(canvas.toDataURL('image/png'));
-    };
-    img.src = transparentImage;
-  };
-
-  const handleDownload = () => {
-    if (!processedImage) return;
-    const link = document.createElement('a');
-    link.href = processedImage;
-    link.download = 'passport-photo.png';
-    link.click();
-  };
 
   return (
     <div className="deepin-body" style={{ minHeight: '100vh', paddingTop: '150px', paddingBottom: '40px' }}>
-      <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 20px', textAlign: 'center' }}>
-        <h1 style={{ color: 'white', marginBottom: '10px' }}>🤖 AI Passport Photo Maker</h1>
-        <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '30px' }}>ছবি আপলোড করুন, ব্যাকগ্রাউন্ডে ক্লিক করে মুছে ফেলুন এবং কালার বেছে নিন।</p>
+      <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 20px', textAlign: 'center' }}>
+        <h1 style={{ color: 'white', marginBottom: '10px' }}>🤖 AI Passport Photo Lab</h1>
+        <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '20px' }}>যেকোনো একটি কার্ডে ক্লিক করুন। প্রম্পট অটো-কপি হয়ে Google AI Studio ওপেন হবে।</p>
         
-        <div className="glass-3d" style={{ padding: '30px' }}>
-          {!originalImage ? (
-            <div style={{ border: '2px dashed rgba(78,110,242,0.5)', borderRadius: '12px', padding: '40px', background: 'rgba(0,0,0,0.2)' }}>
-              <input type="file" accept="image/*" onChange={handleFileChange} style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px' }} />
-            </div>
-          ) : (
-            <div>
-              {/* Hidden canvas for processing */}
-              <canvas ref={canvasRef} style={{ display: 'none' }}></canvas>
-              
-              {/* Image Preview */}
-              <div style={{ position: 'relative', display: 'inline-block', cursor: 'crosshair' }} onMouseDown={handleErase}>
-                <img 
-                  ref={imgRef} 
-                  src={processedImage} 
-                  alt="Preview" 
-                  style={{ maxWidth: '300px', borderRadius: '8px', border: '2px solid rgba(255,255,255,0.2)', opacity: isErasing ? 0.5 : 1 }} 
-                />
-                {isErasing && <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: 'white', fontWeight: 'bold' }}>Processing...</div>}
-              </div>
+        {/* Instructions */}
+        <div className="glass-3d" style={{ padding: '15px', marginBottom: '30px', background: 'rgba(78,110,242,0.1)', border: '1px solid rgba(78,110,242,0.2)' }}>
+          <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px', margin: 0 }}>
+            📌 <strong>নিয়মাবলি:</strong> ১. কার্ডে ক্লিক করুন। ২. AI Studio তে গিয়ে Chat box এ প্রম্পট Paste করুন (Ctrl+V)। ৩. আপনার ছবি আপলোড করে Run দিন।
+          </p>
+        </div>
 
-              {transparentImage && (
-                <div style={{ marginTop: '20px' }}>
-                  <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '14px', display: 'block', marginBottom: '10px' }}>Background Color:</label>
-                  <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', marginBottom: '20px' }}>
-                    {colors.map((c, i) => (
-                      <button 
-                        key={i} 
-                        onClick={() => changeColor(c.hex)} 
-                        style={{ 
-                          background: c.hex, 
-                          width: '40px', height: '40px', borderRadius: '50%', 
-                          border: bgColor === c.hex ? '3px solid #4e6ef2' : '1px solid #ccc', 
-                          cursor: 'pointer' 
-                        }}
-                        title={c.name}
-                      />
-                    ))}
-                  </div>
-                  <button onClick={handleDownload} className="d-btn glow-btn" style={{ padding: '12px 24px', border: 'none', cursor: 'pointer' }}>
-                    💾 Download PNG
-                  </button>
-                </div>
-              )}
-              
-              <div style={{ marginTop: '15px' }}>
-                <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px' }}>Tolerance: {tolerance}</label>
-                <input 
-                  type="range" 
-                  min="10" 
-                  max="100" 
-                  value={tolerance} 
-                  onChange={(e) => setTolerance(Number(e.target.value))} 
-                  style={{ width: '100%', accentColor: '#4e6ef2' }}
-                />
-                <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '12px' }}>(টলারেন্স বাড়ালে একই রঙের আরও ছোট অংশ মুছে যাবে)</p>
+        {/* Cards Grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
+          {cards.map((card) => (
+            <div 
+              key={card.id} 
+              onClick={() => handleCardClick(card.id)} 
+              className="glass-3d" 
+              style={{ cursor: 'pointer', textAlign: 'center', borderColor: copiedCard === card.id ? card.color : 'rgba(255,255,255,0.1)' }}
+            >
+              <div style={{
+                width: 70, height: 70, borderRadius: '50%',
+                background: `rgba(${card.color === '#4e6ef2' ? '78,110,242' : card.color === '#a855f7' ? '168,85,247' : '45,206,137'}, 0.1)`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 36, margin: '0 auto 16px auto', border: `1px solid ${card.color}30`
+              }}>
+                {card.icon}
               </div>
-
-              <button onClick={() => { setOriginalImage(null); setProcessedImage(null); setTransparentImage(null); }} className="d-btn-outline" style={{ marginTop: '15px', padding: '8px 16px', border: 'none', cursor: 'pointer' }}>
-                🔄 নতুন ছবি আপলোড করুন
+              <h3 style={{ fontSize: '18px', fontWeight: 700, color: 'white', margin: '0 0 10px 0' }}>{card.title}</h3>
+              <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.5, minHeight: '60px' }}>{card.desc}</p>
+              
+              <button 
+                className="d-btn-outline" 
+                style={{ 
+                  marginTop: '16px', 
+                  padding: '10px 16px', 
+                  fontSize: '14px', 
+                  width: '100%', 
+                  boxSizing: 'border-box', 
+                  border: 'none', 
+                  cursor: 'pointer',
+                  background: copiedCard === card.id ? card.color : 'rgba(255,255,255,0.05)',
+                  color: copiedCard === card.id ? 'white' : 'rgba(255,255,255,0.7)',
+                  transition: 'all 0.3s'
+                }}
+              >
+                {copiedCard === card.id ? '✅ কপি হয়েছে! AI Studio খুলুন' : 'অটো-কপি ও ওপেন করুন →'}
               </button>
             </div>
-          )}
+          ))}
         </div>
       </div>
     </div>
