@@ -6,10 +6,7 @@ export default function CVBuilder() {
   const [bgColor, setBgColor] = useState('#ffffff');
   const [photo, setPhoto] = useState(null);
   
-  const colors = [
-    '#ffffff', '#f0f2f5', '#e8f5e9', '#e3f2fd', '#fff3e0', 
-    '#fce4ec', '#f3e5f5', '#e0f7fa', '#fff8e1', '#efebe9'
-  ];
+  const colors = ['#ffffff', '#f0f2f5', '#e8f5e9', '#e3f2fd', '#fff3e0', '#fce4ec', '#f3e5f5', '#e0f7fa', '#fff8e1', '#efebe9'];
 
   const themes = {
     'modern-dark': { name: 'Modern Dark', headerBg: '#2c3e50', headerColor: '#fff', subColor: '#bdc3c7', secBorder: '2px solid #ddd', secColor: '#2c3e50', skillBg: '#f0f0f0' },
@@ -31,7 +28,9 @@ export default function CVBuilder() {
     social: [{ platform: '', link: '' }],
     skills: [{ name: '', level: '' }],
     languages: [{ name: '', level: '' }],
-    projects: [{ title: '', link: '', desc: '' }]
+    projects: [{ title: '', link: '', desc: '' }],
+    references: [{ name: '', designation: '', org: '', phone: '', email: '' }],
+    declaration: ''
   };
 
   const demoData = {
@@ -49,11 +48,13 @@ export default function CVBuilder() {
     social: [{ platform: 'LinkedIn', link: 'linkedin.com/in/fyzalkarim' }],
     skills: [{ name: 'Adobe Photoshop', level: 'Expert' }, { name: 'React', level: 'Advanced' }],
     languages: [{ name: 'Bengali', level: 'Native' }, { name: 'English', level: 'Fluent' }],
-    projects: [{ title: 'E-commerce Platform', link: 'github.com/fyzal', desc: 'A full-stack e-commerce solution.' }]
+    projects: [{ title: 'E-commerce Platform', link: 'github.com/fyzal', desc: 'A full-stack e-commerce solution.' }],
+    references: [{ name: 'John Doe', designation: 'Project Manager', org: 'Tech Solutions', phone: '+880171234567', email: 'john@tech.com' }],
+    declaration: 'I hereby declare that the information provided above is true to the best of my knowledge and belief.'
   };
 
   const [data, setData] = useState(emptyData);
-  const loadDemo = () => { setData(demoData); setPhoto('https://i.pravatar.cc/150?img=12'); }; // Demo Photo Added
+  const loadDemo = () => { setData(demoData); setPhoto('https://i.pravatar.cc/150?img=12'); };
   const clearForm = () => { setData(emptyData); setPhoto(null); };
   
   const handlePhotoUpload = (e) => {
@@ -112,7 +113,6 @@ export default function CVBuilder() {
           {/* Left Side: Form */}
           <div className="glass-3d" style={{ padding: '30px', maxHeight: '85vh', overflowY: 'auto' }}>
             
-            {/* Profile Photo Upload */}
             <div style={{ marginBottom: '20px', textAlign: 'center' }}>
               <label style={{ color: 'white', display: 'block', marginBottom: '10px' }}>০. Profile Photo Upload</label>
               {photo ? (
@@ -128,16 +128,11 @@ export default function CVBuilder() {
             <div style={{ marginBottom: '20px' }}>
               <label style={{ color: 'white', display: 'block', marginBottom: '5px' }}>১. টেমপ্লেট নির্বাচন করুন (10 Styles):</label>
               <select value={template} onChange={(e) => setTemplate(e.target.value)} className="d-input" style={{ marginBottom: '15px' }}>
-                {Object.keys(themes).map(key => (
-                  <option key={key} value={key} style={{background: '#1a1c2e'}}>{themes[key].name}</option>
-                ))}
+                {Object.keys(themes).map(key => (<option key={key} value={key} style={{background: '#1a1c2e'}}>{themes[key].name}</option>))}
               </select>
-
               <label style={{ color: 'white', display: 'block', marginBottom: '10px' }}>২. Select CV Background Color</label>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '8px' }}>
-                {colors.map((c, i) => (
-                  <div key={i} onClick={() => setBgColor(c)} style={{ background: c, height: '36px', borderRadius: '8px', cursor: 'pointer', border: bgColor === c ? '3px solid #4e6ef2' : '1px solid rgba(255,255,255,0.2)', boxShadow: bgColor === c ? '0 0 10px rgba(78,110,242,0.5)' : 'none' }} />
-                ))}
+                {colors.map((c, i) => (<div key={i} onClick={() => setBgColor(c)} style={{ background: c, height: '36px', borderRadius: '8px', cursor: 'pointer', border: bgColor === c ? '3px solid #4e6ef2' : '1px solid rgba(255,255,255,0.2)', boxShadow: bgColor === c ? '0 0 10px rgba(78,110,242,0.5)' : 'none' }} />))}
               </div>
             </div>
 
@@ -209,7 +204,24 @@ export default function CVBuilder() {
                 <textarea name="desc" value={prj.desc} onChange={(e) => handleArrayChange(e, i, 'projects')} placeholder="বিবরণ" className="d-input" style={{ minHeight: '40px' }} />
               </div>
             ))}
-            <button onClick={() => addItem('projects', { title: '', link: '', desc: '' })} className="d-btn-outline" style={{ width: '100%', padding: '8px', border: 'none', cursor: 'pointer' }}>+ প্রজেক্ট যোগ করুন</button>
+            <button onClick={() => addItem('projects', { title: '', link: '', desc: '' })} className="d-btn-outline" style={{ width: '100%', padding: '8px', marginBottom: '20px', border: 'none', cursor: 'pointer' }}>+ প্রজেক্ট যোগ করুন</button>
+
+            {/* New Section 12: References */}
+            <h3 style={{ color: '#4e6ef2', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '5px' }}>১২. References</h3>
+            {data.references.map((ref, i) => (
+              <div key={i} style={{ border: '1px solid rgba(255,255,255,0.1)', padding: '10px', borderRadius: '8px', marginBottom: '10px' }}>
+                <input type="text" name="name" value={ref.name} onChange={(e) => handleArrayChange(e, i, 'references')} placeholder="নাম" className="d-input" style={{ marginBottom: '5px' }} />
+                <input type="text" name="designation" value={ref.designation} onChange={(e) => handleArrayChange(e, i, 'references')} placeholder="পদবি" className="d-input" style={{ marginBottom: '5px' }} />
+                <input type="text" name="org" value={ref.org} onChange={(e) => handleArrayChange(e, i, 'references')} placeholder="প্রতিষ্ঠান" className="d-input" style={{ marginBottom: '5px' }} />
+                <input type="text" name="phone" value={ref.phone} onChange={(e) => handleArrayChange(e, i, 'references')} placeholder="ফোন" className="d-input" style={{ marginBottom: '5px' }} />
+                <input type="text" name="email" value={ref.email} onChange={(e) => handleArrayChange(e, i, 'references')} placeholder="ইমেইল" className="d-input" />
+              </div>
+            ))}
+            <button onClick={() => addItem('references', { name: '', designation: '', org: '', phone: '', email: '' })} className="d-btn-outline" style={{ width: '100%', padding: '8px', marginBottom: '20px', border: 'none', cursor: 'pointer' }}>+ রেফারেন্স যোগ করুন</button>
+
+            {/* New Section 13: Declaration */}
+            <h3 style={{ color: '#a855f7', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '5px' }}>১৩. Declaration</h3>
+            <textarea name="declaration" value={data.declaration} onChange={handleChange} placeholder="আপনার ঘোষণা লিখুন" className="d-input" style={{ minHeight: '60px', marginBottom: '20px' }} />
 
           </div>
 
@@ -217,17 +229,12 @@ export default function CVBuilder() {
           <div>
             <div style={{ background: bgColor, borderRadius: '8px', padding: '40px', color: '#333', minHeight: '85vh', boxShadow: '0 0 20px rgba(0,0,0,0.5)', transition: 'background 0.3s' }} id="cv-preview">
               
-              {/* Dynamic Header with Photo */}
               <div style={{ background: T.headerBg, padding: '30px', borderRadius: '8px', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '20px' }}>
-                {photo && (
-                  <img src={photo} alt="Profile" style={{ width: '100px', height: '100px', borderRadius: '50%', objectFit: 'cover', border: '3px solid rgba(255,255,255,0.3)', flexShrink: 0 }} />
-                )}
+                {photo && (<img src={photo} alt="Profile" style={{ width: '100px', height: '100px', borderRadius: '50%', objectFit: 'cover', border: '3px solid rgba(255,255,255,0.3)', flexShrink: 0 }} />)}
                 <div style={{ textAlign: 'left', flex: 1 }}>
                   <h1 className="cv-name" style={{ margin: 0, fontSize: '28px', color: T.headerColor }}>{data.name || 'Your Name'}</h1>
                   <p className="cv-title" style={{ margin: '5px 0', color: T.subColor }}>{data.title || 'Your Title'}</p>
-                  <p className="cv-contact" style={{ margin: '10px 0 0 0', fontSize: '13px', color: T.subColor }}>
-                    {data.email} | {data.phone} | {data.address}
-                  </p>
+                  <p className="cv-contact" style={{ margin: '10px 0 0 0', fontSize: '13px', color: T.subColor }}>{data.email} | {data.phone} | {data.address}</p>
                 </div>
               </div>
 
@@ -237,7 +244,6 @@ export default function CVBuilder() {
                 </div>
               )}
 
-              {/* Wrapper for Boxed Style */}
               <div style={{ background: T.boxBorder ? '#fff' : 'transparent', padding: T.boxBorder ? '20px' : '0', borderRadius: T.boxBorder ? '12px' : '0', border: T.boxBorder || 'none', boxShadow: T.boxShadow || 'none', marginBottom: T.boxBorder ? '15px' : '0' }}>
                 <h3 style={{ borderBottom: T.secBorder, paddingBottom: '5px', color: T.secColor }}>Summary</h3>
                 <p style={{ fontSize: '14px', lineHeight: 1.5 }}>{data.summary}</p>
@@ -248,8 +254,7 @@ export default function CVBuilder() {
                 {data.experience.map((exp, i) => exp.role && (
                   <div key={i} style={{ marginBottom: '12px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold', fontSize: '15px' }}>
-                      <span>{exp.role}</span>
-                      <span style={{ fontSize: '12px', color: '#777' }}>{exp.duration}</span>
+                      <span>{exp.role}</span><span style={{ fontSize: '12px', color: '#777' }}>{exp.duration}</span>
                     </div>
                     <p style={{ margin: '2px 0', fontSize: '14px', color: '#555' }}>{exp.company}</p>
                     <p style={{ fontSize: '13px', color: '#666' }}>{exp.desc}</p>
@@ -262,8 +267,7 @@ export default function CVBuilder() {
                 {data.education.map((edu, i) => edu.degree && (
                   <div key={i} style={{ marginBottom: '12px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold', fontSize: '15px' }}>
-                      <span>{edu.degree}</span>
-                      <span style={{ fontSize: '12px', color: '#777' }}>{edu.duration}</span>
+                      <span>{edu.degree}</span><span style={{ fontSize: '12px', color: '#777' }}>{edu.duration}</span>
                     </div>
                     <p style={{ margin: '2px 0', fontSize: '14px', color: '#555' }}>{edu.institute}</p>
                   </div>
@@ -287,7 +291,7 @@ export default function CVBuilder() {
               )}
 
               {data.projects.length > 0 && data.projects[0].title && (
-                <div style={{ background: T.boxBorder ? '#fff' : 'transparent', padding: T.boxBorder ? '20px' : '0', borderRadius: T.boxBorder ? '12px' : '0', border: T.boxBorder || 'none', boxShadow: T.boxShadow || 'none', marginTop: '20px' }}>
+                <div style={{ background: T.boxBorder ? '#fff' : 'transparent', padding: T.boxBorder ? '20px' : '0', borderRadius: T.boxBorder ? '12px' : '0', border: T.boxBorder || 'none', boxShadow: T.boxShadow || 'none', marginBottom: T.boxBorder ? '15px' : '0', marginTop: '20px' }}>
                   <h3 style={{ borderBottom: T.secBorder, paddingBottom: '5px', color: T.secColor }}>Projects & Awards</h3>
                   {data.projects.map((prj, i) => (
                     <div key={i} style={{ marginBottom: '12px' }}>
@@ -296,6 +300,30 @@ export default function CVBuilder() {
                       <p style={{ fontSize: '13px', color: '#666' }}>{prj.desc}</p>
                     </div>
                   ))}
+                </div>
+              )}
+
+              {/* References Display */}
+              {data.references.length > 0 && data.references[0].name && (
+                <div style={{ background: T.boxBorder ? '#fff' : 'transparent', padding: T.boxBorder ? '20px' : '0', borderRadius: T.boxBorder ? '12px' : '0', border: T.boxBorder || 'none', boxShadow: T.boxShadow || 'none', marginBottom: T.boxBorder ? '15px' : '0', marginTop: '20px' }}>
+                  <h3 style={{ borderBottom: T.secBorder, paddingBottom: '5px', color: T.secColor }}>References</h3>
+                  {data.references.map((ref, i) => (
+                    <div key={i} style={{ marginBottom: '12px' }}>
+                      <div style={{ fontWeight: 'bold', fontSize: '15px' }}>{ref.name}</div>
+                      <p style={{ margin: '2px 0', fontSize: '14px', color: '#555' }}>{ref.designation}, {ref.org}</p>
+                      <p style={{ fontSize: '13px', color: '#666' }}>{ref.phone} | {ref.email}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Declaration Display */}
+              {data.declaration && (
+                <div style={{ background: T.boxBorder ? '#fff' : 'transparent', padding: T.boxBorder ? '20px' : '0', borderRadius: T.boxBorder ? '12px' : '0', border: T.boxBorder || 'none', boxShadow: T.boxShadow || 'none', marginTop: '20px' }}>
+                  <h3 style={{ borderBottom: T.secBorder, paddingBottom: '5px', color: T.secColor }}>Declaration</h3>
+                  <p style={{ fontSize: '14px', lineHeight: 1.5, fontStyle: 'italic' }}>{data.declaration}</p>
+                  <br/>
+                  <p style={{ textAlign: 'right', fontWeight: 'bold', marginTop: '20px' }}>{data.name}</p>
                 </div>
               )}
 
