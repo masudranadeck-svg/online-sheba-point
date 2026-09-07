@@ -1,5 +1,7 @@
 'use client';
 import { useState } from 'react';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 export default function CVBuilder() {
   const [template, setTemplate] = useState('modern-dark');
@@ -74,25 +76,47 @@ export default function CVBuilder() {
   };
   const addItem = (type, emptyItem) => setData({ ...data, [type]: [...data[type], emptyItem] });
 
-  const handlePrint = () => {
-    const printContent = document.getElementById('cv-preview').innerHTML;
-    const win = window.open('', '_blank');
-    win.document.write(`
-      <html>
-        <head>
-          <title>Print CV</title>
-          <style>
-            body { font-family: Arial, sans-serif; margin: 0; padding: 0; color: #333; background: ${bgColor}; }
-            .cv-wrapper { padding: 40px; min-height: 100vh; box-sizing: border-box; }
-          </style>
-        </head>
-        <body>
-          <div class="cv-wrapper">${printContent}</div>
-        </body>
-      </html>
-    `);
-    win.document.close();
-    setTimeout(() => win.print(), 500);
+  // html2canvas দিয়ে পারফেক্ট পিডিএফ তৈরির ফাংশন
+  const handlePrint = async () => {
+    const element = document.getElementById('cv-preview');
+    if (!element) return;
+
+    const downloadBtn = document.getElementById('download-btn');
+    if(downloadBtn) downloadBtn.innerText = '⏳ পিডিএফ তৈরি হচ্ছে...';
+
+    try {
+      const canvas = await html2canvas(element, { 
+        scale: 2, 
+        backgroundColor: bgColor, 
+        useCORS: true 
+      });
+      
+      const imgData = canvas.toDataURL('image/jpeg', 1.0);
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const imgWidth = 210; 
+      const pageHeight = 297; 
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+      
+      pdf.save('my-cv.pdf');
+    } catch (err) {
+      console.error('PDF Error:', err);
+      alert('পিডিএফ তৈরি করতে সমস্যা হয়েছে!');
+    }
+
+    if(downloadBtn) downloadBtn.innerText = '💾 Save CV as PDF';
   };
 
   const T = themes[template];
@@ -206,7 +230,6 @@ export default function CVBuilder() {
             ))}
             <button onClick={() => addItem('projects', { title: '', link: '', desc: '' })} className="d-btn-outline" style={{ width: '100%', padding: '8px', marginBottom: '20px', border: 'none', cursor: 'pointer' }}>+ প্রজেক্ট যোগ করুন</button>
 
-            {/* New Section 12: References */}
             <h3 style={{ color: '#4e6ef2', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '5px' }}>১২. References</h3>
             {data.references.map((ref, i) => (
               <div key={i} style={{ border: '1px solid rgba(255,255,255,0.1)', padding: '10px', borderRadius: '8px', marginBottom: '10px' }}>
@@ -219,7 +242,6 @@ export default function CVBuilder() {
             ))}
             <button onClick={() => addItem('references', { name: '', designation: '', org: '', phone: '', email: '' })} className="d-btn-outline" style={{ width: '100%', padding: '8px', marginBottom: '20px', border: 'none', cursor: 'pointer' }}>+ রেফারেন্স যোগ করুন</button>
 
-            {/* New Section 13: Declaration */}
             <h3 style={{ color: '#a855f7', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '5px' }}>১৩. Declaration</h3>
             <textarea name="declaration" value={data.declaration} onChange={handleChange} placeholder="আপনার ঘোষণা লিখুন" className="d-input" style={{ minHeight: '60px', marginBottom: '20px' }} />
 
@@ -303,7 +325,6 @@ export default function CVBuilder() {
                 </div>
               )}
 
-              {/* References Display */}
               {data.references.length > 0 && data.references[0].name && (
                 <div style={{ background: T.boxBorder ? '#fff' : 'transparent', padding: T.boxBorder ? '20px' : '0', borderRadius: T.boxBorder ? '12px' : '0', border: T.boxBorder || 'none', boxShadow: T.boxShadow || 'none', marginBottom: T.boxBorder ? '15px' : '0', marginTop: '20px' }}>
                   <h3 style={{ borderBottom: T.secBorder, paddingBottom: '5px', color: T.secColor }}>References</h3>
@@ -317,7 +338,6 @@ export default function CVBuilder() {
                 </div>
               )}
 
-              {/* Declaration Display */}
               {data.declaration && (
                 <div style={{ background: T.boxBorder ? '#fff' : 'transparent', padding: T.boxBorder ? '20px' : '0', borderRadius: T.boxBorder ? '12px' : '0', border: T.boxBorder || 'none', boxShadow: T.boxShadow || 'none', marginTop: '20px' }}>
                   <h3 style={{ borderBottom: T.secBorder, paddingBottom: '5px', color: T.secColor }}>Declaration</h3>
@@ -332,7 +352,7 @@ export default function CVBuilder() {
         </div>
 
         <div style={{ textAlign: 'center', marginTop: '30px' }}>
-          <button onClick={handlePrint} className="neon-3d-btn" style={{ padding: '14px 40px', fontSize: '16px', border: 'none', cursor: 'pointer' }}>
+          <button onClick={handlePrint} id="download-btn" className="neon-3d-btn" style={{ padding: '14px 40px', fontSize: '16px', border: 'none', cursor: 'pointer' }}>
             💾 Save CV as PDF
           </button>
         </div>
