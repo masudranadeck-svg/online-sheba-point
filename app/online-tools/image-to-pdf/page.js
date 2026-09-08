@@ -53,16 +53,14 @@ export default function ImageToPdf() {
         let w = maxW;
         let h = w / imgRatio;
         
-        // যদি ছবির উচ্চতা পেজের চেয়ে বেশি হয়, তবে উচ্চতা অনুযায়ী সাজাবে
         if (h > maxH) {
           h = maxH;
           w = h * imgRatio;
         }
 
-        const x = (pageW - w) / 2; // মাঝখানে রাখার জন্য
+        const x = (pageW - w) / 2; 
         const y = (pageH - h) / 2;
 
-        // ছবির ফরম্যাট বের করা (PNG নাকি JPG)
         const format = images[i].startsWith('data:image/png') ? 'PNG' : 'JPEG';
         
         pdf.addImage(images[i], format, x, y, w, h);
@@ -92,7 +90,7 @@ export default function ImageToPdf() {
           </div>
 
           {images.length > 0 && (
-            <div style={{ marginBottom: '30px }}>
+            <div style={{ marginBottom: '30px' }}>
               <h3 style={{ color: 'white', marginBottom: '15px' }}>আপলোড করা ছবিসমূহ ({images.length})</h3>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '15px' }}>
                 {images.map((img, i) => (
