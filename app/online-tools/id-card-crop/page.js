@@ -13,6 +13,20 @@ export default function IdCardCropToPDF() {
   const [finalBack, setFinalBack] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
+  // Auto Size State
+  const [cardType, setCardType] = useState('id-landscape');
+  
+  const cardSizes = {
+    'id-landscape': { w: 85.6, h: 54 },
+    'id-portrait': { w: 54, h: 85.6 },
+    'nid-landscape': { w: 85.6, h: 53.98 },
+    'nid-portrait': { w: 53.98, h: 85.6 },
+    'student-landscape': { w: 85.6, h: 54 },
+    'student-portrait': { w: 54, h: 85.6 },
+    'business-landscape': { w: 85, h: 55 },
+    'business-portrait': { w: 55, h: 85 }
+  };
+
   const frontImgRef = useRef(null);
   const backImgRef = useRef(null);
 
@@ -110,7 +124,6 @@ export default function IdCardCropToPDF() {
 
   const dist = (p1, p2) => Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
 
-  // Perspective Crop Logic (Black Shadow Fixed)
   const handleConfirmCrop = (target) => {
     const imgRef = target === 'front' ? frontImgRef.current : backImgRef.current;
     const pts = target === 'front' ? frontPts : backPts;
@@ -126,14 +139,11 @@ export default function IdCardCropToPDF() {
     canvas.height = outH;
     const ctx = canvas.getContext('2d');
 
-    // ১. ক্যানভাস সাদা করে দিচ্ছি যাতে কালো দাগ না আসে
     ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, outW, outH);
 
-    // Triangle 1
     ctx.save();
     ctx.beginPath();
-    // ২. ১ পিক্সেল বড় করে ক্লিপ করছি যাতে ফাঁকা লাইন না থাকে
     ctx.moveTo(-1, -1); ctx.lineTo(outW + 1, -1); ctx.lineTo(outW + 1, outH + 1); ctx.closePath();
     ctx.clip();
     const m1 = getAffineTransformMatrix([p1, p2, p3], [{x:0,y:0}, {x:outW,y:0}, {x:outW,y:outH}]);
@@ -141,7 +151,6 @@ export default function IdCardCropToPDF() {
     ctx.drawImage(imgRef, 0, 0);
     ctx.restore();
 
-    // Triangle 2
     ctx.save();
     ctx.beginPath();
     ctx.moveTo(-1, -1); ctx.lineTo(outW + 1, outH + 1); ctx.lineTo(-1, outH + 1); ctx.closePath();
@@ -180,10 +189,14 @@ export default function IdCardCropToPDF() {
     setIsProcessing(false);
   };
 
+  // A4 Canvas Generate with Auto Selected Size
   const buildA4Canvas = async () => {
+    const dpi = 150; 
     const canvas = document.createElement('canvas');
-    canvas.width = 1240; canvas.height = 1754;
+    canvas.width = 1240; 
+    canvas.height = 1754;
     const ctx = canvas.getContext('2d');
+    
     ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
@@ -193,28 +206,54 @@ export default function IdCardCropToPDF() {
       img.src = url;
     });
 
+    const selectedSize = cardSizes[cardType];
+    const cardW_px = (selectedSize.w / 25.4) * dpi;
+    const cardH_px = (selectedSize.h / 25.4) * dpi;
+    const gap_px = 20;
+
+    const x = (canvas.width - cardW_px) / 2;
+    let y = (canvas.height - (cardH_px * 2 + gap_px)) / 2;
+
     const frontImg = finalFront ? await loadImage(finalFront) : null;
     const backImg = finalBack ? await loadImage(finalBack) : null;
-    const maxWidth = 700, gap = 150;
-    let currentY = 150;
 
-    const drawImage = (img) => {
-      let w = img.width, h = img.height;
-      if (w > maxWidth) { h = (maxWidth / w) * h; w = maxWidth; }
-      const x = (canvas.width - w) / 2;
-      ctx.drawImage(img, x, currentY, w, h);
-      currentY += h + gap;
+    const drawCard = (img) => {
+      if (!img) return;
+
+      ctx.strokeStyle = '#CCCCCC';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x, y, cardW_px, cardH_px);
+
+      const imgRatio = img.width / img.height;
+      const cardRatio = cardW_px / cardH_px;
+      let dw, dh, dx, dy;
+
+      if (imgRatio > cardRatio) {
+        dh = cardH_px; dw = dh * imgRatio; dx = x - (dw - cardW_px) / 2; dy = y;
+      } else {
+        dw = cardW_px; dh = dw / imgRatio; dx = x; dy = y - (dh - cardH_px) / 2;
+      }
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(x, y, cardW_px, cardH_px);
+      ctx.clip();
+      ctx.drawImage(img, dx, dy, dw, dh);
+      ctx.restore();
+
+      y += cardH_px + gap_px;
     };
 
-    if (frontImg) drawImage(frontImg);
-    if (backImg) drawImage(backImg);
+    if (frontImg) drawCard(frontImg);
+    if (backImg) drawCard(backImg);
+    
     return canvas;
   };
 
   const handleDownloadA4PNG = async () => {
     const canvas = await buildA4Canvas();
     const link = document.createElement('a');
-    link.download = 'id-card-a4.png';
+    link.download = 'id-card-exact-size.png';
     link.href = canvas.toDataURL('image/png');
     link.click();
   };
@@ -222,17 +261,25 @@ export default function IdCardCropToPDF() {
   const handleDownloadA4JPG = async () => {
     const canvas = await buildA4Canvas();
     const link = document.createElement('a');
-    link.download = 'id-card-a4.jpg';
+    link.download = 'id-card-exact-size.jpg';
     link.href = canvas.toDataURL('image/jpeg', 0.95);
     link.click();
   };
 
   const handleDownloadA4PDF = async () => {
-    const canvas = await buildA4Canvas();
-    const imgData = canvas.toDataURL('image/jpeg', 0.95);
     const pdf = new jsPDF('p', 'mm', 'a4');
-    pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
-    pdf.save('id-card-a4.pdf');
+    const selectedSize = cardSizes[cardType];
+    const gap = 5; 
+    const x = (210 - selectedSize.w) / 2;
+    const y = (297 - (selectedSize.h * 2 + gap)) / 2;
+
+    const frontData = finalFront || croppedFront;
+    const backData = finalBack || croppedBack;
+
+    if (frontData) pdf.addImage(frontData, 'JPEG', x, y, selectedSize.w, selectedSize.h, undefined, 'FAST');
+    if (backData) pdf.addImage(backData, 'JPEG', x, y + selectedSize.h + gap, selectedSize.w, selectedSize.h, undefined, 'FAST');
+    
+    pdf.save('id-card-exact-size.pdf');
   };
 
   const handleDirectA4Print = async () => {
@@ -308,8 +355,8 @@ export default function IdCardCropToPDF() {
          onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}
     >
       <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 20px', textAlign: 'center' }}>
-        <h1 style={{ color: 'white', marginBottom: '10px' }}>🆔 ID Card to A4 (Perspective Crop)</h1>
-        <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '30px' }}>৪টি বেগুনি বিন্দু টেনে আইডি কার্ডের ঠিক কোণায় বসান, সোজা হয়ে যাবে!</p>
+        <h1 style={{ color: 'white', marginBottom: '10px' }}>🆔 ID Card to A4 (Exact Size Print)</h1>
+        <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '30px' }}>৪টি বেগুনি বিন্দু টেনে কার্ডের ঠিক কোণায় বসান। নিচ থেকে কার্ডের ধরন সিলেক্ট করে প্রিন্ট করুন।</p>
         
         <div className="glass-3d" style={{ padding: '30px' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', marginBottom: '30px' }}>
@@ -333,18 +380,49 @@ export default function IdCardCropToPDF() {
           </div>
 
           {croppedFront && croppedBack && !isEnhanced && (
-            <button onClick={handleEnhance} disabled={isProcessing} className="neon-3d-btn" style={{ width: '100%', padding: '14px', fontSize: '16px', marginBottom: '20px', opacity: isProcessing ? 0.5 : 1 }}>
-              {isProcessing ? '⏳ ম্যাজিক ফিল্টার প্রসেসিং হচ্ছে...' : '✨ Upscale & Enhance (Magic Filter)'}
-            </button>
+            <>
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ color: 'rgba(255,255,255,0.8)', fontWeight: '600', display: 'block', marginBottom: '10px' }}>কার্ডের ধরন সিলেক্ট করুন:</label>
+                <select value={cardType} onChange={(e) => setCardType(e.target.value)} className="d-input" style={{ maxWidth: '300px', margin: '0 auto' }}>
+                  <option value="id-landscape" style={{background: '#1a1c2e'}}>ID Card - Landscape (85.6x54mm)</option>
+                  <option value="id-portrait" style={{background: '#1a1c2e'}}>ID Card - Portrait (54x85.6mm)</option>
+                  <option value="nid-landscape" style={{background: '#1a1c2e'}}>NID Card - Landscape (85.6x53.98mm)</option>
+                  <option value="nid-portrait" style={{background: '#1a1c2e'}}>NID Card - Portrait (53.98x85.6mm)</option>
+                  <option value="student-landscape" style={{background: '#1a1c2e'}}>Student ID - Landscape (85.6x54mm)</option>
+                  <option value="student-portrait" style={{background: '#1a1c2e'}}>Student ID - Portrait (54x85.6mm)</option>
+                  <option value="business-landscape" style={{background: '#1a1c2e'}}>Business Card - Landscape (85x55mm)</option>
+                  <option value="business-portrait" style={{background: '#1a1c2e'}}>Business Card - Portrait (55x85mm)</option>
+                </select>
+              </div>
+
+              <button onClick={handleEnhance} disabled={isProcessing} className="neon-3d-btn" style={{ width: '100%', padding: '14px', fontSize: '16px', marginBottom: '20px', opacity: isProcessing ? 0.5 : 1 }}>
+                {isProcessing ? '⏳ ম্যাজিক ফিল্টার প্রসেসিং হচ্ছে...' : '✨ Upscale & Enhance (Magic Filter)'}
+              </button>
+            </>
           )}
 
           {isEnhanced && (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
-              <button onClick={handleDownloadA4PNG} className="d-btn-green glow-btn-green" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>💾 Save as A4 PNG</button>
-              <button onClick={handleDownloadA4JPG} className="d-btn-purple glow-btn-purple" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>💾 Save as A4 JPG</button>
-              <button onClick={handleDownloadA4PDF} className="d-btn-orange glow-btn-orange" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>💾 Save as A4 PDF</button>
-              <button onClick={handleDirectA4Print} className="d-btn glow-btn" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>🖨️ Direct A4 Print</button>
-            </div>
+            <>
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ color: 'rgba(255,255,255,0.8)', fontWeight: '600', display: 'block', marginBottom: '10px' }}>কার্ডের ধরন সিলেক্ট করুন:</label>
+                <select value={cardType} onChange={(e) => setCardType(e.target.value)} className="d-input" style={{ maxWidth: '300px', margin: '0 auto' }}>
+                  <option value="id-landscape" style={{background: '#1a1c2e'}}>ID Card - Landscape (85.6x54mm)</option>
+                  <option value="id-portrait" style={{background: '#1a1c2e'}}>ID Card - Portrait (54x85.6mm)</option>
+                  <option value="nid-landscape" style={{background: '#1a1c2e'}}>NID Card - Landscape (85.6x53.98mm)</option>
+                  <option value="nid-portrait" style={{background: '#1a1c2e'}}>NID Card - Portrait (53.98x85.6mm)</option>
+                  <option value="student-landscape" style={{background: '#1a1c2e'}}>Student ID - Landscape (85.6x54mm)</option>
+                  <option value="student-portrait" style={{background: '#1a1c2e'}}>Student ID - Portrait (54x85.6mm)</option>
+                  <option value="business-landscape" style={{background: '#1a1c2e'}}>Business Card - Landscape (85x55mm)</option>
+                  <option value="business-portrait" style={{background: '#1a1c2e'}}>Business Card - Portrait (55x85mm)</option>
+                </select>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
+                <button onClick={handleDownloadA4PNG} className="d-btn-green glow-btn-green" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>💾 Save as A4 PNG</button>
+                <button onClick={handleDownloadA4JPG} className="d-btn-purple glow-btn-purple" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>💾 Save as A4 JPG</button>
+                <button onClick={handleDownloadA4PDF} className="d-btn-orange glow-btn-orange" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>💾 Save as A4 PDF</button>
+                <button onClick={handleDirectA4Print} className="d-btn glow-btn" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>🖨️ Direct A4 Print</button>
+              </div>
+            </>
           )}
         </div>
       </div>
