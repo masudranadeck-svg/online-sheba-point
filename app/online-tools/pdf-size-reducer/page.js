@@ -1,5 +1,6 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import jsPDF from 'jspdf';
 
 export default function PdfSizeReducer() {
   const [originalSize, setOriginalSize] = useState(0);
@@ -12,6 +13,34 @@ export default function PdfSizeReducer() {
   
   const [compressionType, setCompressionType] = useState('medium_high');
   const [customTarget, setCustomTarget] = useState(500);
+  const [isLibReady, setIsLibReady] = useState(false);
+
+  // CDN থেকে লাইব্রেরি লোড করার সিস্টেম (কোনো এরর আসবে না)
+  useEffect(() => {
+    const scriptId = 'pdfjs-cdn-script';
+    if (document.getElementById(scriptId)) {
+      if (window.pdfjsLib) setIsLibReady(true);
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.id = scriptId;
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+    script.async = true;
+    
+    script.onload = () => {
+      if (window.pdfjsLib) {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        setIsLibReady(true);
+      }
+    };
+    
+    script.onerror = () => {
+      setError('লাইব্রেরি লোড করতে ব্যর্থ হয়েছে। ইন্টারনেট সংযোগ চেক করুন।');
+    };
+    
+    document.body.appendChild(script);
+  }, []);
 
   const handleFileChange = async (e) => {
     const file = e.target.files?.[0];
@@ -27,26 +56,19 @@ export default function PdfSizeReducer() {
   };
 
   const handleCompress = async (file) => {
-    if (!file) return;
+    if (!file || !isLibReady || !window.pdfjsLib) {
+      setError('লাইব্রেরি এখনো লোড হয়নি, একটু পরে চেষ্টা করুন।');
+      return;
+    }
+    
     setLoading(true);
     setError('');
-    setLoadingText('লাইব্রেরি লোড হচ্ছে...');
+    setLoadingText('পিডিএফ প্রসেস করা হচ্ছে...');
     
     try {
-      // Legacy build ব্যবহার করা হচ্ছে Next.js এর জন্য সবচেয়ে স্টেবল
-      const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf');
-      
-      // ওয়ার্কার সম্পূর্ণ বন্ধ করে দেওয়া হয়েছে, তাই CORS বা 404 এরর আসবে না
-      pdfjsLib.GlobalWorkerOptions.workerSrc = '';
-      
-      const jsPDFModule = await import('jspdf');
-      const jsPDF = jsPDFModule.default;
-
-      setLoadingText('পিডিএফ প্রসেস করা হচ্ছে...');
+      const pdfjsLib = window.pdfjsLib;
       const arrayBuffer = await file.arrayBuffer();
-      
-      // disableWorker: true দেওয়া হয়েছে
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer, disableWorker: true, isEvalSupported: false }).promise;
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
       
       const renderPdf = async (scale, quality) => {
         const newPdf = new jsPDF({ unit: 'pt', format: 'a4' });
@@ -112,6 +134,22 @@ export default function PdfSizeReducer() {
     setCompressionType('medium_high');
     setCustomTarget(500);
   };
+
+  // লাইব্রেরি লোড না হলে রোধ করার জন্য
+  if (!isLibReady && !error) {
+    return (
+      <div className="deepin-body" style={{ minHeight: '100vh', paddingTop: '150px', paddingBottom: '40px' }}>
+        <div style={{ maxWidth: '600px', margin: '0 auto', padding: '0 20px', textAlign: 'center' }}>
+          <h1 style={{ color: 'white', marginBottom: '10px' }}>📉 PDF Size Reducer</h1>
+          <div className="glass-3d" style={{ padding: '40px' }}>
+            <div style={{ fontSize: '40px', marginBottom: '20px' }}>⏳</div>
+            <p style={{ color: 'white', fontSize: '18px' }}>টুল লোড হচ্ছে...</p>
+            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px' }}>(প্রথমবার ৫-১০ সেকেন্ড সময় লাগতে পারে)</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="deepin-body" style={{ minHeight: '100vh', paddingTop: '150px', paddingBottom: '40px' }}>
