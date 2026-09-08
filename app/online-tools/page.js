@@ -16,8 +16,15 @@ export default function OnlineTools() {
     { name: 'Joint Photo Maker', link: '/online-tools/joint-photo-maker', icon: '👥', color: '#fb6340' },
     { name: 'Invoice Maker', link: '/online-tools/invoice-maker', icon: '🧾', color: '#2dce89' },
     { name: 'Quotation Maker', link: '/online-tools/quotation-maker', icon: '💲', color: '#fb6340' },
-    // নাম পরিবর্তন করা হয়েছে এখানে
-    { name: 'PDF Size Reducer', link: '/online-tools/pdf-size-reducer', icon: '📉', color: '#4e6ef2' }
+    { name: 'PDF Size Reducer', link: '/online-tools/pdf-size-reducer', icon: '📉', color: '#4e6ef2' },
+    { name: 'Bangla Sign Maker', link: '/online-tools/bangla-sign-maker', icon: '✍️', color: '#2dce89' },
+    { name: 'Signature BG Remover', link: '/online-tools/signature-bg-remover', icon: '🖌️', color: '#fb6340' },
+    { name: 'Image BG Remover', link: '/online-tools/image-bg-remover', icon: '🖼️', color: '#a855f7' },
+    { name: 'Advance Image Crop', link: '/online-tools/advance-image-crop', icon: '✂️', color: '#4e6ef2' },
+    { name: 'Image Converter', link: '/online-tools/image-converter', icon: '🔁', color: '#fb6340' },
+    { name: 'PDF to Image', link: '/online-tools/pdf-to-image', icon: '🖼️', color: '#a855f7' },
+    { name: 'Image to PDF', link: '/online-tools/image-to-pdf', icon: '📄', color: '#2dce89' },
+    { name: 'Image to Text', link: '/online-tools/image-to-text', icon: '🔠', color: '#4e6ef2' }
   ];
 
   const handleClick = (tool) => {
@@ -33,7 +40,7 @@ export default function OnlineTools() {
       <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 20px' }}>
         <div style={{ textAlign: 'center', marginBottom: '40px' }}>
           <h1 style={{ fontSize: '36px', fontWeight: 800, color: 'white', margin: 0, textShadow: '2px 2px 0 #333, 4px 4px 10px rgba(0,0,0,0.8)' }}>🛠️ ফ্রি অনলাইন টুলস</h1>
-          <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.6)', marginTop: '10px' }}>আপনার দৈনন্দিন কাজের জন্য সেরা ওয়েব টুলস</p>
+          <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.6)', marginTop: '10px' }}>আপনার দৈনন্দিন কাজের জন্য সেরা ১৯টি ওয়েব টুলস</p>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px' }}>
