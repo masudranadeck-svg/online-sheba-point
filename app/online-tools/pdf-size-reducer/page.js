@@ -33,17 +33,20 @@ export default function PdfSizeReducer() {
     setLoadingText('লাইব্রেরি লোড হচ্ছে...');
     
     try {
-      // ১. লোকাল প্যাকেজ থেকে লোড করা হচ্ছে (CORS এরর হবে না)
-      const pdfjsLib = await import('pdfjs-dist/build/pdf');
-      const pdfjsWorker = await import('pdfjs-dist/build/pdf.worker.mjs');
-      pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker.default;
-
+      // Legacy build ব্যবহার করা হচ্ছে Next.js এর জন্য সবচেয়ে স্টেবল
+      const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf');
+      
+      // ওয়ার্কার সম্পূর্ণ বন্ধ করে দেওয়া হয়েছে, তাই CORS বা 404 এরর আসবে না
+      pdfjsLib.GlobalWorkerOptions.workerSrc = '';
+      
       const jsPDFModule = await import('jspdf');
       const jsPDF = jsPDFModule.default;
 
       setLoadingText('পিডিএফ প্রসেস করা হচ্ছে...');
       const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      
+      // disableWorker: true দেওয়া হয়েছে
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer, disableWorker: true, isEvalSupported: false }).promise;
       
       const renderPdf = async (scale, quality) => {
         const newPdf = new jsPDF({ unit: 'pt', format: 'a4' });
