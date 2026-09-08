@@ -1,15 +1,16 @@
 'use client';
 import { useState, useEffect } from 'react';
+import JSZip from 'jszip';
 
 export default function PdfToImage() {
   const [pdfFile, setPdfFile] = useState(null);
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingText, setLoadingText] = useState('পিডিএফ প্রসেস করা হচ্ছে...');
+  const [zipping, setZipping] = useState(false);
   const [error, setError] = useState('');
   const [isLibReady, setIsLibReady] = useState(false);
 
-  // CDN থেকে লাইব্রেরি লোড করার সিস্টেম (কোনো এরর আসবে না)
   useEffect(() => {
     const scriptId = 'pdfjs-cdn-script';
     if (document.getElementById(scriptId)) {
@@ -64,8 +65,6 @@ export default function PdfToImage() {
       for (let i = 1; i <= pdf.numPages; i++) {
         setLoadingText(`পেজ ${i} এর ছবি তৈরি হচ্ছে... (${i}/${pdf.numPages})`);
         const page = await pdf.getPage(i);
-        
-        // Scale 1.5 দিলে ভালো কোয়ালিটির ছবি পাওয়া যায়
         const viewport = page.getViewport({ scale: 1.5 });
         const canvas = document.createElement('canvas');
         canvas.width = viewport.width;
@@ -73,8 +72,6 @@ export default function PdfToImage() {
         const context = canvas.getContext('2d');
 
         await page.render({ canvasContext: context, viewport }).promise;
-        
-        // PNG ফরম্যাটে কনভার্ট করা হচ্ছে
         const imgData = canvas.toDataURL('image/png');
         extractedImages.push(imgData);
       }
@@ -82,7 +79,7 @@ export default function PdfToImage() {
       setImages(extractedImages);
     } catch (err) {
       console.error("PDF to Image Error:", err);
-      setError('পিডিএফ প্রসেস করতে সমস্যা হয়েছে! ফাইলটি করাপ্ট নাকে চেক করুন।');
+      setError('পিডিএফ প্রসেস করতে সমস্যা হয়েছে!');
     }
     setLoading(false);
   };
@@ -94,13 +91,39 @@ export default function PdfToImage() {
     link.click();
   };
 
+  // ZIP ডাউনলোডের ফাংশন
+  const downloadAllAsZip = async () => {
+    if (images.length === 0) return;
+    setZipping(true);
+
+    try {
+      const zip = new JSZip();
+      images.forEach((imgData, i) => {
+        // Base64 থেকে শুধু ডাটা অংশটুকু আলাদা করা হচ্ছে
+        const base64Data = imgData.split(',')[1];
+        zip.file(`page-${i + 1}.png`, base64Data, { base64: true });
+      });
+
+      const blob = await zip.generateAsync({ type: 'blob' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'pdf-images.zip';
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("ZIP Error:", err);
+      alert('ZIP ফাইল তৈরি করতে সমস্যা হয়েছে!');
+    }
+    setZipping(false);
+  };
+
   const clearAll = () => {
     setPdfFile(null);
     setImages([]);
     setError('');
   };
 
-  // লাইব্রেরি লোড না হলে রোধ করার জন্য
   if (!isLibReady && !error) {
     return (
       <div className="deepin-body" style={{ minHeight: '100vh', paddingTop: '150px', paddingBottom: '40px' }}>
@@ -120,7 +143,7 @@ export default function PdfToImage() {
     <div className="deepin-body" style={{ minHeight: '100vh', paddingTop: '150px', paddingBottom: '40px' }}>
       <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 20px', textAlign: 'center' }}>
         <h1 style={{ color: 'white', marginBottom: '10px' }}>🖼️ PDF to Image Converter</h1>
-        <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '30px' }}>পিডিএফ আপলোড করুন এবং প্রতিটি পেজের ছবি (PNG) আলাদা করে ডাউনলোড করুন।</p>
+        <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '30px' }}>পিডিএফ আপলোড করুন এবং প্রতিটি পেজের ছবি (PNG) আলাদা করে বা ZIP ফাইলে ডাউনলোড করুন।</p>
         
         <div className="glass-3d" style={{ padding: '30px' }}>
           
@@ -152,6 +175,16 @@ export default function PdfToImage() {
             <div>
               <h3 style={{ color: 'white', marginBottom: '20px' }}>সফলভাবে {images.length} টি পেজের ছবি তৈরি হয়েছে!</h3>
               
+              {/* ZIP Download Button */}
+              <button 
+                onClick={downloadAllAsZip} 
+                disabled={zipping} 
+                className="d-btn-purple glow-btn-purple" 
+                style={{ width: '100%', padding: '14px', fontSize: '16px', border: 'none', cursor: 'pointer', marginBottom: '20px', opacity: zipping ? 0.5 : 1 }}
+              >
+                {zipping ? '⏳ ZIP তৈরি হচ্ছে...' : '🗜️ Download All as ZIP'}
+              </button>
+
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px', marginBottom: '30px' }}>
                 {images.map((img, i) => (
                   <div key={i} style={{ border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', overflow: 'hidden', background: 'white' }}>
@@ -161,7 +194,7 @@ export default function PdfToImage() {
                       className="d-btn-green" 
                       style={{ width: '100%', padding: '8px', border: 'none', cursor: 'pointer', fontSize: '14px', borderRadius: '0' }}
                     >
-                      💾 Download Page {i + 1}
+                      💾 Page {i + 1}
                     </button>
                   </div>
                 ))}
