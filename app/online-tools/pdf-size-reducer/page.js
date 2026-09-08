@@ -1,251 +1,73 @@
 'use client';
-import { useState, useEffect } from 'react';
-import jsPDF from 'jspdf';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-export default function PdfSizeReducer() {
-  const [originalSize, setOriginalSize] = useState(0);
-  const [reducedSize, setReducedSize] = useState(0);
-  const [compressedUrl, setCompressedUrl] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [loadingText, setLoadingText] = useState('পিডিএফ সাইজ কমানো হচ্ছে...');
-  const [fileName, setFileName] = useState('reduced.pdf');
-  const [error, setError] = useState('');
-  
-  const [compressionType, setCompressionType] = useState('medium_high');
-  const [customTarget, setCustomTarget] = useState(500);
-  const [isLibReady, setIsLibReady] = useState(false);
+export default function OnlineTools() {
+  const router = useRouter();
 
-  // CDN থেকে লাইব্রেরি লোড করার সিস্টেম (কোনো এরর আসবে না)
-  useEffect(() => {
-    const scriptId = 'pdfjs-cdn-script';
-    if (document.getElementById(scriptId)) {
-      if (window.pdfjsLib) setIsLibReady(true);
-      return;
+  const tools = [
+    // আগের ১১টি টুল
+    { name: 'ID Card Crop to PDF', link: '/online-tools/id-card-crop', icon: '🆔', color: '#4e6ef2' },
+    { name: 'Passport Photo Maker', link: '/online-tools/passport-photo-maker', icon: '📸', color: '#a855f7' },
+    { name: 'Stamp Photo Maker', link: '/online-tools/stamp-photo-maker', icon: '🟫', color: '#2dce89' },
+    { name: 'NID Front-Back Joiner', link: '/online-tools/nid-joiner', icon: '📄', color: '#2dce89' },
+    { name: 'Professional CV Maker', link: '/online-tools/cv-builder', icon: '💼', color: '#fb6340' },
+    { name: 'AI Passport Photo Maker', link: '/online-tools/ai-passport-photo-maker', icon: '🤖', color: '#4e6ef2' },
+    { name: 'Studio Photo Print Layout', link: '/online-tools/studio-print-layout', icon: '🖼️', color: '#2dce89' },
+    { name: 'Joint Photo Maker', link: '/online-tools/joint-photo-maker', icon: '👥', color: '#fb6340' },
+    { name: 'Invoice Maker', link: '/online-tools/invoice-maker', icon: '🧾', color: '#2dce89' },
+    { name: 'Quotation Maker', link: '/online-tools/quotation-maker', icon: '💲', color: '#fb6340' },
+    { name: 'PDF Size Reducer', link: '/online-tools/pdf-size-reducer', icon: '📉', color: '#4e6ef2' },
+    
+    // নতুন যোগ করা ৮টি টুল
+    { name: 'Bangla Sign Maker', link: '/online-tools/bangla-sign-maker', icon: '✍️', color: '#2dce89' },
+    { name: 'Signature BG Remover', link: '/online-tools/signature-bg-remover', icon: '🖌️', color: '#fb6340' },
+    { name: 'Image BG Remover', link: '/online-tools/image-bg-remover', icon: '🖼️', color: '#a855f7' },
+    { name: 'Advance Image Crop', link: '/online-tools/advance-image-crop', icon: '✂️', color: '#4e6ef2' },
+    { name: 'Image Converter', link: '/online-tools/image-converter', icon: '🔁', color: '#fb6340' },
+    { name: 'PDF to Image', link: '/online-tools/pdf-to-image', icon: '🖼️', color: '#a855f7' },
+    { name: 'Image to PDF', link: '/online-tools/image-to-pdf', icon: '📄', color: '#2dce89' },
+    { name: 'Image to Text', link: '/online-tools/image-to-text', icon: '🔠', color: '#4e6ef2' }
+  ];
+
+  const handleClick = (tool) => {
+    if (tool.link !== '#') {
+      router.push(tool.link);
+    } else {
+      alert(`"${tool.name}" টুলটি শীঘ্রই আসছে! 🚀`);
     }
-
-    const script = document.createElement('script');
-    script.id = scriptId;
-    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
-    script.async = true;
-    
-    script.onload = () => {
-      if (window.pdfjsLib) {
-        window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-        setIsLibReady(true);
-      }
-    };
-    
-    script.onerror = () => {
-      setError('লাইব্রেরি লোড করতে ব্যর্থ হয়েছে। ইন্টারনেট সংযোগ চেক করুন।');
-    };
-    
-    document.body.appendChild(script);
-  }, []);
-
-  const handleFileChange = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setOriginalSize((file.size / 1024).toFixed(2));
-    setReducedSize(0);
-    setCompressedUrl(null);
-    setError('');
-    setFileName(file.name.replace('.pdf', '') + '-reduced.pdf');
-    
-    handleCompress(file);
   };
-
-  const handleCompress = async (file) => {
-    if (!file || !isLibReady || !window.pdfjsLib) {
-      setError('লাইব্রেরি এখনো লোড হয়নি, একটু পরে চেষ্টা করুন।');
-      return;
-    }
-    
-    setLoading(true);
-    setError('');
-    setLoadingText('পিডিএফ প্রসেস করা হচ্ছে...');
-    
-    try {
-      const pdfjsLib = window.pdfjsLib;
-      const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-      
-      const renderPdf = async (scale, quality) => {
-        const newPdf = new jsPDF({ unit: 'pt', format: 'a4' });
-        for (let i = 1; i <= pdf.numPages; i++) {
-          const page = await pdf.getPage(i);
-          const viewport = page.getViewport({ scale: scale });
-          const canvas = document.createElement('canvas');
-          canvas.width = viewport.width;
-          canvas.height = viewport.height;
-          const context = canvas.getContext('2d');
-          
-          await page.render({ canvasContext: context, viewport }).promise;
-          const imgData = canvas.toDataURL('image/jpeg', quality);
-          
-          if (i > 1) newPdf.addPage([viewport.width, viewport.height], 'pt');
-          else { newPdf.internal.pageSize.width = viewport.width; newPdf.internal.pageSize.height = viewport.height; }
-          newPdf.addImage(imgData, 'JPEG', 0, 0, viewport.width, viewport.height);
-        }
-        return newPdf.output('blob');
-      };
-
-      let scale = 1.5;
-      let quality = 0.6;
-      let targetKB = 0;
-
-      if (compressionType === 'ultra_high') { scale = 3.0; quality = 0.95; }
-      else if (compressionType === 'high') { scale = 2.0; quality = 0.8; }
-      else if (compressionType === 'medium_high') { scale = 1.5; quality = 0.6; }
-      else if (compressionType === 'medium_low') { scale = 1.0; quality = 0.4; }
-      else if (compressionType === 'extreme') { scale = 0.8; quality = 0.3; }
-      else if (compressionType === 'target_300') { targetKB = 300; scale = 1.5; quality = 0.6; }
-      else if (compressionType === 'custom') { targetKB = customTarget; scale = 1.5; quality = 0.6; }
-
-      let blob = await renderPdf(scale, quality);
-
-      if (targetKB > 0) {
-        let attempts = 0;
-        while (blob.size / 1024 > targetKB && attempts < 3) {
-          setLoadingText(`টার্গেট সাইজে আনা হচ্ছে... (চেষ্টা ${attempts + 1}/3)`);
-          if (quality > 0.3) quality -= 0.15;
-          else if (scale > 0.5) scale -= 0.3;
-          else break;
-          blob = await renderPdf(scale, quality);
-          attempts++;
-        }
-      }
-
-      const url = URL.createObjectURL(blob);
-      setCompressedUrl(url);
-      setReducedSize((blob.size / 1024).toFixed(2));
-    } catch (err) {
-      console.error("Compression Error:", err);
-      setError('পিডিএফ প্রসেস করতে সমস্যা হয়েছে! অনুগ্রহ করে আরেকটি পিডিএফ দিয়ে চেষ্টা করুন।');
-    }
-    setLoading(false);
-  };
-
-  const clearFile = () => {
-    setCompressedUrl(null);
-    setReducedSize(0);
-    setOriginalSize(0);
-    setError('');
-    setCompressionType('medium_high');
-    setCustomTarget(500);
-  };
-
-  // লাইব্রেরি লোড না হলে রোধ করার জন্য
-  if (!isLibReady && !error) {
-    return (
-      <div className="deepin-body" style={{ minHeight: '100vh', paddingTop: '150px', paddingBottom: '40px' }}>
-        <div style={{ maxWidth: '600px', margin: '0 auto', padding: '0 20px', textAlign: 'center' }}>
-          <h1 style={{ color: 'white', marginBottom: '10px' }}>📉 PDF Size Reducer</h1>
-          <div className="glass-3d" style={{ padding: '40px' }}>
-            <div style={{ fontSize: '40px', marginBottom: '20px' }}>⏳</div>
-            <p style={{ color: 'white', fontSize: '18px' }}>টুল লোড হচ্ছে...</p>
-            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px' }}>(প্রথমবার ৫-১০ সেকেন্ড সময় লাগতে পারে)</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="deepin-body" style={{ minHeight: '100vh', paddingTop: '150px', paddingBottom: '40px' }}>
-      <div style={{ maxWidth: '600px', margin: '0 auto', padding: '0 20px', textAlign: 'center' }}>
-        <h1 style={{ color: 'white', marginBottom: '10px' }}>📉 PDF Size Reducer</h1>
-        <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '30px' }}>৭টি অপশন থেকে আপনার পছন্দের কোয়ালিটি বা কাস্টম সাইজ নির্বাচন করুন।</p>
-        
-        <div className="glass-3d" style={{ padding: '40px' }}>
-          
-          {!compressedUrl && !loading && !error && (
-            <>
-              <div style={{ marginBottom: '20px', textAlign: 'left' }}>
-                <label style={{ color: 'rgba(255,255,255,0.8)', display: 'block', marginBottom: '8px', fontWeight: '600' }}>Compression Quality (7 Options):</label>
-                <select 
-                  value={compressionType} 
-                  onChange={(e) => setCompressionType(e.target.value)} 
-                  className="d-input" 
-                  style={{ maxWidth: '100%', margin: '0 auto', marginBottom: '15px' }}
-                >
-                  <option value="ultra_high" style={{background: '#1a1c2e'}}>Ultra High Quality (Best for Fine Text & Prints)</option>
-                  <option value="high" style={{background: '#1a1c2e'}}>High Quality (Sharp Text & Graphics)</option>
-                  <option value="medium_high" style={{background: '#1a1c2e'}}>Medium - High Quality (Great Balance)</option>
-                  <option value="medium_low" style={{background: '#1a1c2e'}}>Medium - Low Quality (Small Size)</option>
-                  <option value="extreme" style={{background: '#1a1c2e'}}>Extreme Compress (Smallest Size / Low Quality)</option>
-                  <option value="target_300" style={{background: '#1a1c2e'}}>Target ~300 KB (Highly Optimized)</option>
-                  <option value="custom" style={{background: '#1a1c2e'}}>Custom Size (Target KB)</option>
-                </select>
+      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 20px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+          <h1 style={{ fontSize: '36px', fontWeight: 800, color: 'white', margin: 0, textShadow: '2px 2px 0 #333, 4px 4px 10px rgba(0,0,0,0.8)' }}>🛠️ ফ্রি অনলাইন টুলস</h1>
+          <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.6)', marginTop: '10px' }}>আপনার দৈনন্দিন কাজের জন্য সেরা ১৯টি ওয়েব টুলস</p>
+        </div>
 
-                {compressionType === 'custom' && (
-                  <div style={{ marginTop: '15px' }}>
-                    <label style={{ color: 'rgba(255,255,255,0.8)', display: 'block', marginBottom: '5px' }}>Target Size (KB):</label>
-                    <input 
-                      type="number" 
-                      value={customTarget} 
-                      onChange={(e) => setCustomTarget(Number(e.target.value))} 
-                      className="d-input" 
-                      style={{ maxWidth: '150px', margin: '0 auto', textAlign: 'center' }}
-                      placeholder="e.g. 500"
-                    />
-                    <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '12px', marginTop: '5px' }}>(নোট: পিডিএফের পেজ সংখ্যা বেশি হলে কাস্টম সাইজে কোয়ালিটি কিছুটা কমতে পারে)</p>
-                  </div>
-                )}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px' }}>
+          {tools.map((tool, i) => (
+            <div 
+              key={i} 
+              onClick={() => handleClick(tool)} 
+              className="glass-3d" 
+              style={{ cursor: 'pointer', textAlign: 'center' }}
+            >
+              <div style={{
+                width: 60, height: 60, borderRadius: 16,
+                background: `rgba(${tool.color === '#4e6ef2' ? '78,110,242' : tool.color === '#a855f7' ? '168,85,247' : tool.color === '#2dce89' ? '45,206,137' : '251,99,64'}, 0.1)`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 28, margin: '0 auto 16px auto', border: `1px solid ${tool.color}30`
+              }}>
+                {tool.icon}
               </div>
-
-              <div style={{ border: '2px dashed rgba(78,110,242,0.5)', borderRadius: '12px', padding: '40px', background: 'rgba(0,0,0,0.2)' }}>
-                <input type="file" accept="application/pdf" onChange={handleFileChange} style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px' }} />
-              </div>
-            </>
-          )}
-
-          {loading && (
-            <div>
-              <div style={{ fontSize: '40px', marginBottom: '20px' }}>⏳</div>
-              <p style={{ color: 'white', fontSize: '18px' }}>{loadingText}</p>
-              <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px' }}>(পেজের সংখ্যা অনুযায়ী সময় লাগতে পারে)</p>
-            </div>
-          )}
-
-          {error && !loading && (
-            <div>
-              <div style={{ fontSize: '40px', marginBottom: '20px', color: '#ff6b6b' }}>⚠️</div>
-              <p style={{ color: '#ff6b6b', fontSize: '16px', marginBottom: '20px' }}>{error}</p>
-              <button onClick={clearFile} className="d-btn-outline" style={{ padding: '10px 20px', border: 'none', cursor: 'pointer' }}>
-                🔄 আবার চেষ্টা করুন
+              <h3 style={{ fontSize: '16px', fontWeight: 700, color: 'white', margin: 0 }}>{tool.name}</h3>
+              <button className="d-btn-outline" style={{ marginTop: '16px', padding: '8px 16px', fontSize: '12px', width: '100%', boxSizing: 'border-box' }}>
+                ব্যবহার করুন →
               </button>
             </div>
-          )}
-
-          {compressedUrl && !loading && !error && (
-            <div>
-              <div style={{ fontSize: '50px', marginBottom: '20px' }}>✅</div>
-              <h3 style={{ color: 'white', marginBottom: '20px' }}>সাইজ কমানো সফল হয়েছে!</h3>
-              
-              <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginBottom: '30px', flexWrap: 'wrap' }}>
-                <div style={{ background: 'rgba(255,0,0,0.1)', padding: '15px 25px', borderRadius: '8px', border: '1px solid rgba(255,0,0,0.2)' }}>
-                  <p style={{ margin: 0, color: 'rgba(255,255,255,0.6)', fontSize: '12px' }}>Original Size</p>
-                  <p style={{ margin: '5px 0 0 0', color: '#ff6b6b', fontSize: '20px', fontWeight: 'bold' }}>{originalSize} KB</p>
-                </div>
-                <div style={{ background: 'rgba(45,206,137,0.1)', padding: '15px 25px', borderRadius: '8px', border: '1px solid rgba(45,206,137,0.2)' }}>
-                  <p style={{ margin: 0, color: 'rgba(255,255,255,0.6)', fontSize: '12px' }}>Reduced Size</p>
-                  <p style={{ margin: '5px 0 0 0', color: '#2dce89', fontSize: '20px', fontWeight: 'bold' }}>{reducedSize} KB</p>
-                </div>
-              </div>
-
-              <a href={compressedUrl} download={fileName} className="d-btn-green glow-btn-green" style={{ display: 'inline-block', padding: '14px 30px', textDecoration: 'none', border: 'none', cursor: 'pointer', fontSize: '16px' }}>
-                💾 Download Reduced PDF
-              </a>
-            </div>
-          )}
-
-          {(compressedUrl || loading) && !error && (
-            <button onClick={clearFile} className="d-btn-outline" style={{ marginTop: '20px', padding: '10px 20px', border: 'none', cursor: 'pointer' }}>
-              🔄 Clear File
-            </button>
-          )}
-
+          ))}
         </div>
       </div>
     </div>
