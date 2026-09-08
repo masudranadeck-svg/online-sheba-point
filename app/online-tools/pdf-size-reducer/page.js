@@ -8,18 +8,19 @@ export default function PdfSizeReducer() {
   const [loading, setLoading] = useState(false);
   const [loadingText, setLoadingText] = useState('পিডিএফ সাইজ কমানো হচ্ছে...');
   const [fileName, setFileName] = useState('reduced.pdf');
+  const [error, setError] = useState('');
   
-  // 7 Options State
   const [compressionType, setCompressionType] = useState('medium_high');
-  const [customTarget, setCustomTarget] = useState(500); // in KB
+  const [customTarget, setCustomTarget] = useState(500);
 
   const handleFileChange = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setOriginalSize((file.size / 1024).toFixed(2)); // KB
+    setOriginalSize((file.size / 1024).toFixed(2));
     setReducedSize(0);
     setCompressedUrl(null);
+    setError('');
     setFileName(file.name.replace('.pdf', '') + '-reduced.pdf');
     
     handleCompress(file);
@@ -28,19 +29,21 @@ export default function PdfSizeReducer() {
   const handleCompress = async (file) => {
     if (!file) return;
     setLoading(true);
-    setLoadingText('পিডিএফ প্রসেস করা হচ্ছে...');
+    setError('');
+    setLoadingText('লাইব্রেরি লোড হচ্ছে...');
     
     try {
       const pdfjsLib = await import('pdfjs-dist');
-      pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+      // Pinned Stable Version to prevent 404 Worker Error in Vercel
+      pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
 
       const jsPDFModule = await import('jspdf');
       const jsPDF = jsPDFModule.default;
 
+      setLoadingText('পিডিএফ প্রসেস করা হচ্ছে...');
       const arrayBuffer = await file.arrayBuffer();
       const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
       
-      // Render function to avoid repetition
       const renderPdf = async (scale, quality) => {
         const newPdf = new jsPDF({ unit: 'pt', format: 'a4' });
         for (let i = 1; i <= pdf.numPages; i++) {
@@ -50,6 +53,7 @@ export default function PdfSizeReducer() {
           canvas.width = viewport.width;
           canvas.height = viewport.height;
           const context = canvas.getContext('2d');
+          
           await page.render({ canvasContext: context, viewport }).promise;
           const imgData = canvas.toDataURL('image/jpeg', quality);
           
@@ -64,7 +68,6 @@ export default function PdfSizeReducer() {
       let quality = 0.6;
       let targetKB = 0;
 
-      // 7 Options Configuration
       if (compressionType === 'ultra_high') { scale = 3.0; quality = 0.95; }
       else if (compressionType === 'high') { scale = 2.0; quality = 0.8; }
       else if (compressionType === 'medium_high') { scale = 1.5; quality = 0.6; }
@@ -75,7 +78,6 @@ export default function PdfSizeReducer() {
 
       let blob = await renderPdf(scale, quality);
 
-      // Auto-adjust for Target 300KB or Custom Size
       if (targetKB > 0) {
         let attempts = 0;
         while (blob.size / 1024 > targetKB && attempts < 3) {
@@ -92,8 +94,8 @@ export default function PdfSizeReducer() {
       setCompressedUrl(url);
       setReducedSize((blob.size / 1024).toFixed(2));
     } catch (err) {
-      console.error(err);
-      alert('PDF প্রসেস করতে সমস্যা হয়েছে!');
+      console.error("Compression Error:", err);
+      setError('পিডিএফ প্রসেস করতে সমস্যা হয়েছে! অনুগ্রহ করে আরেকটি পিডিএফ দিয়ে চেষ্টা করুন।');
     }
     setLoading(false);
   };
@@ -102,6 +104,7 @@ export default function PdfSizeReducer() {
     setCompressedUrl(null);
     setReducedSize(0);
     setOriginalSize(0);
+    setError('');
     setCompressionType('medium_high');
     setCustomTarget(500);
   };
@@ -114,7 +117,7 @@ export default function PdfSizeReducer() {
         
         <div className="glass-3d" style={{ padding: '40px' }}>
           
-          {!compressedUrl && !loading && (
+          {!compressedUrl && !loading && !error && (
             <>
               <div style={{ marginBottom: '20px', textAlign: 'left' }}>
                 <label style={{ color: 'rgba(255,255,255,0.8)', display: 'block', marginBottom: '8px', fontWeight: '600' }}>Compression Quality (7 Options):</label>
@@ -163,7 +166,17 @@ export default function PdfSizeReducer() {
             </div>
           )}
 
-          {compressedUrl && !loading && (
+          {error && !loading && (
+            <div>
+              <div style={{ fontSize: '40px', marginBottom: '20px', color: '#ff6b6b' }}>⚠️</div>
+              <p style={{ color: '#ff6b6b', fontSize: '16px', marginBottom: '20px' }}>{error}</p>
+              <button onClick={clearFile} className="d-btn-outline" style={{ padding: '10px 20px', border: 'none', cursor: 'pointer' }}>
+                🔄 আবার চেষ্টা করুন
+              </button>
+            </div>
+          )}
+
+          {compressedUrl && !loading && !error && (
             <div>
               <div style={{ fontSize: '50px', marginBottom: '20px' }}>✅</div>
               <h3 style={{ color: 'white', marginBottom: '20px' }}>সাইজ কমানো সফল হয়েছে!</h3>
@@ -185,7 +198,7 @@ export default function PdfSizeReducer() {
             </div>
           )}
 
-          {(compressedUrl || loading) && (
+          {(compressedUrl || loading) && !error && (
             <button onClick={clearFile} className="d-btn-outline" style={{ marginTop: '20px', padding: '10px 20px', border: 'none', cursor: 'pointer' }}>
               🔄 Clear File
             </button>
