@@ -36,8 +36,10 @@ export default function ImageToPdf() {
     try {
       const pdf = new jsPDF({ orientation, unit: 'mm', format: pageSize });
       
-      const pageW = orientation === 'p' ? 210 : 297;
-      const pageH = orientation === 'p' ? 297 : 210;
+      // jsPDF নিজে থেকেই এই সাইজগুলোর ডাইমেনশন বুঝে নেয়
+      const pageW = pdf.internal.pageSize.getWidth();
+      const pageH = pdf.internal.pageSize.getHeight();
+      
       const margin = 10;
       const maxW = pageW - margin * 2;
       const maxH = pageH - margin * 2;
@@ -114,9 +116,12 @@ export default function ImageToPdf() {
                 <div>
                   <label style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px' }}>Page Size:</label>
                   <select value={pageSize} onChange={(e) => setPageSize(e.target.value)} className="d-input" style={{ marginLeft: '10px' }}>
-                    <option value="a4" style={{background: '#1a1c2e'}}>A4</option>
-                    <option value="a3" style={{background: '#1a1c2e'}}>A3</option>
-                    <option value="letter" style={{background: '#1a1c2e'}}>Letter</option>
+                    <option value="a4" style={{background: '#1a1c2e'}}>A4 (210 x 297 mm)</option>
+                    <option value="a3" style={{background: '#1a1c2e'}}>A3 (297 x 420 mm)</option>
+                    <option value="a5" style={{background: '#1a1c2e'}}>A5 (148 x 210 mm)</option>
+                    <option value="letter" style={{background: '#1a1c2e'}}>Letter (8.5 x 11 in)</option>
+                    <option value="legal" style={{background: '#1a1c2e'}}>Legal (8.5 x 14 in)</option>
+                    <option value="tabloid" style={{background: '#1a1c2e'}}>Tabloid (11 x 17 in)</option>
                   </select>
                 </div>
                 <div>
