@@ -14,11 +14,10 @@ export default function OnlineTools() {
     { name: 'AI Passport Photo Maker', link: '/online-tools/ai-passport-photo-maker', icon: '🤖', color: '#4e6ef2' },
     { name: 'Studio Photo Print Layout', link: '/online-tools/studio-print-layout', icon: '🖼️', color: '#2dce89' },
     { name: 'Joint Photo Maker', link: '/online-tools/joint-photo-maker', icon: '👥', color: '#fb6340' },
-    
-    // নতুন যোগ করা ৩টি টুল
     { name: 'Invoice Maker', link: '/online-tools/invoice-maker', icon: '🧾', color: '#2dce89' },
     { name: 'Quotation Maker', link: '/online-tools/quotation-maker', icon: '💲', color: '#fb6340' },
-    { name: 'PDF Compressor', link: '/online-tools/pdf-compressor', icon: '🗜️', color: '#4e6ef2' }
+    // নাম পরিবর্তন করা হয়েছে এখানে
+    { name: 'PDF Size Reducer', link: '/online-tools/pdf-size-reducer', icon: '📉', color: '#4e6ef2' }
   ];
 
   const handleClick = (tool) => {
