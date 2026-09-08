@@ -13,7 +13,9 @@ export default function IdCardCropToPDF() {
   const [finalBack, setFinalBack] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Auto Size State
+  // Live Preview State
+  const [livePreview, setLivePreview] = useState({ front: null, back: null });
+
   const [cardType, setCardType] = useState('id-landscape');
   
   const cardSizes = {
@@ -55,12 +57,14 @@ export default function IdCardCropToPDF() {
             setCroppedFront(null);
             setIsEnhanced(false);
             setFinalFront(null);
+            setTimeout(() => generateLivePreview(target, pts, ev.target.result), 100);
           } else {
             setBackImage(ev.target.result);
             setBackPts(pts);
             setCroppedBack(null);
             setIsEnhanced(false);
             setFinalBack(null);
+            setTimeout(() => generateLivePreview(target, pts, ev.target.result), 100);
           }
         };
         img.src = ev.target.result;
@@ -96,6 +100,9 @@ export default function IdCardCropToPDF() {
     const newPts = [...currentPts];
     newPts[draggingIndex] = { x, y };
     setPts(newPts);
+
+    // Update Live Preview while dragging
+    generateLivePreview(activeTarget, newPts);
   };
 
   const handleMouseUp = () => {
@@ -123,6 +130,58 @@ export default function IdCardCropToPDF() {
   };
 
   const dist = (p1, p2) => Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+
+  // Generate Live Preview (Fast, low-resolution render for preview)
+  const generateLivePreview = (target, pts, imgSrc = null) => {
+    const imgRef = target === 'front' ? frontImgRef.current : backImgRef.current;
+    if (!imgRef || !pts) return;
+
+    const p1 = pts[0], p2 = pts[1], p3 = pts[2], p4 = pts[3];
+    const rawW = Math.max(50, Math.round(Math.max(dist(p1, p2), dist(p3, p4))));
+    const rawH = Math.max(50, Math.round(Math.max(dist(p1, p4), dist(p2, p3))));
+
+    const maxPreviewSize = 200;
+    let scale = 1;
+    if (rawW > rawH) scale = maxPreviewSize / rawW;
+    else scale = maxPreviewSize / rawH;
+    if (scale > 1) scale = 1;
+
+    const outW = Math.round(rawW * scale);
+    const outH = Math.round(rawH * scale);
+
+    const canvas = document.createElement('canvas');
+    canvas.width = outW;
+    canvas.height = outH;
+    const ctx = canvas.getContext('2d');
+
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, outW, outH);
+
+    const sP1 = { x: p1.x * scale, y: p1.y * scale };
+    const sP2 = { x: p2.x * scale, y: p2.y * scale };
+    const sP3 = { x: p3.x * scale, y: p3.y * scale };
+    const sP4 = { x: p4.x * scale, y: p4.y * scale };
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(-1, -1); ctx.lineTo(outW + 1, -1); ctx.lineTo(outW + 1, outH + 1); ctx.closePath();
+    ctx.clip();
+    const m1 = getAffineTransformMatrix([sP1, sP2, sP3], [{x:0,y:0}, {x:outW,y:0}, {x:outW,y:outH}]);
+    ctx.transform(m1[0], m1[2], m1[1], m1[3], m1[4], m1[5]);
+    ctx.drawImage(imgRef, 0, 0);
+    ctx.restore();
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(-1, -1); ctx.lineTo(outW + 1, outH + 1); ctx.lineTo(-1, outH + 1); ctx.closePath();
+    ctx.clip();
+    const m2 = getAffineTransformMatrix([sP1, sP3, sP4], [{x:0,y:0}, {x:outW,y:outH}, {x:0,y:outH}]);
+    ctx.transform(m2[0], m2[2], m2[1], m2[3], m2[4], m2[5]);
+    ctx.drawImage(imgRef, 0, 0);
+    ctx.restore();
+
+    setLivePreview(prev => ({ ...prev, [target]: canvas.toDataURL('image/jpeg', 0.8) }));
+  };
 
   const handleConfirmCrop = (target) => {
     const imgRef = target === 'front' ? frontImgRef.current : backImgRef.current;
@@ -189,7 +248,6 @@ export default function IdCardCropToPDF() {
     setIsProcessing(false);
   };
 
-  // A4 Canvas Generate with Auto Selected Size
   const buildA4Canvas = async () => {
     const dpi = 150; 
     const canvas = document.createElement('canvas');
@@ -248,22 +306,6 @@ export default function IdCardCropToPDF() {
     if (backImg) drawCard(backImg);
     
     return canvas;
-  };
-
-  const handleDownloadA4PNG = async () => {
-    const canvas = await buildA4Canvas();
-    const link = document.createElement('a');
-    link.download = 'id-card-exact-size.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-  };
-
-  const handleDownloadA4JPG = async () => {
-    const canvas = await buildA4Canvas();
-    const link = document.createElement('a');
-    link.download = 'id-card-exact-size.jpg';
-    link.href = canvas.toDataURL('image/jpeg', 0.95);
-    link.click();
   };
 
   const handleDownloadA4PDF = async () => {
@@ -343,6 +385,19 @@ export default function IdCardCropToPDF() {
             />
           );
         })}
+
+        {/* Live Preview Box */}
+        <div style={{ marginTop: '15px', textAlign: 'center', background: 'rgba(0,0,0,0.3)', padding: '10px', borderRadius: '8px' }}>
+          <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', margin: '0 0 5px 0' }}>👁️ Live Preview (ডট টানলে এখানে দেখাবে):</p>
+          <div style={{ width: '150px', height: '105px', background: '#fff', margin: '0 auto', borderRadius: '4px', overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center', border: '1px solid rgba(255,255,255,0.2)' }}>
+            {livePreview[target] ? (
+              <img src={livePreview[target]} alt="Live Preview" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+            ) : (
+              <span style={{ color: '#888', fontSize: '12px' }}>Waiting...</span>
+            )}
+          </div>
+        </div>
+
         <button onClick={() => handleConfirmCrop(target)} className={target === 'front' ? 'd-btn glow-btn' : 'd-btn-purple glow-btn-purple'} style={{ marginTop: '10px', padding: '8px 16px', border: 'none', cursor: 'pointer', fontSize: '12px', width: '100%', display: 'block' }}>
           ✅ {target === 'front' ? 'সামনের' : 'পিছনের'} ছবি কনফার্ম করুন
         </button>
@@ -417,8 +472,6 @@ export default function IdCardCropToPDF() {
                 </select>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
-                <button onClick={handleDownloadA4PNG} className="d-btn-green glow-btn-green" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>💾 Save as A4 PNG</button>
-                <button onClick={handleDownloadA4JPG} className="d-btn-purple glow-btn-purple" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>💾 Save as A4 JPG</button>
                 <button onClick={handleDownloadA4PDF} className="d-btn-orange glow-btn-orange" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>💾 Save as A4 PDF</button>
                 <button onClick={handleDirectA4Print} className="d-btn glow-btn" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>🖨️ Direct A4 Print</button>
               </div>
