@@ -33,9 +33,10 @@ export default function PdfSizeReducer() {
     setLoadingText('লাইব্রেরি লোড হচ্ছে...');
     
     try {
-      const pdfjsLib = await import('pdfjs-dist');
-      // Pinned Stable Version to prevent 404 Worker Error in Vercel
-      pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
+      // ১. লোকাল প্যাকেজ থেকে লোড করা হচ্ছে (CORS এরর হবে না)
+      const pdfjsLib = await import('pdfjs-dist/build/pdf');
+      const pdfjsWorker = await import('pdfjs-dist/build/pdf.worker.mjs');
+      pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker.default;
 
       const jsPDFModule = await import('jspdf');
       const jsPDF = jsPDFModule.default;
