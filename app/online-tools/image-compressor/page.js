@@ -6,6 +6,7 @@ export default function ImageCompressor() {
   const [originalSize, setOriginalSize] = useState(0);
   const [compressedUrl, setCompressedUrl] = useState(null);
   const [compressedSize, setCompressedSize] = useState(0);
+  const [pngUrl, setPngUrl] = useState(null); // PNG এর জন্য আলাদা state
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   
@@ -19,6 +20,7 @@ export default function ImageCompressor() {
     setOriginalSize((file.size / 1024).toFixed(2));
     setCompressedUrl(null);
     setCompressedSize(0);
+    setPngUrl(null);
     setError('');
 
     const reader = new FileReader();
@@ -40,6 +42,10 @@ export default function ImageCompressor() {
       canvas.width = img.width;
       canvas.height = img.height;
       const ctx = canvas.getContext('2d');
+      
+      // যেহেতু JPEG ট্রান্সপারেন্ট সাপোর্ট করে না, তাই সাদা ব্যাকগ্রাউন্ড দিয়ে দিচ্ছি
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(img, 0, 0);
 
       let quality = 0.8;
@@ -68,11 +74,16 @@ export default function ImageCompressor() {
         } while (attempts < 5);
       }
 
-      const dataUrl = canvas.toDataURL('image/jpeg', quality);
-      const blob = await (await fetch(dataUrl)).blob();
+      // JPG ডাটা তৈরি করা হচ্ছে
+      const jpgDataUrl = canvas.toDataURL('image/jpeg', quality);
+      const jpgBlob = await (await fetch(jpgDataUrl)).blob();
+      setCompressedUrl(URL.createObjectURL(jpgBlob));
+      setCompressedSize((jpgBlob.size / 1024).toFixed(2));
       
-      setCompressedUrl(URL.createObjectURL(blob));
-      setCompressedSize((blob.size / 1024).toFixed(2));
+      // PNG ডাটা তৈরি করা হচ্ছে (PNG এর কোয়ালিটি কমানো যায় না, তাই অরিজিনাল কোয়ালিটিতেই থাকবে কিন্তু সাইজ অপটিমাইজ হবে)
+      const pngDataUrl = canvas.toDataURL('image/png');
+      setPngUrl(pngDataUrl);
+      
     } catch (err) {
       console.error(err);
       setError('ছবি কম্প্রেস করতে সমস্যা হয়েছে!');
@@ -85,6 +96,7 @@ export default function ImageCompressor() {
     setOriginalSize(0);
     setCompressedUrl(null);
     setCompressedSize(0);
+    setPngUrl(null);
     setError('');
   };
 
@@ -92,7 +104,7 @@ export default function ImageCompressor() {
     <div className="deepin-body" style={{ minHeight: '100vh', paddingTop: '150px', paddingBottom: '40px' }}>
       <div style={{ maxWidth: '600px', margin: '0 auto', padding: '0 20px', textAlign: 'center' }}>
         <h1 style={{ color: 'white', marginBottom: '10px' }}>🖼️ Image Compressor</h1>
-        <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '30px' }}>ছবির সাইজ কমিয়ে ডাউনলোড করুন। কোয়ালিটি বেছে নিন বা কাস্টম সাইজ লিখুন।</p>
+        <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '30px' }}>ছবির সাইজ কমিয়ে ডাউনলোড করুন। JPG বা PNG দুটোতেই সেভ করতে পারবেন।</p>
         
         <div className="glass-3d" style={{ padding: '40px' }}>
           
@@ -111,7 +123,7 @@ export default function ImageCompressor() {
 
               {!compressedUrl && !loading && (
                 <div style={{ marginBottom: '20px', textAlign: 'left' }}>
-                  <label style={{ color: 'rgba(255,255,255,0.8)', display: 'block', marginBottom: '8px', fontWeight: '600' }}>Compression Quality:</label>
+                  <label style={{ color: 'rgba(255,255,255,0.8)', display: 'block', marginBottom: '8px', fontWeight: '600' }}>Compression Quality (JPG):</label>
                   <select value={compressType} onChange={(e) => setCompressType(e.target.value)} className="d-input" style={{ maxWidth: '300px', margin: '0 auto', marginBottom: '15px' }}>
                     <option value="high" style={{background: '#1a1c2e'}}>High Quality (Best)</option>
                     <option value="medium" style={{background: '#1a1c2e'}}>Medium Quality (Good)</option>
@@ -145,11 +157,18 @@ export default function ImageCompressor() {
                   <h3 style={{ color: 'white', marginBottom: '10px' }}>সাইজ কমানো সফল হয়েছে!</h3>
                   <div style={{ marginBottom: '20px' }}>
                     <img src={compressedUrl} alt="Compressed" style={{ maxWidth: '100%', maxHeight: '200px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.2)' }} />
-                    <p style={{ color: '#2dce89', fontSize: '14px', marginTop: '10px' }}>Compressed Size: {compressedSize} KB</p>
+                    <p style={{ color: '#2dce89', fontSize: '14px', marginTop: '10px' }}>Compressed Size (JPG): {compressedSize} KB</p>
                   </div>
-                  <a href={compressedUrl} download="compressed-image.jpg" className="d-btn-green glow-btn-green" style={{ display: 'inline-block', padding: '14px 30px', textDecoration: 'none', border: 'none', cursor: 'pointer', fontSize: '16px' }}>
-                    💾 Download Image
-                  </a>
+                  
+                  {/* দুটো ডাউনলোড বাটন */}
+                  <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', justifyContent: 'center' }}>
+                    <a href={compressedUrl} download="compressed-image.jpg" className="d-btn-green glow-btn-green" style={{ flex: '1', minWidth: '150px', padding: '12px 20px', textDecoration: 'none', border: 'none', cursor: 'pointer', fontSize: '15px' }}>
+                      💾 Download JPG
+                    </a>
+                    <a href={pngUrl} download="compressed-image.png" className="d-btn-purple glow-btn-purple" style={{ flex: '1', minWidth: '150px', padding: '12px 20px', textDecoration: 'none', border: 'none', cursor: 'pointer', fontSize: '15px' }}>
+                      💾 Download PNG
+                    </a>
+                  </div>
                 </div>
               )}
 
