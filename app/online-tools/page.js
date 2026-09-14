@@ -27,7 +27,8 @@ export default function OnlineTools() {
     { name: 'Image to Text', link: '/online-tools/image-to-text', icon: '🔠', color: '#4e6ef2' },
     { name: 'Pro QR Generator', link: '/online-tools/qr-generator', icon: '📱', color: '#a855f7' },
     { name: 'Image Compressor', link: '/online-tools/image-compressor', icon: '🗜️', color: '#fb6340' },
-    { name: 'Doc Scanner (PDF)', link: '/online-tools/doc-scanner', icon: '📷', color: '#2dce89' }
+    { name: 'Doc Scanner (PDF)', link: '/online-tools/doc-scanner', icon: '📷', color: '#2dce89' },
+    { name: 'Merge PDF', link: '/online-tools/merge-pdf', icon: '📚', color: '#a855f7' }
   ];
 
   const handleClick = (tool) => {
@@ -43,7 +44,7 @@ export default function OnlineTools() {
       <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 20px' }}>
         <div style={{ textAlign: 'center', marginBottom: '40px' }}>
           <h1 style={{ fontSize: '36px', fontWeight: 800, color: 'white', margin: 0, textShadow: '2px 2px 0 #333, 4px 4px 10px rgba(0,0,0,0.8)' }}>🛠️ ফ্রি অনলাইন টুলস</h1>
-          <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.6)', marginTop: '10px' }}>আপনার দৈনন্দিন কাজের জন্য সেরা ২২টি ওয়েব টুলস</p>
+          <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.6)', marginTop: '10px' }}>আপনার দৈনন্দিন কাজের জন্য সেরা ২৩টি ওয়েব টুলস</p>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px' }}>
