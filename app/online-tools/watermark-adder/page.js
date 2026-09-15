@@ -1,26 +1,44 @@
 'use client';
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 
 export default function WatermarkAdder() {
+  const [mode, setMode] = useState('text'); // 'text' or 'image'
+  
   const [originalImage, setOriginalImage] = useState(null);
-  const [watermarkText, setWatermarkText] = useState('© Online Sheba Point');
-  const [fontSize, setFontSize] = useState(30);
-  const [color, setColor] = useState('#ffffff');
-  const [opacity, setOpacity] = useState(50); // 0 to 100
-  const [rotation, setRotation] = useState(-30);
-  const [position, setPosition] = useState('center'); // center, bottom-right, tile
   const [resultUrl, setResultUrl] = useState(null);
   const [loading, setLoading] = useState(false);
-  
-  const imgRef = useRef(null);
 
-  const handleFileChange = (e) => {
+  // Text Watermark State
+  const [watermarkText, setWatermarkText] = useState('© Online Sheba Point');
+  const [fontSize, setFontSize] = useState(30);
+  const [textColor, setTextColor] = useState('#ffffff');
+  
+  // Image Watermark State
+  const [logoImage, setLogoImage] = useState(null);
+  const [logoSize, setLogoSize] = useState(20); // Percentage of main image width
+
+  // Common State
+  const [opacity, setOpacity] = useState(50);
+  const [rotation, setRotation] = useState(-30);
+  const [position, setPosition] = useState('center');
+
+  const handleMainFileChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     const reader = new FileReader();
     reader.onload = (ev) => {
       setOriginalImage(ev.target.result);
+      setResultUrl(null);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleLogoFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setLogoImage(ev.target.result);
       setResultUrl(null);
     };
     reader.readAsDataURL(file);
@@ -41,49 +59,79 @@ export default function WatermarkAdder() {
       ctx.drawImage(img, 0, 0);
 
       // ২. ওয়াটারমার্ক সেটিংস
-      ctx.font = `${fontSize}px Arial`;
-      ctx.fillStyle = color;
-      ctx.globalAlpha = opacity / 100; // 0.0 to 1.0
-      
-      const textWidth = ctx.measureText(watermarkText).width;
+      ctx.globalAlpha = opacity / 100;
 
-      if (position === 'tile') {
-        // সারা ছবিতে গ্রিড আকারে বসানো
-        ctx.translate(0, 0);
-        for (let y = 0; y < canvas.height + 200; y += 150) {
-          for (let x = 0; x < canvas.width + 200; x += 250) {
+      if (mode === 'text') {
+        ctx.font = `${fontSize}px Arial`;
+        ctx.fillStyle = textColor;
+        
+        if (position === 'tile') {
+          for (let y = 0; y < canvas.height + 200; y += 150) {
+            for (let x = 0; x < canvas.width + 200; x += 250) {
+              ctx.save();
+              ctx.translate(x, y);
+              ctx.rotate(rotation * Math.PI / 180);
+              ctx.fillText(watermarkText, 0, 0);
+              ctx.restore();
+            }
+          }
+        } else {
+          let x, y;
+          if (position === 'center') {
+            x = canvas.width / 2; y = canvas.height / 2;
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          } else if (position === 'bottom-right') {
+            x = canvas.width - 20; y = canvas.height - 20;
+            ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
+          }
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.rotate(rotation * Math.PI / 180);
+          ctx.fillText(watermarkText, 0, 0);
+          ctx.restore();
+        }
+      } 
+      
+      // Image Watermark Logic
+      else if (mode === 'image' && logoImage) {
+        const logo = new Image();
+        logo.onload = () => {
+          const logoW = (canvas.width * logoSize) / 100;
+          const logoH = (logo.height / logo.width) * logoW;
+
+          if (position === 'tile') {
+            for (let y = 0; y < canvas.height + 100; y += logoH + 50) {
+              for (let x = 0; x < canvas.width + 100; x += logoW + 50) {
+                ctx.save();
+                ctx.translate(x + logoW/2, y + logoH/2);
+                ctx.rotate(rotation * Math.PI / 180);
+                ctx.drawImage(logo, -logoW/2, -logoH/2, logoW, logoH);
+                ctx.restore();
+              }
+            }
+          } else {
+            let x, y;
+            if (position === 'center') {
+              x = (canvas.width - logoW) / 2; y = (canvas.height - logoH) / 2;
+            } else if (position === 'bottom-right') {
+              x = canvas.width - logoW - 20; y = canvas.height - logoH - 20;
+            }
             ctx.save();
-            ctx.translate(x, y);
+            ctx.translate(x + logoW/2, y + logoH/2);
             ctx.rotate(rotation * Math.PI / 180);
-            ctx.fillText(watermarkText, 0, 0);
+            ctx.drawImage(logo, -logoW/2, -logoH/2, logoW, logoH);
             ctx.restore();
           }
-        }
-      } else {
-        // নির্দিষ্ট স্থানে বসানো (Center বা Bottom-Right)
-        let x, y;
-        if (position === 'center') {
-          x = canvas.width / 2;
-          y = canvas.height / 2;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-        } else if (position === 'bottom-right') {
-          x = canvas.width - 20;
-          y = canvas.height - 20;
-          ctx.textAlign = 'right';
-          ctx.textBaseline = 'bottom';
-        }
 
-        ctx.save();
-        ctx.translate(x, y);
-        ctx.rotate(rotation * Math.PI / 180);
-        ctx.fillText(watermarkText, 0, 0);
-        ctx.restore();
+          ctx.globalAlpha = 1.0;
+          setResultUrl(canvas.toDataURL('image/png'));
+          setLoading(false);
+        };
+        logo.src = logoImage;
+        return; // Exit here because logo.onload is async
       }
 
-      // রিসেট সেটিংস
       ctx.globalAlpha = 1.0;
-      
       setResultUrl(canvas.toDataURL('image/png'));
       setLoading(false);
     };
@@ -93,45 +141,73 @@ export default function WatermarkAdder() {
   const clearAll = () => {
     setOriginalImage(null);
     setResultUrl(null);
-    setWatermarkText('© Online Sheba Point');
-    setFontSize(30);
-    setColor('#ffffff');
-    setOpacity(50);
-    setRotation(-30);
-    setPosition('center');
+    setLogoImage(null);
   };
 
   return (
     <div className="deepin-body" style={{ minHeight: '100vh', paddingTop: '150px', paddingBottom: '40px' }}>
       <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 20px', textAlign: 'center' }}>
-        <h1 style={{ color: 'white', marginBottom: '10px' }}>💧 Watermark Adder</h1>
-        <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '30px' }}>ছবিতে নিজের নাম বা লোগো বসিয়ে নিরাপদ করুন।</p>
+        <h1 style={{ color: 'white', marginBottom: '10px' }}>💧 Watermark Adder Pro</h1>
+        <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '30px' }}>ছবিতে লেখা বা লোগো—যেকোনো একটা বসিয়ে নিরাপদ করুন।</p>
         
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
           
           {/* Left Side: Controls */}
           <div className="glass-3d" style={{ padding: '30px', textAlign: 'left' }}>
             
-            <div style={{ marginBottom: '20px' }}>
-              <label style={{ color: 'rgba(255,255,255,0.8)', display: 'block', marginBottom: '5px' }}>Watermark Text:</label>
-              <input type="text" value={watermarkText} onChange={(e) => setWatermarkText(e.target.value)} className="d-input" placeholder="আপনার নাম বা ওয়েবসাইট" />
+            {/* Mode Toggle */}
+            <div style={{ display: 'flex', gap: '5px', marginBottom: '20px', background: 'rgba(0,0,0,0.2)', padding: '5px', borderRadius: '8px' }}>
+              <button 
+                onClick={() => { setMode('text'); setResultUrl(null); }} 
+                style={{ flex: 1, padding: '8px', background: mode === 'text' ? '#4e6ef2' : 'transparent', color: mode === 'text' ? 'white' : '#888', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: '600' }}
+              > Text Watermark </button>
+              <button 
+                onClick={() => { setMode('image'); setResultUrl(null); }} 
+                style={{ flex: 1, padding: '8px', background: mode === 'image' ? '#a855f7' : 'transparent', color: mode === 'image' ? 'white' : '#888', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: '600' }}
+              > Image Watermark </button>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '20px' }}>
-              <div>
-                <label style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px', display: 'block', marginBottom: '5px' }}>Font Size: {fontSize}</label>
-                <input type="range" min="10" max="100" value={fontSize} onChange={(e) => setFontSize(Number(e.target.value))} style={{ width: '100%', accentColor: '#4e6ef2' }} />
+            {/* Text Mode Inputs */}
+            {mode === 'text' && (
+              <>
+                <div style={{ marginBottom: '20px' }}>
+                  <label style={{ color: 'rgba(255,255,255,0.8)', display: 'block', marginBottom: '5px' }}>Watermark Text:</label>
+                  <input type="text" value={watermarkText} onChange={(e) => setWatermarkText(e.target.value)} className="d-input" />
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '20px' }}>
+                  <div>
+                    <label style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px', display: 'block', marginBottom: '5px' }}>Font Size: {fontSize}</label>
+                    <input type="range" min="10" max="100" value={fontSize} onChange={(e) => setFontSize(Number(e.target.value))} style={{ width: '100%', accentColor: '#4e6ef2' }} />
+                  </div>
+                  <div>
+                    <label style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px', display: 'block', marginBottom: '5px' }}>Color:</label>
+                    <input type="color" value={textColor} onChange={(e) => setTextColor(e.target.value)} style={{ width: '100%', height: '40px', background: 'none', border: '1px solid #444', borderRadius: '8px', cursor: 'pointer' }} />
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* Image Mode Inputs */}
+            {mode === 'image' && (
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ color: 'rgba(255,255,255,0.8)', display: 'block', marginBottom: '5px' }}>Upload Logo (PNG best):</label>
+                <input type="file" accept="image/*" onChange={handleLogoFileChange} className="d-input" style={{ padding: '10px' }} />
+                
+                {logoImage && (
+                  <div style={{ marginTop: '15px' }}>
+                    <label style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px', display: 'block', marginBottom: '5px' }}>Logo Size: {logoSize}%</label>
+                    <input type="range" min="5" max="50" value={logoSize} onChange={(e) => setLogoSize(Number(e.target.value))} style={{ width: '100%', accentColor: '#a855f7' }} />
+                  </div>
+                )}
               </div>
+            )}
+
+            {/* Common Controls */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '20px' }}>
               <div>
                 <label style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px', display: 'block', marginBottom: '5px' }}>Opacity: {opacity}%</label>
                 <input type="range" min="10" max="100" value={opacity} onChange={(e) => setOpacity(Number(e.target.value))} style={{ width: '100%', accentColor: '#4e6ef2' }} />
-              </div>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '20px' }}>
-              <div>
-                <label style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px', display: 'block', marginBottom: '5px' }}>Color:</label>
-                <input type="color" value={color} onChange={(e) => setColor(e.target.value)} style={{ width: '100%', height: '40px', background: 'none', border: '1px solid #444', borderRadius: '8px', cursor: 'pointer' }} />
               </div>
               <div>
                 <label style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px', display: 'block', marginBottom: '5px' }}>Rotation: {rotation}°</label>
@@ -148,7 +224,7 @@ export default function WatermarkAdder() {
               </select>
             </div>
 
-            <button onClick={applyWatermark} disabled={loading || !originalImage} className="d-btn-green glow-btn-green" style={{ width: '100%', padding: '12px', fontSize: '16px', border: 'none', cursor: 'pointer', opacity: loading || !originalImage ? 0.5 : 1 }}>
+            <button onClick={applyWatermark} disabled={loading || !originalImage || (mode === 'image' && !logoImage)} className="d-btn-green glow-btn-green" style={{ width: '100%', padding: '12px', fontSize: '16px', border: 'none', cursor: 'pointer', opacity: loading || !originalImage ? 0.5 : 1 }}>
               ✨ Apply Watermark
             </button>
           </div>
@@ -159,7 +235,8 @@ export default function WatermarkAdder() {
               
               {!originalImage && (
                 <div style={{ textAlign: 'center' }}>
-                  <input type="file" accept="image/*" onChange={handleFileChange} style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px' }} />
+                  <p style={{color: 'white', marginBottom: '10px'}}>মূল ছবি আপলোড করুন:</p>
+                  <input type="file" accept="image/*" onChange={handleMainFileChange} style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px' }} />
                 </div>
               )}
 
