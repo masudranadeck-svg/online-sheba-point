@@ -1,12 +1,11 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function WatermarkAdder() {
   const [mode, setMode] = useState('text'); // 'text' or 'image'
   
   const [originalImage, setOriginalImage] = useState(null);
   const [resultUrl, setResultUrl] = useState(null);
-  const [loading, setLoading] = useState(false);
 
   // Text Watermark State
   const [watermarkText, setWatermarkText] = useState('© Online Sheba Point');
@@ -15,7 +14,7 @@ export default function WatermarkAdder() {
   
   // Image Watermark State
   const [logoImage, setLogoImage] = useState(null);
-  const [logoSize, setLogoSize] = useState(20); // Percentage of main image width
+  const [logoSize, setLogoSize] = useState(20); // Percentage
 
   // Common State
   const [opacity, setOpacity] = useState(50);
@@ -26,10 +25,7 @@ export default function WatermarkAdder() {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (ev) => {
-      setOriginalImage(ev.target.result);
-      setResultUrl(null);
-    };
+    reader.onload = (ev) => setOriginalImage(ev.target.result);
     reader.readAsDataURL(file);
   };
 
@@ -37,16 +33,13 @@ export default function WatermarkAdder() {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (ev) => {
-      setLogoImage(ev.target.result);
-      setResultUrl(null);
-    };
+    reader.onload = (ev) => setLogoImage(ev.target.result);
     reader.readAsDataURL(file);
   };
 
-  const applyWatermark = () => {
+  // Live Preview useEffect: যখনই কোনো সেটিংস বদলাবে, এটি অটো রান হবে
+  useEffect(() => {
     if (!originalImage) return;
-    setLoading(true);
 
     const img = new Image();
     img.onload = () => {
@@ -90,6 +83,9 @@ export default function WatermarkAdder() {
           ctx.fillText(watermarkText, 0, 0);
           ctx.restore();
         }
+        
+        ctx.globalAlpha = 1.0;
+        setResultUrl(canvas.toDataURL('image/png'));
       } 
       
       // Image Watermark Logic
@@ -125,18 +121,15 @@ export default function WatermarkAdder() {
 
           ctx.globalAlpha = 1.0;
           setResultUrl(canvas.toDataURL('image/png'));
-          setLoading(false);
         };
         logo.src = logoImage;
-        return; // Exit here because logo.onload is async
+      } else {
+        // If image mode but no logo selected, just show original image
+        setResultUrl(originalImage);
       }
-
-      ctx.globalAlpha = 1.0;
-      setResultUrl(canvas.toDataURL('image/png'));
-      setLoading(false);
     };
     img.src = originalImage;
-  };
+  }, [originalImage, mode, watermarkText, fontSize, textColor, logoImage, logoSize, opacity, rotation, position]);
 
   const clearAll = () => {
     setOriginalImage(null);
@@ -148,7 +141,7 @@ export default function WatermarkAdder() {
     <div className="deepin-body" style={{ minHeight: '100vh', paddingTop: '150px', paddingBottom: '40px' }}>
       <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 20px', textAlign: 'center' }}>
         <h1 style={{ color: 'white', marginBottom: '10px' }}>💧 Watermark Adder Pro</h1>
-        <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '30px' }}>ছবিতে লেখা বা লোগো—যেকোনো একটা বসিয়ে নিরাপদ করুন।</p>
+        <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '30px' }}>সেটিংস পরিবর্তন করুন, সাথে সাথে লাইভ প্রিভিউ দেখুন।</p>
         
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
           
@@ -158,11 +151,11 @@ export default function WatermarkAdder() {
             {/* Mode Toggle */}
             <div style={{ display: 'flex', gap: '5px', marginBottom: '20px', background: 'rgba(0,0,0,0.2)', padding: '5px', borderRadius: '8px' }}>
               <button 
-                onClick={() => { setMode('text'); setResultUrl(null); }} 
+                onClick={() => setMode('text')} 
                 style={{ flex: 1, padding: '8px', background: mode === 'text' ? '#4e6ef2' : 'transparent', color: mode === 'text' ? 'white' : '#888', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: '600' }}
               > Text Watermark </button>
               <button 
-                onClick={() => { setMode('image'); setResultUrl(null); }} 
+                onClick={() => setMode('image')} 
                 style={{ flex: 1, padding: '8px', background: mode === 'image' ? '#a855f7' : 'transparent', color: mode === 'image' ? 'white' : '#888', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: '600' }}
               > Image Watermark </button>
             </div>
@@ -223,13 +216,9 @@ export default function WatermarkAdder() {
                 <option value="tile" style={{background: '#1a1c2e'}}>Tile (সারা ছবিতে গ্রিড)</option>
               </select>
             </div>
-
-            <button onClick={applyWatermark} disabled={loading || !originalImage || (mode === 'image' && !logoImage)} className="d-btn-green glow-btn-green" style={{ width: '100%', padding: '12px', fontSize: '16px', border: 'none', cursor: 'pointer', opacity: loading || !originalImage ? 0.5 : 1 }}>
-              ✨ Apply Watermark
-            </button>
           </div>
 
-          {/* Right Side: Preview */}
+          {/* Right Side: Live Preview */}
           <div>
             <div style={{ background: 'rgba(0,0,0,0.2)', border: '2px dashed rgba(255,255,255,0.1)', borderRadius: '8px', padding: '20px', minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '15px' }}>
               
@@ -241,15 +230,11 @@ export default function WatermarkAdder() {
               )}
 
               {originalImage && (
-                <img src={resultUrl || originalImage} alt="Preview" style={{ maxWidth: '100%', maxHeight: '400px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.2)' }} />
-              )}
-
-              {originalImage && !resultUrl && (
-                <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '12px' }}>সেটিংস ঠিক করে "Apply Watermark" এ ক্লিক করুন</p>
+                <img src={resultUrl || originalImage} alt="Live Preview" style={{ maxWidth: '100%', maxHeight: '400px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.2)' }} />
               )}
             </div>
 
-            {resultUrl && (
+            {originalImage && (
               <div style={{ display: 'flex', gap: '15px', marginTop: '20px', justifyContent: 'center' }}>
                 <a href={resultUrl} download="watermarked-image.png" className="d-btn-green glow-btn-green" style={{ flex: 1, padding: '12px', textDecoration: 'none', border: 'none', cursor: 'pointer', fontSize: '15px' }}>
                   💾 Save PNG
