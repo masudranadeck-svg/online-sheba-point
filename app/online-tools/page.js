@@ -33,7 +33,9 @@ export default function OnlineTools() {
     { name: 'PDF Page Manager', link: '/online-tools/pdf-page-manager', icon: '📑', color: '#fb6340' },
     { name: 'Text to PDF Maker', link: '/online-tools/text-to-pdf', icon: '📝', color: '#2dce89' },
     { name: 'Social Media Resizer', link: '/online-tools/social-resizer', icon: '📲', color: '#a855f7' },
-    { name: 'Image Color Picker', link: '/online-tools/color-picker', icon: '🎨', color: '#4e6ef2' }
+    { name: 'Image Color Picker', link: '/online-tools/color-picker', icon: '🎨', color: '#4e6ef2' },
+    { name: 'Password Generator', link: '/online-tools/password-generator', icon: '🔑', color: '#2dce89' },
+    { name: 'Word Counter', link: '/online-tools/word-counter', icon: '🔢', color: '#fb6340' }
   ];
 
   const handleClick = (tool) => {
@@ -49,7 +51,7 @@ export default function OnlineTools() {
       <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 20px' }}>
         <div style={{ textAlign: 'center', marginBottom: '40px' }}>
           <h1 style={{ fontSize: '36px', fontWeight: 800, color: 'white', margin: 0, textShadow: '2px 2px 0 #333, 4px 4px 10px rgba(0,0,0,0.8)' }}>🛠️ ফ্রি অনলাইন টুলস</h1>
-          <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.6)', marginTop: '10px' }}>আপনার দৈনন্দিন কাজের জন্য সেরা ২৮টি ওয়েব টুলস</p>
+          <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.6)', marginTop: '10px' }}>আপনার দৈনন্দিন কাজের জন্য সেরা ৩০টি ওয়েব টুলস</p>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px' }}>
