@@ -104,6 +104,24 @@ export default function Home() {
         </div>
       </section>
 
+      {/* HIGHLIGHTED STATS BAR (নতুন যোগ করা হয়েছে) */}
+      <section className="relative py-12 border-b border-[var(--border)]" style={{ background: 'var(--bg-elev)' }}>
+        <div className="max-w-[1480px] mx-auto px-6 lg:px-10 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+          <div>
+            <div className="stat-num text-4xl lg:text-5xl mb-2">100%</div>
+            <div className="text-xs font-mono text-[var(--fg-muted)] uppercase tracking-widest">Customer Satisfaction</div>
+          </div>
+          <div className="md:border-l md:border-r border-[var(--border)]">
+            <div className="stat-num text-4xl lg:text-5xl mb-2">24/7 365</div>
+            <div className="text-xs font-mono text-[var(--fg-muted)] uppercase tracking-widest">Dedicated Support</div>
+          </div>
+          <div>
+            <div className="stat-num text-4xl lg:text-5xl mb-2">100%</div>
+            <div className="text-xs font-mono text-[var(--fg-muted)] uppercase tracking-widest">System Uptime</div>
+          </div>
+        </div>
+      </section>
+
       {/* SERVICES SECTION */}
       <section className="relative py-24 lg:py-32">
         <div className="max-w-[1480px] mx-auto px-6 lg:px-10">
