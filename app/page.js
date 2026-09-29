@@ -151,7 +151,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ALL SERVICES GRID (Icons Fixed) */}
+      {/* ALL SERVICES GRID (With Neon Hover Glow) */}
       <section className="relative py-24 lg:py-32">
         <div className="max-w-[1480px] mx-auto px-6 lg:px-10">
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-12">
@@ -165,24 +165,24 @@ export default function Home() {
           </div>
 
           {/* Services Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-px bg-[var(--border)]">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {services.map((service, i) => (
               <Link 
                 key={i} 
                 href={service.link} 
-                className="relative bg-[var(--bg-card)] p-6 flex flex-col items-center text-center transition-all hover:bg-[var(--bg-elev)] group"
+                // এখানে Neon Glow এর জন্য Tailwind arbitrary values ব্যবহার করা হয়েছে
+                className="relative bg-[var(--bg-card)] border border-transparent p-6 rounded-lg flex flex-col items-center text-center transition-all duration-300 hover:bg-[var(--bg-elev)] hover:border-[var(--accent)] hover:shadow-[0_0_25px_rgba(255,91,20,0.4),inset_0_0_15px_rgba(255,91,20,0.1)] group"
               >
                 {/* Corner markers */}
                 <div className="corner-tl"></div><div className="corner-tr"></div><div className="corner-bl"></div><div className="corner-br"></div>
                 
-                {/* Icon Container (Fixed Styling) */}
+                {/* Icon Container */}
                 <div 
-                  className="w-14 h-14 rounded-xl flex items-center justify-center text-2xl mb-4 transition-all duration-300 group-hover:scale-110"
+                  className="w-14 h-14 rounded-xl flex items-center justify-center text-2xl mb-4 transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0_0_15px_var(--accent-glow)]"
                   style={{ 
                     background: 'var(--bg)', 
                     border: '1px solid var(--border-bright)',
                     color: 'var(--accent)',
-                    boxShadow: 'inset 0 0 10px rgba(255, 91, 20, 0.1)'
                   }}
                 >
                   <i className={service.icon}></i>
