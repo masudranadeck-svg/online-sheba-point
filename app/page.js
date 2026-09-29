@@ -21,7 +21,7 @@ export default function Home() {
   return (
     <div style={{ background: 'var(--bg)', color: 'var(--fg)', fontFamily: "'Manrope',sans-serif", overflowX: 'hidden' }}>
       
-      {/* TOP NAV (Corporate Style) */}
+      {/* TOP NAV */}
       <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-black/40 border-b border-[var(--border)]">
         <div className="max-w-[1480px] mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
           <div className="flex items-center gap-10">
@@ -30,7 +30,7 @@ export default function Home() {
                 <div className="absolute inset-0 border border-[var(--accent)] rotate-45"></div>
                 <div className="absolute inset-1 bg-[var(--accent)] rotate-45"></div>
               </div>
-              <span className="font-display font-bold text-xl tracking-tight">SHEBA POINT</span>
+              <span className="font-display font-bold text-lg tracking-tight">ONLINE SHEBA POINT</span>
             </Link>
             <nav className="hidden lg:flex items-center gap-8">
               <Link href="/shop" className="text-[13px] tracking-wider text-[var(--fg-dim)] hover:text-[var(--fg)] transition">Shop</Link>
@@ -45,7 +45,7 @@ export default function Home() {
         </div>
       </header>
 
-      {/* HERO SECTION (Futuristic Look) */}
+      {/* HERO SECTION */}
       <section className="relative min-h-screen pt-16 overflow-hidden grid-bg">
         <div className="floor-grid"></div>
         <div className="absolute top-1/3 -left-32 w-[500px] h-[500px] rounded-full bg-[var(--accent)] opacity-[0.08] blur-[120px] pointer-events-none"></div>
@@ -64,10 +64,12 @@ export default function Home() {
         </div>
 
         {/* Hero Content */}
-        <div className="relative max-w-[1480px] mx-auto px-6 lg:px-10 grid lg:grid-cols-2 gap-12 items-center py-16 lg:py-24">
+        <div className="relative max-w-[1480px] mx-auto px-6 lg:px-10 grid lg:grid-cols-2 gap-8 items-center py-16 lg:py-20">
+          
+          {/* Left: Copy */}
           <div className="relative z-10">
             <div className="section-eyebrow mb-8">01 / Digital Ecosystem</div>
-            <h1 className="hero-h1 font-display font-bold text-[14vw] sm:text-[10vw] lg:text-[7.2vw] leading-[.92] tracking-tight">
+            <h1 className="hero-h1 font-display font-bold text-5xl sm:text-6xl lg:text-7xl leading-[.95] tracking-tight">
               <span className="word" style={{animationDelay:'.1s'}}>Tomorrow's</span><br/>
               <span className="word" style={{animationDelay:'.3s'}}>digital store,</span><br/>
               <span className="word accent-underline" style={{animationDelay:'.5s'}}>today.</span>
@@ -81,27 +83,27 @@ export default function Home() {
             </div>
           </div>
 
-          {/* HUD Visual (Instead of copied product, a tech HUD) */}
-          <div className="relative hidden lg:block">
-            <div className="orb-wrap" style={{maxWidth: '500px'}}>
+          {/* Right: Orb Visual (Fixed Layout) */}
+          <div className="relative hidden md:block mt-10 lg:mt-0">
+            <div className="orb-wrap" style={{maxWidth: '450px', margin: '0 auto'}}>
               <div className="ring r1"></div>
               <div className="ring r2"></div>
               <div className="ring r3"></div>
               <div className="orb-core"></div>
               <div className="orb-hilight"></div>
               
-              {/* Floating Tech Stats */}
-              <div className="float-tag" style={{top:'8%',left:'-5%',animationDelay:'0s'}}>
+              {/* Floating Tech Stats (Repositioned to be fully visible) */}
+              <div className="float-tag" style={{top:'5%',left:'0%',animationDelay:'0s'}}>
                 <div className="text-[var(--fg-muted)] mb-1">[01]</div>
                 <div className="font-semibold">Online Tools</div>
                 <div className="text-[var(--accent)] font-mono">30+ Free</div>
               </div>
-              <div className="float-tag" style={{top:'42%',right:'-8%',animationDelay:'1.5s'}}>
+              <div className="float-tag" style={{top:'40%',right:'0%',animationDelay:'1.5s'}}>
                 <div className="text-[var(--fg-muted)] mb-1">[02]</div>
                 <div className="font-semibold">Instant Delivery</div>
                 <div className="text-[var(--accent)] font-mono">Software Keys</div>
               </div>
-              <div className="float-tag" style={{bottom:'6%',left:'5%',animationDelay:'3s'}}>
+              <div className="float-tag" style={{bottom:'5%',left:'5%',animationDelay:'3s'}}>
                 <div className="text-[var(--fg-muted)] mb-1">[03]</div>
                 <div className="font-semibold">Secure Payment</div>
                 <div className="text-[var(--accent)] font-mono">bKash / Nagad</div>
@@ -125,7 +127,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SERVICES / CATALOG SECTION (Corporate Grid) */}
+      {/* SERVICES SECTION */}
       <section className="relative py-24 lg:py-32">
         <div className="max-w-[1480px] mx-auto px-6 lg:px-10">
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-12">
@@ -255,7 +257,7 @@ export default function Home() {
           <div className="flex items-center justify-center gap-2 mb-4">
             <span className="live-dot"></span> SYSTEMS OPERATIONAL
           </div>
-          <div>© 2025 SHEBA POINT LABORATORIES / ALL RIGHTS RESERVED</div>
+          <div>© 2025 ONLINE SHEBA POINT / ALL RIGHTS RESERVED</div>
         </div>
       </footer>
 
