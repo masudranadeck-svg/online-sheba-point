@@ -6,6 +6,12 @@ export default function Home() {
   const [time, setTime] = useState('');
 
   useEffect(() => {
+    // Font Awesome CDN load করার জন্য
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
+    document.head.appendChild(link);
+
     const updateClock = () => {
       const now = new Date();
       const h = String(now.getHours()).padStart(2,'0');
@@ -15,26 +21,30 @@ export default function Home() {
     };
     const timer = setInterval(updateClock, 1000);
     updateClock();
-    return () => clearInterval(timer);
+    
+    return () => {
+      clearInterval(timer);
+      document.head.removeChild(link);
+    };
   }, []);
 
-  // সব সার্ভিসের লিস্ট এখানে দেওয়া হলো
+  // সব সার্ভিসের লিস্ট
   const services = [
-    { name: 'Digital Shop', desc: 'Keys & Subscriptions', link: '/shop', icon: 'fas fa-shopping-bag' },
-    { name: 'Online Tools', desc: '30+ Premium Tools', link: '/online-tools', icon: 'fas fa-tools' },
-    { name: 'Real Estate', desc: 'Buy, Sell & Rent', link: '/properties', icon: 'fas fa-home' },
-    { name: 'Marketplace', desc: 'Buy & Sell Services', link: '/marketplace', icon: 'fas fa-store' },
-    { name: 'Resell', desc: 'Old Products', link: '/resell', icon: 'fas fa-recycle' },
-    { name: 'Remote Jobs', desc: 'Find Remote Work', link: '/remote-jobs', icon: 'fas fa-briefcase' },
-    { name: 'Dev Services', desc: 'Web & App Development', link: '/dev-services', icon: 'fas fa-laptop-code' },
-    { name: 'Online Sheba', desc: 'Digital Solutions', link: '/online-sheba', icon: 'fas fa-headset' },
-    { name: 'Dollar Exchange', desc: 'Secure Money Transfer', link: '/dollar-exchange', icon: 'fas fa-dollar-sign' },
-    { name: 'Cards', desc: 'Virtual & Physical Cards', link: '/cards', icon: 'fas fa-credit-card' },
-    { name: 'Accounts', desc: 'Verified Accounts', link: '/accounts', icon: 'fas fa-user-shield' },
-    { name: 'Company Formation', desc: 'Business Registration', link: '/company-formation', icon: 'fas fa-building' },
-    { name: 'PC Solution', desc: 'Computer & Laptop Repair', link: '/pc-solution', icon: 'fas fa-desktop' },
-    { name: 'Subscription', desc: 'Streaming & Software', link: '/subscription', icon: 'fas fa-tv' },
-    { name: 'Remote Services', desc: 'Phone Unlock & Support', link: '/remote', icon: 'fas fa-satellite-dish' }
+    { name: 'Digital Shop', desc: 'Keys & Subscriptions', link: '/shop', icon: 'fa-solid fa-bag-shopping' },
+    { name: 'Online Tools', desc: '30+ Premium Tools', link: '/online-tools', icon: 'fa-solid fa-screwdriver-wrench' },
+    { name: 'Real Estate', desc: 'Buy, Sell & Rent', link: '/properties', icon: 'fa-solid fa-house' },
+    { name: 'Marketplace', desc: 'Buy & Sell Services', link: '/marketplace', icon: 'fa-solid fa-store' },
+    { name: 'Resell', desc: 'Old Products', link: '/resell', icon: 'fa-solid fa-recycle' },
+    { name: 'Remote Jobs', desc: 'Find Remote Work', link: '/remote-jobs', icon: 'fa-solid fa-briefcase' },
+    { name: 'Dev Services', desc: 'Web & App Dev', link: '/dev-services', icon: 'fa-solid fa-code' },
+    { name: 'Online Sheba', desc: 'Digital Solutions', link: '/online-sheba', icon: 'fa-solid fa-headset' },
+    { name: 'Dollar Exchange', desc: 'Secure Transfer', link: '/dollar-exchange', icon: 'fa-solid fa-dollar-sign' },
+    { name: 'Cards', desc: 'Virtual & Physical', link: '/cards', icon: 'fa-solid fa-credit-card' },
+    { name: 'Accounts', desc: 'Verified Accounts', link: '/accounts', icon: 'fa-solid fa-user-shield' },
+    { name: 'Company', desc: 'Business Register', link: '/company-formation', icon: 'fa-solid fa-building' },
+    { name: 'PC Solution', desc: 'Computer Repair', link: '/pc-solution', icon: 'fa-solid fa-desktop' },
+    { name: 'Subscription', desc: 'Streaming & Software', link: '/subscription', icon: 'fa-solid fa-tv' },
+    { name: 'Remote Service', desc: 'Phone Unlock', link: '/remote', icon: 'fa-solid fa-satellite-dish' }
   ];
 
   return (
@@ -141,7 +151,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ALL SERVICES GRID (ছোট ছোট ব্লক করে সাজানো হয়েছে) */}
+      {/* ALL SERVICES GRID (Icons Fixed) */}
       <section className="relative py-24 lg:py-32">
         <div className="max-w-[1480px] mx-auto px-6 lg:px-10">
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-12">
@@ -162,11 +172,19 @@ export default function Home() {
                 href={service.link} 
                 className="relative bg-[var(--bg-card)] p-6 flex flex-col items-center text-center transition-all hover:bg-[var(--bg-elev)] group"
               >
-                {/* Corner markers for corporate look */}
+                {/* Corner markers */}
                 <div className="corner-tl"></div><div className="corner-tr"></div><div className="corner-bl"></div><div className="corner-br"></div>
                 
-                {/* Icon */}
-                <div className="w-14 h-14 rounded-full bg-[var(--bg)] border border-[var(--border-bright)] flex items-center justify-center text-2xl text-[var(--accent)] mb-4 transition-all group-hover:shadow-[0_0_15px_var(--accent-glow)] group-hover:scale-110">
+                {/* Icon Container (Fixed Styling) */}
+                <div 
+                  className="w-14 h-14 rounded-xl flex items-center justify-center text-2xl mb-4 transition-all duration-300 group-hover:scale-110"
+                  style={{ 
+                    background: 'var(--bg)', 
+                    border: '1px solid var(--border-bright)',
+                    color: 'var(--accent)',
+                    boxShadow: 'inset 0 0 10px rgba(255, 91, 20, 0.1)'
+                  }}
+                >
                   <i className={service.icon}></i>
                 </div>
                 
