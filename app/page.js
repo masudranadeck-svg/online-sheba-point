@@ -18,6 +18,25 @@ export default function Home() {
     return () => clearInterval(timer);
   }, []);
 
+  // সব সার্ভিসের লিস্ট এখানে দেওয়া হলো
+  const services = [
+    { name: 'Digital Shop', desc: 'Keys & Subscriptions', link: '/shop', icon: 'fas fa-shopping-bag' },
+    { name: 'Online Tools', desc: '30+ Premium Tools', link: '/online-tools', icon: 'fas fa-tools' },
+    { name: 'Real Estate', desc: 'Buy, Sell & Rent', link: '/properties', icon: 'fas fa-home' },
+    { name: 'Marketplace', desc: 'Buy & Sell Services', link: '/marketplace', icon: 'fas fa-store' },
+    { name: 'Resell', desc: 'Old Products', link: '/resell', icon: 'fas fa-recycle' },
+    { name: 'Remote Jobs', desc: 'Find Remote Work', link: '/remote-jobs', icon: 'fas fa-briefcase' },
+    { name: 'Dev Services', desc: 'Web & App Development', link: '/dev-services', icon: 'fas fa-laptop-code' },
+    { name: 'Online Sheba', desc: 'Digital Solutions', link: '/online-sheba', icon: 'fas fa-headset' },
+    { name: 'Dollar Exchange', desc: 'Secure Money Transfer', link: '/dollar-exchange', icon: 'fas fa-dollar-sign' },
+    { name: 'Cards', desc: 'Virtual & Physical Cards', link: '/cards', icon: 'fas fa-credit-card' },
+    { name: 'Accounts', desc: 'Verified Accounts', link: '/accounts', icon: 'fas fa-user-shield' },
+    { name: 'Company Formation', desc: 'Business Registration', link: '/company-formation', icon: 'fas fa-building' },
+    { name: 'PC Solution', desc: 'Computer & Laptop Repair', link: '/pc-solution', icon: 'fas fa-desktop' },
+    { name: 'Subscription', desc: 'Streaming & Software', link: '/subscription', icon: 'fas fa-tv' },
+    { name: 'Remote Services', desc: 'Phone Unlock & Support', link: '/remote', icon: 'fas fa-satellite-dish' }
+  ];
+
   return (
     <div style={{ background: 'var(--bg)', color: 'var(--fg)', fontFamily: "'Manrope',sans-serif", overflowX: 'hidden' }}>
       
@@ -104,7 +123,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* HIGHLIGHTED STATS BAR (নতুন যোগ করা হয়েছে) */}
+      {/* HIGHLIGHTED STATS BAR */}
       <section className="relative py-12 border-b border-[var(--border)]" style={{ background: 'var(--bg-elev)' }}>
         <div className="max-w-[1480px] mx-auto px-6 lg:px-10 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
           <div>
@@ -122,7 +141,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SERVICES SECTION */}
+      {/* ALL SERVICES GRID (ছোট ছোট ব্লক করে সাজানো হয়েছে) */}
       <section className="relative py-24 lg:py-32">
         <div className="max-w-[1480px] mx-auto px-6 lg:px-10">
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-12">
@@ -135,80 +154,27 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-[var(--border)]">
-            
-            {/* Card 1: Shop */}
-            <Link href="/shop" className="product-card group block">
-              <div className="visual">
-                <div className="glow"></div>
+          {/* Services Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-px bg-[var(--border)]">
+            {services.map((service, i) => (
+              <Link 
+                key={i} 
+                href={service.link} 
+                className="relative bg-[var(--bg-card)] p-6 flex flex-col items-center text-center transition-all hover:bg-[var(--bg-elev)] group"
+              >
+                {/* Corner markers for corporate look */}
                 <div className="corner-tl"></div><div className="corner-tr"></div><div className="corner-bl"></div><div className="corner-br"></div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="pv-orb"></div>
+                
+                {/* Icon */}
+                <div className="w-14 h-14 rounded-full bg-[var(--bg)] border border-[var(--border-bright)] flex items-center justify-center text-2xl text-[var(--accent)] mb-4 transition-all group-hover:shadow-[0_0_15px_var(--accent-glow)] group-hover:scale-110">
+                  <i className={service.icon}></i>
                 </div>
-              </div>
-              <div className="p-5 border-t border-[var(--border)]">
-                <h3 className="font-display font-bold text-sm tracking-tight mb-1">Digital Shop</h3>
-                <p className="text-xs text-[var(--fg-muted)] mb-4">Software keys, subscriptions & more.</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-mono text-[var(--lime)]">EXPLORE →</span>
-                </div>
-              </div>
-            </Link>
-
-            {/* Card 2: Tools */}
-            <Link href="/online-tools" className="product-card group block">
-              <div className="visual">
-                <div className="glow"></div>
-                <div className="corner-tl"></div><div className="corner-tr"></div><div className="corner-bl"></div><div className="corner-br"></div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="pv-cube"></div>
-                </div>
-              </div>
-              <div className="p-5 border-t border-[var(--border)]">
-                <h3 className="font-display font-bold text-sm tracking-tight mb-1">Online Tools</h3>
-                <p className="text-xs text-[var(--fg-muted)] mb-4">30+ premium tools for free.</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-mono text-[var(--lime)]">EXPLORE →</span>
-                </div>
-              </div>
-            </Link>
-
-            {/* Card 3: Real Estate */}
-            <Link href="/properties" className="product-card group block">
-              <div className="visual">
-                <div className="glow"></div>
-                <div className="corner-tl"></div><div className="corner-tr"></div><div className="corner-bl"></div><div className="corner-br"></div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="pv-frame"></div>
-                </div>
-              </div>
-              <div className="p-5 border-t border-[var(--border)]">
-                <h3 className="font-display font-bold text-sm tracking-tight mb-1">Real Estate</h3>
-                <p className="text-xs text-[var(--fg-muted)] mb-4">Buy, sell, and rent properties.</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-mono text-[var(--lime)]">EXPLORE →</span>
-                </div>
-              </div>
-            </Link>
-
-            {/* Card 4: Remote Service */}
-            <Link href="/remote" className="product-card group block">
-              <div className="visual">
-                <div className="glow"></div>
-                <div className="corner-tl"></div><div className="corner-tr"></div><div className="corner-bl"></div><div className="corner-br"></div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="pv-lens"></div>
-                </div>
-              </div>
-              <div className="p-5 border-t border-[var(--border)]">
-                <h3 className="font-display font-bold text-sm tracking-tight mb-1">Remote Services</h3>
-                <p className="text-xs text-[var(--fg-muted)] mb-4">Phone unlock & remote support.</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-mono text-[var(--lime)]">EXPLORE →</span>
-                </div>
-              </div>
-            </Link>
-
+                
+                {/* Text */}
+                <h3 className="font-display font-bold text-sm tracking-tight mb-1 text-[var(--fg)]">{service.name}</h3>
+                <p className="text-[11px] text-[var(--fg-muted)] leading-relaxed">{service.desc}</p>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
