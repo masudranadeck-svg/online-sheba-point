@@ -1,5 +1,6 @@
-'use client'
+'use client';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { auth } from '@/lib/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
@@ -8,56 +9,65 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const router = useRouter();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setMessage('লগইন হচ্ছে...');
+    setMessage('অথেনটিকেটিং...');
     try {
       await signInWithEmailAndPassword(auth, email, password);
       setMessage('লগইন সফল! ড্যাশবোর্ডে নিয়ে যাওয়া হচ্ছে...');
-      
-      // Next.js router er bodole amra direct redirect korlam
-      setTimeout(() => {
-        window.location.href = '/dashboard';
-      }, 1000); // 1 second por redirect hobe jate message ta dekhte paren
-
+      setTimeout(() => { window.location.href = '/dashboard'; }, 1000);
     } catch (error) {
       setMessage('ভুল ইমেইল বা পাসওয়ার্ড!');
     }
   };
 
   return (
-    <div className="deepin-body" style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', padding:24 }}>
-      <div className="glass-3d" style={{ width:'100%', maxWidth:400 }}>
-        <h2 style={{ textAlign: 'center', marginBottom: '8px', color: 'white' }}>🔐 কাস্টমার লগইন</h2>
-        <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.4)', marginBottom: '32px' }}>আপনার একাউন্টে লগইন করুন</p>
+    <div style={{ background: 'var(--bg)', color: 'var(--fg)', fontFamily: "'Manrope',sans-serif", minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+      <div className="relative bg-[var(--bg-card)] border border-[var(--border)] p-8 md:p-12 w-full max-w-md" style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%)' }}>
+        <div className="corner-tl"></div><div className="corner-tr"></div><div className="corner-bl"></div><div className="corner-br"></div>
+        
+        <div className="text-center mb-10">
+          <div className="w-12 h-12 mx-auto relative mb-4">
+            <div className="absolute inset-0 border border-[var(--accent)] rotate-45"></div>
+            <div className="absolute inset-1 bg-[var(--accent)] rotate-45"></div>
+          </div>
+          <h1 className="font-display font-bold text-3xl tracking-tight text-[var(--fg)]">SYSTEM ACCESS</h1>
+          <p className="text-[var(--fg-muted)] text-sm mt-2 font-mono uppercase tracking-widest">Login to your account</p>
+        </div>
 
-        <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <input 
-            type="email" 
-            placeholder="ইমেইল" 
-            value={email} 
-            onChange={(e) => setEmail(e.target.value)} 
-            required 
-            className="d-input"
-          />
-          <input 
-            type="password" 
-            placeholder="পাসওয়ার্ড" 
-            value={password} 
-            onChange={(e) => setPassword(e.target.value)} 
-            required 
-            className="d-input"
-          />
-          <button type="submit" className="neon-3d-btn" style={{ width:'100%' }}>
-            লগইন করুন
-          </button>
+        <form onSubmit={handleLogin} className="flex flex-col gap-6">
+          <div>
+            <label className="text-[10px] font-mono text-[var(--fg-muted)] uppercase tracking-widest mb-2 block">Email Address</label>
+            <input 
+              type="email" 
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)} 
+              required 
+              className="w-full bg-transparent border-b border-[var(--border-bright)] py-3 text-white outline-none focus:border-[var(--accent)] transition-colors"
+              placeholder="user@online-sheba.com"
+            />
+          </div>
+          <div>
+            <label className="text-[10px] font-mono text-[var(--fg-muted)] uppercase tracking-widest mb-2 block">Password</label>
+            <input 
+              type="password" 
+              value={password} 
+              onChange={(e) => setPassword(e.target.value)} 
+              required 
+              className="w-full bg-transparent border-b border-[var(--border-bright)] py-3 text-white outline-none focus:border-[var(--accent)] transition-colors"
+              placeholder="••••••••"
+            />
+          </div>
+          
+          <button type="submit" className="btn-primary w-full justify-center mt-4">Authenticate →</button>
         </form>
 
-        {message && <p style={{ marginTop: '15px', color: '#4e6ef2', textAlign: 'center', fontSize: '14px' }}>{message}</p>}
-
-        <p style={{ textAlign: 'center', marginTop: '20px', color: 'rgba(255,255,255,0.4)', fontSize: '14px' }}>
-          নতুন ইউজার? <Link href="/register" style={{ color: '#4e6ef2', textDecoration: 'none', fontWeight: '600' }}>রেজিস্টার করুন</Link>
+        {message && <p className="mt-6 text-center text-sm text-[var(--accent)] font-mono">{message}</p>}
+        
+        <p className="mt-8 text-center text-sm text-[var(--fg-muted)]">
+          No access? <Link href="/register" className="text-[var(--lime)] hover:underline">Request Access</Link>
         </p>
       </div>
     </div>

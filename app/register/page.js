@@ -1,7 +1,7 @@
-'use client'
+'use client';
 import { useState } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { auth } from '@/lib/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
@@ -13,48 +13,61 @@ export default function Register() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    setMessage('একাউন্ট তৈরি হচ্ছে...');
+    setMessage('Creating Access...');
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      setMessage('সফল! ড্যাশবোর্ডে যাওয়া হচ্ছে...');
-      router.push('/dashboard');
+      setMessage('Access Granted! Redirecting...');
+      setTimeout(() => { window.location.href = '/dashboard'; }, 1000);
     } catch (error) {
-      setMessage('পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে বা ইমেইল ব্যবহৃত!');
+      setMessage('Registration Failed. Try again.');
     }
   };
 
   return (
-    <div className="deepin-body" style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', padding:24 }}>
-      <div className="glass-3d" style={{ width:'100%', maxWidth:400 }}>
-        <h2 style={{ textAlign: 'center', marginBottom: '8px', color: 'white' }}>📝 নতুন একাউন্ট</h2>
-        <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.4)', marginBottom: '32px' }}>রেজিস্টার করে শপ করুন</p>
+    <div style={{ background: 'var(--bg)', color: 'var(--fg)', fontFamily: "'Manrope',sans-serif", minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+      <div className="relative bg-[var(--bg-card)] border border-[var(--border)] p-8 md:p-12 w-full max-w-md" style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%)' }}>
+        <div className="corner-tl"></div><div className="corner-tr"></div><div className="corner-bl"></div><div className="corner-br"></div>
+        
+        <div className="text-center mb-10">
+          <div className="w-12 h-12 mx-auto relative mb-4">
+            <div className="absolute inset-0 border border-[var(--lime)] rotate-45"></div>
+            <div className="absolute inset-1 bg-[var(--lime)] rotate-45"></div>
+          </div>
+          <h1 className="font-display font-bold text-3xl tracking-tight text-[var(--fg)]">REQUEST ACCESS</h1>
+          <p className="text-[var(--fg-muted)] text-sm mt-2 font-mono uppercase tracking-widest">Create new account</p>
+        </div>
 
-        <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <input 
-            type="email" 
-            placeholder="আপনার ইমেইল" 
-            value={email} 
-            onChange={(e) => setEmail(e.target.value)} 
-            required 
-            className="d-input"
-          />
-          <input 
-            type="password" 
-            placeholder="নতুন পাসওয়ার্ড" 
-            value={password} 
-            onChange={(e) => setPassword(e.target.value)} 
-            required 
-            className="d-input"
-          />
-          <button type="submit" className="neon-3d-btn" style={{ width:'100%' }}>
-            রেজিস্টার করুন
-          </button>
+        <form onSubmit={handleRegister} className="flex flex-col gap-6">
+          <div>
+            <label className="text-[10px] font-mono text-[var(--fg-muted)] uppercase tracking-widest mb-2 block">Email Address</label>
+            <input 
+              type="email" 
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)} 
+              required 
+              className="w-full bg-transparent border-b border-[var(--border-bright)] py-3 text-white outline-none focus:border-[var(--lime)] transition-colors"
+              placeholder="user@online-sheba.com"
+            />
+          </div>
+          <div>
+            <label className="text-[10px] font-mono text-[var(--fg-muted)] uppercase tracking-widest mb-2 block">Password</label>
+            <input 
+              type="password" 
+              value={password} 
+              onChange={(e) => setPassword(e.target.value)} 
+              required 
+              className="w-full bg-transparent border-b border-[var(--border-bright)] py-3 text-white outline-none focus:border-[var(--lime)] transition-colors"
+              placeholder="••••••••"
+            />
+          </div>
+          
+          <button type="submit" className="btn-primary w-full justify-center mt-4" style={{ background: 'var(--lime)', color: 'var(--bg)' }}>Initialize Account →</button>
         </form>
 
-        {message && <p style={{ marginTop: '15px', color: '#4e6ef2', textAlign: 'center', fontSize: '14px' }}>{message}</p>}
-
-        <p style={{ textAlign: 'center', marginTop: '20px', color: 'rgba(255,255,255,0.4)', fontSize: '14px' }}>
-          একাউন্ট আছে? <Link href="/login" style={{ color: '#4e6ef2', textDecoration: 'none', fontWeight: '600' }}>লগইন করুন</Link>
+        {message && <p className="mt-6 text-center text-sm text-[var(--lime)] font-mono">{message}</p>}
+        
+        <p className="mt-8 text-center text-sm text-[var(--fg-muted)]">
+          Already have access? <Link href="/login" className="text-[var(--accent)] hover:underline">Login Here</Link>
         </p>
       </div>
     </div>
