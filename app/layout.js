@@ -10,9 +10,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="bn">
-      <body style={{ minHeight:'100vh', display:'flex', flexDirection:'column'}}>
+      <body style={{ minHeight:'100vh', display:'flex', flexDirection:'column', background: 'var(--bg)'}}>
         <Navbar />
-        <main style={{flex:1}}>{children}</main>
+        {/* 80px padding-top দেওয়া হলো যাতে নেভবারের সাথে কোনো কন্টেন্ট না মিলে */}
+        <main style={{flex:1, paddingTop: '80px'}}>{children}</main>
         <Footer />
       </body>
     </html>

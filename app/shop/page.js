@@ -6,7 +6,6 @@ export default function ShopPage() {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('All');
 
-  // ক্যাটাগরি লিস্ট
   const categories = [
     'All',
     'Digital Products',
@@ -31,15 +30,14 @@ export default function ShopPage() {
     fetchProducts();
   }, []);
 
-  // ক্যাটাগরি অনুযায়ী প্রোডাক্ট ফিল্টার
   const filteredProducts = selectedCategory === 'All' 
     ? products 
     : products.filter(p => p.category === selectedCategory);
 
   return (
     <div style={{ background: 'var(--bg)', color: 'var(--fg)', fontFamily: "'Manrope',sans-serif", overflowX: 'hidden', minHeight: '100vh' }}>
-      {/* pt-40 দেওয়া হয়েছে যাতে নেভবারের সাথে কোনো কন্টেন্ট না মিলে */}
-      <div className="max-w-[1480px] mx-auto px-6 lg:px-10 pt-40 pb-16">
+      {/* এখানে inline style এ paddingTop দেওয়া হয়েছে */}
+      <div className="max-w-[1480px] mx-auto px-6 lg:px-10" style={{ paddingTop: '60px', paddingBottom: '60px' }}>
         
         {/* Header */}
         <div className="mb-16">
