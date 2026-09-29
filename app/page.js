@@ -195,39 +195,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* MANIFESTO / STATS */}
-      <section className="relative py-24 lg:py-32 border-t border-[var(--border)] overflow-hidden grid-bg grid-fade">
-        <div className="relative max-w-[1480px] mx-auto px-6 lg:px-10">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-[var(--border)] mb-20">
-            <div className="bg-[var(--bg)] p-8">
-              <div className="stat-num text-6xl lg:text-7xl">30+</div>
-              <div className="mt-3 text-xs font-mono text-[var(--fg-muted)] uppercase tracking-widest">Free Tools</div>
-            </div>
-            <div className="bg-[var(--bg)] p-8">
-              <div className="stat-num text-6xl lg:text-7xl">100%</div>
-              <div className="mt-3 text-xs font-mono text-[var(--fg-muted)] uppercase tracking-widest">Secure Payment</div>
-            </div>
-            <div className="bg-[var(--bg)] p-8">
-              <div className="stat-num text-6xl lg:text-7xl">24/7</div>
-              <div className="mt-3 text-xs font-mono text-[var(--fg-muted)] uppercase tracking-widest">Support</div>
-            </div>
-            <div className="bg-[var(--bg)] p-8">
-              <div className="stat-num text-6xl lg:text-7xl">500+</div>
-              <div className="mt-3 text-xs font-mono text-[var(--fg-muted)] uppercase tracking-widest">Happy Clients</div>
-            </div>
-          </div>
-
-          <div className="text-center">
-            <div className="section-eyebrow justify-center mb-8 inline-flex">03 / Manifesto</div>
-            <blockquote className="font-display font-bold text-3xl sm:text-4xl lg:text-6xl leading-[1.1] tracking-tight">
-              "We don&apos;t just sell software. <br/>
-              We engineer <span className="accent-underline">digital solutions</span> that <br/>
-              <span className="text-[var(--accent)]">outlast the decade</span>."
-            </blockquote>
-          </div>
-        </div>
-      </section>
-
     </div>
   );
 }
