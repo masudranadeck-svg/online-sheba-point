@@ -30,7 +30,7 @@ export default function Home() {
                 <div className="absolute inset-0 border border-[var(--accent)] rotate-45"></div>
                 <div className="absolute inset-1 bg-[var(--accent)] rotate-45"></div>
               </div>
-              <span className="font-display font-bold text-lg tracking-tight">ONLINE SHEBA POINT</span>
+              <span className="font-display font-bold text-base md:text-lg tracking-tight">ONLINE SHEBA POINT</span>
             </Link>
             <nav className="hidden lg:flex items-center gap-8">
               <Link href="/shop" className="text-[13px] tracking-wider text-[var(--fg-dim)] hover:text-[var(--fg)] transition">Shop</Link>
@@ -46,12 +46,12 @@ export default function Home() {
       </header>
 
       {/* HERO SECTION */}
-      <section className="relative min-h-screen pt-16 overflow-hidden grid-bg">
+      <section className="relative min-h-screen pt-16 overflow-hidden grid-bg flex flex-col justify-center">
         <div className="floor-grid"></div>
-        <div className="absolute top-1/3 -left-32 w-[500px] h-[500px] rounded-full bg-[var(--accent)] opacity-[0.08] blur-[120px] pointer-events-none"></div>
+        <div className="absolute top-1/4 -left-32 w-[500px] h-[500px] rounded-full bg-[var(--accent)] opacity-[0.08] blur-[120px] pointer-events-none"></div>
         
         {/* Status Bar */}
-        <div className="relative max-w-[1480px] mx-auto px-6 lg:px-10 pt-6 flex items-center justify-between text-[11px] font-mono text-[var(--fg-muted)]">
+        <div className="relative max-w-[1480px] mx-auto w-full px-6 lg:px-10 pt-6 flex items-center justify-between text-[11px] font-mono text-[var(--fg-muted)]">
           <div className="flex items-center gap-3">
             <span className="live-dot"></span>
             <span>SYSTEM ONLINE / 30+ TOOLS ACTIVE</span>
@@ -63,47 +63,48 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Hero Content */}
-        <div className="relative max-w-[1480px] mx-auto px-6 lg:px-10 grid lg:grid-cols-2 gap-8 items-center py-16 lg:py-20">
+        {/* Hero Content Wrapper */}
+        <div className="relative max-w-[1480px] mx-auto w-full px-6 lg:px-10 grid lg:grid-cols-2 gap-8 items-center py-10 lg:py-16 flex-1">
           
           {/* Left: Copy */}
-          <div className="relative z-10">
-            <div className="section-eyebrow mb-8">01 / Digital Ecosystem</div>
-            <h1 className="hero-h1 font-display font-bold text-5xl sm:text-6xl lg:text-7xl leading-[.95] tracking-tight">
-              <span className="word" style={{animationDelay:'.1s'}}>Tomorrow's</span><br/>
-              <span className="word" style={{animationDelay:'.3s'}}>digital store,</span><br/>
-              <span className="word accent-underline" style={{animationDelay:'.5s'}}>today.</span>
+          <div className="relative z-10 text-center lg:text-left">
+            <div className="section-eyebrow mb-8 justify-center lg:justify-start">01 / Digital Ecosystem</div>
+            
+            <h1 className="font-display font-bold text-4xl sm:text-5xl lg:text-6xl xl:text-7xl leading-[.95] tracking-tight">
+              Tomorrow&apos;s<br/>
+              digital store,<br/>
+              <span className="accent-underline">today.</span>
             </h1>
-            <p className="mt-8 max-w-md text-[var(--fg-dim)] text-base leading-relaxed">
+            
+            <p className="mt-8 max-w-md mx-auto lg:mx-0 text-[var(--fg-dim)] text-base leading-relaxed">
               Software keys, premium subscriptions, remote unlock services, and 30+ free professional online tools. Everything you need for your digital life, engineered for speed and security.
             </p>
-            <div className="mt-10 flex flex-wrap items-center gap-4">
+            <div className="mt-10 flex flex-wrap items-center gap-4 justify-center lg:justify-start">
               <Link href="/shop" className="btn-primary">Explore Shop →</Link>
               <Link href="/online-tools" className="btn-ghost">Access Free Tools</Link>
             </div>
           </div>
 
-          {/* Right: Orb Visual (Fixed Layout) */}
-          <div className="relative hidden md:block mt-10 lg:mt-0">
-            <div className="orb-wrap" style={{maxWidth: '450px', margin: '0 auto'}}>
+          {/* Right: Orb Visual */}
+          <div className="relative hidden md:flex justify-center items-center w-full py-10">
+            <div className="orb-wrap" style={{maxWidth: '400px', width: '100%'}}>
               <div className="ring r1"></div>
               <div className="ring r2"></div>
               <div className="ring r3"></div>
               <div className="orb-core"></div>
               <div className="orb-hilight"></div>
               
-              {/* Floating Tech Stats (Repositioned to be fully visible) */}
-              <div className="float-tag" style={{top:'5%',left:'0%',animationDelay:'0s'}}>
+              <div className="float-tag" style={{top:'0%',left:'0%',animationDelay:'0s'}}>
                 <div className="text-[var(--fg-muted)] mb-1">[01]</div>
                 <div className="font-semibold">Online Tools</div>
                 <div className="text-[var(--accent)] font-mono">30+ Free</div>
               </div>
-              <div className="float-tag" style={{top:'40%',right:'0%',animationDelay:'1.5s'}}>
+              <div className="float-tag" style={{top:'45%',right:'0%',animationDelay:'1.5s'}}>
                 <div className="text-[var(--fg-muted)] mb-1">[02]</div>
                 <div className="font-semibold">Instant Delivery</div>
                 <div className="text-[var(--accent)] font-mono">Software Keys</div>
               </div>
-              <div className="float-tag" style={{bottom:'5%',left:'5%',animationDelay:'3s'}}>
+              <div className="float-tag" style={{bottom:'0%',left:'5%',animationDelay:'3s'}}>
                 <div className="text-[var(--fg-muted)] mb-1">[03]</div>
                 <div className="font-semibold">Secure Payment</div>
                 <div className="text-[var(--accent)] font-mono">bKash / Nagad</div>
@@ -113,7 +114,7 @@ export default function Home() {
         </div>
 
         {/* Marquee */}
-        <div className="relative border-t border-b border-[var(--border)] py-4 overflow-hidden">
+        <div className="relative border-t border-b border-[var(--border)] py-4 overflow-hidden mt-auto">
           <div className="marquee text-sm font-mono text-[var(--fg-dim)] uppercase tracking-widest">
             <div className="flex gap-12 items-center">
               <span>Software Keys</span><span className="text-[var(--accent)]">◆</span>
@@ -243,7 +244,7 @@ export default function Home() {
           <div className="text-center">
             <div className="section-eyebrow justify-center mb-8 inline-flex">03 / Manifesto</div>
             <blockquote className="font-display font-bold text-3xl sm:text-4xl lg:text-6xl leading-[1.1] tracking-tight">
-              "We don't just sell software. <br/>
+              "We don&apos;t just sell software. <br/>
               We engineer <span className="accent-underline">digital solutions</span> that <br/>
               <span className="text-[var(--accent)]">outlast the decade</span>."
             </blockquote>
