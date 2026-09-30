@@ -172,74 +172,75 @@ export default function PassportPhotoMaker() {
     win.document.write(`<img src="${dataUrl}" style="width:100%;" onload="window.print();">`);
   };
 
+  // AETHER Corporate UI (Pure Inline CSS)
+  const styles = {
+    container: { background: 'var(--bg)', color: 'var(--fg)', fontFamily: "'Manrope', sans-serif", minHeight: '100vh', overflowX: 'hidden' },
+    wrapper: { maxWidth: '1000px', margin: '0 auto', padding: '96px 24px 64px 24px' },
+    header: { textAlign: 'center', marginBottom: '48px' },
+    eyebrow: { display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: 'var(--accent)', fontFamily: "'JetBrains Mono', monospace", textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '16px' },
+    title: { fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: '800', lineHeight: '1', margin: '0', fontFamily: "'Syne', sans-serif", letterSpacing: '-0.025em' },
+    card: { position: 'relative', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '8px', padding: '32px', textAlign: 'center' },
+    corner: (pos) => ({ position: 'absolute', width: '14px', height: '14px', borderColor: 'var(--accent)', ...pos }),
+    btnPrimary: { display: 'inline-block', padding: '14px 28px', background: 'var(--accent)', color: '#0a0a0b', border: 'none', fontWeight: '700', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.08em', cursor: 'pointer', clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)', margin: '8px' },
+    btnGhost: { display: 'inline-block', padding: '14px 28px', background: 'transparent', color: 'var(--fg)', border: '1px solid var(--border-bright)', fontWeight: '600', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.08em', cursor: 'pointer', clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)', margin: '8px' },
+  };
+
   return (
-    <div className="deepin-body" style={{ minHeight: '100vh', paddingTop: '150px', paddingBottom: '40px' }}>
-      <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 20px', textAlign: 'center' }}>
-        <h1 style={{ color: 'white', marginBottom: '10px' }}>📸 Passport Photo Maker (1.6" x 2")</h1>
-        <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '30px' }}>ছবি ক্রপ করুন, ম্যাজিক ফিল্টার দিন, A4 পেজে ২০ কপি সাদা বর্ডারসহ প্রিন্ট করুন।</p>
+    <div style={styles.container}>
+      <div style={styles.wrapper}>
         
-        <div className="glass-3d" style={{ padding: '30px' }}>
+        {/* Header */}
+        <div style={styles.header}>
+          <div style={styles.eyebrow}>
+            <span style={{ width: '24px', height: '1px', background: 'var(--accent)' }}></span>
+            03 / Tools
+          </div>
+          <h1 style={styles.title}>Passport Photo Maker.</h1>
+          <p style={{ color: 'var(--fg-dim)', marginTop: '16px' }}>1.6x2 inch size. A4 layout with 20 copies.</p>
+        </div>
+
+        {/* Main Card */}
+        <div style={styles.card}>
+          <div style={styles.corner({top: '8px', left: '8px', borderTop: '1px solid', borderLeft: '1px solid'})}></div>
+          <div style={styles.corner({top: '8px', right: '8px', borderTop: '1px solid', borderRight: '1px solid'})}></div>
+          <div style={styles.corner({bottom: '8px', left: '8px', borderBottom: '1px solid', borderLeft: '1px solid'})}></div>
+          <div style={styles.corner({bottom: '8px', right: '8px', borderBottom: '1px solid', borderRight: '1px solid'})}></div>
+
           {!imageSrc ? (
-            <div style={{ border: '2px dashed rgba(168,85,247,0.5)', borderRadius: '12px', padding: '40px', background: 'rgba(0,0,0,0.2)' }}>
-              <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '20px' }}>আপনার ছবি আপলোড করুন</p>
-              <input type="file" accept="image/*" onChange={onSelectFile} style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px' }} />
+            <div style={{ border: '2px dashed var(--border-bright)', padding: '48px', borderRadius: '8px' }}>
+              <input type="file" accept="image/*" onChange={onSelectFile} style={{ color: 'var(--fg-muted)' }} />
             </div>
           ) : (
             <>
               {!croppedImage ? (
                 <div>
-                  {/* Passport Size Aspect Ratio (1.6:2 = 4:5) */}
-                  <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '10px' }}>মাউস দিয়ে টেনে পাসপোর্ট সাইজে ক্রপ করুন</p>
-                  <div style={{ background: '#121212', padding: '10px', borderRadius: '12px', marginBottom: '20px' }}>
+                  <div style={{ background: 'var(--bg)', padding: '16px', borderRadius: '8px', marginBottom: '24px', display: 'inline-block' }}>
                     <ReactCrop crop={crop} onChange={(c) => setCrop(c)} aspect={4 / 5}>
                       <img ref={imgRef} src={imageSrc} alt="Source" style={{ maxHeight: '400px' }} />
                     </ReactCrop>
                   </div>
-                  <div style={{ display: 'flex', gap: '10px' }}>
-                    <button onClick={() => setImageSrc(null)} className="d-btn-orange" style={{ flex: 1, border: 'none', cursor: 'pointer', padding: '12px' }}>
-                      ❌ বাতিল
-                    </button>
-                    <button onClick={handleConfirmCrop} className="d-btn glow-btn" style={{ flex: 1, border: 'none', cursor: 'pointer', padding: '12px' }}>
-                      ✅ ক্রপ কনফার্ম করুন
-                    </button>
+                  <div>
+                    <button onClick={() => setImageSrc(null)} style={styles.btnGhost}>Cancel</button>
+                    <button onClick={handleConfirmCrop} style={styles.btnPrimary}>Crop Confirm →</button>
                   </div>
                 </div>
               ) : (
                 <div>
-                  <img 
-                    src={isEnhanced && finalImage ? finalImage : croppedImage} 
-                    alt="Cropped" 
-                    style={{ maxWidth: '200px', borderRadius: '8px', marginBottom: '20px', border: '2px solid rgba(255,255,255,0.2)' }} 
-                  />
+                  <img src={isEnhanced && finalImage ? finalImage : croppedImage} alt="Cropped" style={{ maxWidth: '200px', borderRadius: '8px', marginBottom: '24px', border: '1px solid var(--border)' }} />
                   
                   {!isEnhanced ? (
                     <>
-                      <button 
-                        onClick={handleEnhance} 
-                        disabled={isProcessing}
-                        className="neon-3d-btn" 
-                        style={{ width: '100%', padding: '14px', fontSize: '16px', marginBottom: '20px', opacity: isProcessing ? 0.5 : 1 }}
-                      >
-                        {isProcessing ? '⏳ ম্যাজিক ফিল্টার প্রসেসিং হচ্ছে...' : '✨ Upscale & Enhance'}
+                      <button onClick={handleEnhance} disabled={isProcessing} style={{ ...styles.btnPrimary, opacity: isProcessing ? 0.5 : 1, width: '100%' }}>
+                        {isProcessing ? 'Processing...' : 'Upscale & Enhance'}
                       </button>
-                      <button onClick={() => { setImageSrc(null); setCroppedImage(null); }} className="d-btn-outline" style={{ width: '100%', padding: '10px', border: 'none', cursor: 'pointer' }}>
-                        পুনরায় ছবি আপলোড করুন
-                      </button>
+                      <button onClick={() => { setImageSrc(null); setCroppedImage(null); }} style={styles.btnGhost}>New Image</button>
                     </>
                   ) : (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
-                      <button onClick={handleDownloadA4PNG} className="d-btn-green glow-btn-green" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>
-                        💾 Save as A4 PNG
-                      </button>
-                      <button onClick={handleDownloadA4JPG} className="d-btn-purple glow-btn-purple" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>
-                        💾 Save as A4 JPG
-                      </button>
-                      <button onClick={handleDownloadA4PDF} className="d-btn-orange glow-btn-orange" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>
-                        💾 Save as A4 PDF
-                      </button>
-                      <button onClick={handleDirectA4Print} className="d-btn glow-btn" style={{ padding: '12px', border: 'none', cursor: 'pointer' }}>
-                        🖨️ Direct A4 Print
-                      </button>
+                    <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                      <button onClick={handleDownloadA4PDF} style={styles.btnPrimary}>Save A4 PDF</button>
+                      <button onClick={handleDirectA4Print} style={styles.btnGhost}>Direct Print</button>
+                      <button onClick={handleDownloadA4PNG} style={styles.btnGhost}>Save PNG</button>
+                      <button onClick={handleDownloadA4JPG} style={styles.btnGhost}>Save JPG</button>
                     </div>
                   )}
                 </div>
