@@ -1,10 +1,10 @@
-'use client'
+'use client';
 import { useState, useEffect } from 'react';
 
 export default function AdminPanel() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [inputPass, setInputPass] = useState('');
-  const ADMIN_PASSWORD = "Masud890@"; // আপনার পাসওয়ার্ড এখানে
+  const ADMIN_PASSWORD = "Masud890@"; 
 
   const [activeTab, setActiveTab] = useState('add');
   const [products, setProducts] = useState([]);
@@ -17,7 +17,6 @@ export default function AdminPanel() {
   const [key, setKey] = useState('');
   const [message, setMessage] = useState('');
 
-  // জব পোস্ট করার স্টেট
   const [jobTitle, setJobTitle] = useState('');
   const [jobCompany, setJobCompany] = useState('');
   const [jobSalary, setJobSalary] = useState('');
@@ -41,16 +40,15 @@ export default function AdminPanel() {
   const handleLogin = (e) => {
     e.preventDefault();
     if (inputPass === ADMIN_PASSWORD) setIsAdmin(true);
-    else alert("ভুল পাসওয়ার্ড!");
+    else alert("ভুল পাসওয়ার্ড! অ্যাক্সেস ডিনায়েড।");
   };
 
   const handleAddProduct = async (e) => {
     e.preventDefault();
-    setMessage('যোগ করা হচ্ছে...');
+    setMessage('প্রোডাক্ট যোগ করা হচ্ছে...');
     try {
       const res = await fetch(`${API_URL}/products/add`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, description: desc, price: Number(price), category, softwareKey: key })
       });
       const data = await res.json();
@@ -64,99 +62,120 @@ export default function AdminPanel() {
     setMessage('জব পোস্ট হচ্ছে...');
     try {
       const res = await fetch(`${API_URL}/jobs/add`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          title: jobTitle, 
-          company: jobCompany, 
-          description: "Remote Job Opportunity", 
-          salary: jobSalary, 
-          location: "Remote", 
-          applyLink: jobLink 
-        })
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: jobTitle, company: jobCompany, description: "Remote Job Opportunity", salary: jobSalary, location: "Remote", applyLink: jobLink })
       });
       const data = await res.json();
       setMessage(data.message);
       if (res.ok) { setJobTitle(''); setJobCompany(''); setJobSalary(''); setJobLink(''); }
-    } catch (error) { setMessage('সার্ভার এরর! (jobRoutes চেক করুন)'); }
+    } catch (error) { setMessage('সার্ভার এরর!'); }
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("ডিলিট করতে চান?")) {
+    if (window.confirm("আপনি কি এই প্রোডাক্টটি ডিলিট করতে চান?")) {
       try { await fetch(`${API_URL}/products/${id}`, { method: 'DELETE' }); fetchData(); } catch (error) {}
     }
   };
 
+  // Login Screen
   if (!isAdmin) {
     return (
-      <div className="deepin-body" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
-        <form onSubmit={handleLogin} className="glass-3d" style={{ maxWidth: '400px', width: '100%' }}>
-          <h2 style={{ textAlign: 'center', marginBottom: '20px', color: 'white' }}>🔐 অ্যাডমিন লগইন</h2>
-          <input 
-            type="password" 
-            placeholder="পাসওয়ার্ড দিন" 
-            value={inputPass} 
-            onChange={(e) => setInputPass(e.target.value)} 
-            required 
-            className="d-input"
-            style={{ marginBottom: '15px' }}
-          />
-          <button type="submit" className="neon-3d-btn" style={{ width: '100%' }}>অ্যাডমিন প্যানেলে ঢুকুন</button>
-        </form>
+      <div style={{ background: 'var(--bg)', color: 'var(--fg)', fontFamily: "'Manrope', sans-serif", minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+        <div style={{ position: 'relative', background: 'var(--bg-card)', border: '1px solid var(--border)', padding: '48px', maxWidth: '400px', width: '100%', clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%)' }}>
+          <div style={{ position: 'absolute', top: '8px', left: '8px', width: '14px', height: '14px', borderTop: '1px solid var(--accent)', borderLeft: '1px solid var(--accent)' }}></div>
+          <div style={{ position: 'absolute', top: '8px', right: '8px', width: '14px', height: '14px', borderTop: '1px solid var(--accent)', borderRight: '1px solid var(--accent)' }}></div>
+          <div style={{ position: 'absolute', bottom: '8px', left: '8px', width: '14px', height: '14px', borderBottom: '1px solid var(--accent)', borderLeft: '1px solid var(--accent)' }}></div>
+          <div style={{ position: 'absolute', bottom: '8px', right: '8px', width: '14px', height: '14px', borderBottom: '1px solid var(--accent)', borderRight: '1px solid var(--accent)' }}></div>
+          
+          <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+            <div style={{ width: '48px', height: '48px', margin: '0 auto 16px', position: 'relative' }}>
+              <div style={{ position: 'absolute', inset: '0', border: '1px solid var(--accent)', transform: 'rotate(45deg)' }}></div>
+              <div style={{ position: 'absolute', inset: '4px', background: 'var(--accent)', transform: 'rotate(45deg)' }}></div>
+            </div>
+            <h1 style={{ fontSize: '24px', fontWeight: '700', fontFamily: "'Syne', sans-serif", letterSpacing: '-0.025em' }}>ADMIN ACCESS</h1>
+            <p style={{ color: 'var(--fg-muted)', fontSize: '12px', marginTop: '8px', fontFamily: "'JetBrains Mono', monospace", textTransform: 'uppercase', letterSpacing: '0.1em' }}>System Authentication Required</p>
+          </div>
+
+          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <div>
+              <label style={{ fontSize: '10px', color: 'var(--fg-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', fontFamily: "'JetBrains Mono', monospace", display: 'block', marginBottom: '8px' }}>Password</label>
+              <input type="password" placeholder="••••••••" value={inputPass} onChange={(e) => setInputPass(e.target.value)} required style={{ width: '100%', background: 'transparent', border: 'none', borderBottom: '1px solid var(--border-bright)', padding: '12px 0', color: 'white', outline: 'none' }} />
+            </div>
+            <button type="submit" style={{ width: '100%', padding: '14px', background: 'var(--accent)', color: '#0a0a0b', border: 'none', fontWeight: '700', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.08em', cursor: 'pointer', clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)' }}>Authenticate →</button>
+          </form>
+        </div>
       </div>
     );
   }
 
+  // Admin Dashboard
+  const inputStyle = { width: '100%', background: 'transparent', border: 'none', borderBottom: '1px solid var(--border-bright)', padding: '12px 0', color: 'white', outline: 'none', fontSize: '14px' };
+  const labelStyle = { fontSize: '10px', color: 'var(--fg-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', fontFamily: "'JetBrains Mono', monospace", display: 'block', marginBottom: '8px' };
+  const btnPrimary = { padding: '14px', background: 'var(--accent)', color: '#0a0a0b', border: 'none', fontWeight: '700', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.08em', cursor: 'pointer', clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)' };
+  const cardStyle = { position: 'relative', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '8px', padding: '32px' };
+
   return (
-    <div className="deepin-body" style={{ minHeight: '100vh', paddingTop: '120px', paddingBottom: '40px' }}>
-      <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '0 20px' }}>
-        <h1 style={{ textAlign: 'center', marginBottom: '30px', color: 'white' }}>🛠️ অ্যাডমিন ড্যাশবোর্ড</h1>
+    <div style={{ background: 'var(--bg)', color: 'var(--fg)', fontFamily: "'Manrope', sans-serif", minHeight: '100vh', overflowX: 'hidden' }}>
+      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '96px 24px 64px 24px' }}>
         
-        <div style={{ display: 'flex', gap: '10px', marginBottom: '30px', borderBottom: '1px solid rgba(255,255,255,0.1)', flexWrap: 'wrap' }}>
-          <button onClick={() => setActiveTab('add')} className={activeTab === 'add' ? 'neon-3d-btn' : 'd-btn-outline'} style={{ marginBottom: '-1px', borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>➕ প্রোডাক্ট অ্যাড</button>
-          <button onClick={() => setActiveTab('list')} className={activeTab === 'list' ? 'neon-3d-btn' : 'd-btn-outline'} style={{ marginBottom: '-1px', borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>📋 প্রোডাক্ট লিস্ট</button>
-          <button onClick={() => setActiveTab('job')} className={activeTab === 'job' ? 'neon-3d-btn' : 'd-btn-outline'} style={{ marginBottom: '-1px', borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>💼 জব পোস্ট করুন</button>
-          <button onClick={() => setActiveTab('orders')} className={activeTab === 'orders' ? 'neon-3d-btn' : 'd-btn-outline'} style={{ marginBottom: '-1px', borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>🛒 অর্ডার হিস্ট্রি</button>
+        {/* Header */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '48px', flexWrap: 'wrap', gap: '16px' }}>
+          <div>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: 'var(--accent)', fontFamily: "'JetBrains Mono', monospace", textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '16px' }}>
+              <span style={{ width: '24px', height: '1px', background: 'var(--accent)' }}></span>
+              99 / Admin Control
+            </div>
+            <h1 style={{ fontSize: 'clamp(2.5rem, 4vw, 3.5rem)', fontWeight: '800', lineHeight: '1', margin: '0', fontFamily: "'Syne', sans-serif", letterSpacing: '-0.025em' }}>Admin Panel.</h1>
+          </div>
+          <button onClick={() => setIsAdmin(false)} style={{ padding: '12px 24px', background: 'transparent', color: 'var(--fg-dim)', border: '1px solid var(--border-bright)', cursor: 'pointer', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: "'JetBrains Mono', monospace" }}>Disconnect</button>
         </div>
 
+        {/* Tabs */}
+        <div style={{ display: 'flex', gap: '4px', marginBottom: '32px', borderBottom: '1px solid var(--border)', paddingBottom: '16px', flexWrap: 'wrap' }}>
+          {[{id:'add', label:'Add Product'}, {id:'list', label:'Product List'}, {id:'job', label:'Post Job'}, {id:'orders', label:'Orders'}].map(tab => (
+            <button key={tab.id} onClick={() => setActiveTab(tab.id)} style={{ padding: '8px 16px', background: activeTab === tab.id ? 'var(--bg-card)' : 'transparent', color: activeTab === tab.id ? 'var(--accent)' : 'var(--fg-muted)', border: 'none', borderBottom: activeTab === tab.id ? '2px solid var(--accent)' : '2px solid transparent', cursor: 'pointer', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: "'JetBrains Mono', monospace" }}>{tab.label}</button>
+          ))}
+        </div>
+
+        {/* Add Product Tab */}
         {activeTab === 'add' && (
-          <div className="glass-3d">
-            <h2 style={{ marginTop: 0, marginBottom: '20px', color: 'white' }}>নতুন প্রোডাক্ট অ্যাড করুন</h2>
-            <form onSubmit={handleAddProduct} style={{ display: 'grid', gap: '15px' }}>
-              <input type="text" placeholder="প্রোডাক্টের নাম" value={name} onChange={(e) => setName(e.target.value)} required className="d-input" />
-              <textarea placeholder="বিবরণ" value={desc} onChange={(e) => setDesc(e.target.value)} required className="d-input" style={{ minHeight: '80px' }} />
-              <div style={{ display: 'flex', gap: '15px' }}>
-                <input type="number" placeholder="মূল্য (টাকা)" value={price} onChange={(e) => setPrice(e.target.value)} required className="d-input" style={{ flex: 1 }} />
-                <select value={category} onChange={(e) => setCategory(e.target.value)} className="d-input" style={{ flex: 1 }}>
-                  <option value="shop" style={{background: '#1a1c2e'}}>শপ</option>
-                  <option value="online-sheba" style={{background: '#1a1c2e'}}>অনলাইন সেবা</option>
-                  <option value="freelancer-hub" style={{background: '#1a1c2e'}}>ফ্রীলান্সার হাব</option>
-                  <option value="cards" style={{background: '#1a1c2e'}}>কার্ড সেবা</option>
-                  <option value="accounts" style={{background: '#1a1c2e'}}>একাউন্ট সেবা</option>
-                  <option value="company-formation" style={{background: '#1a1c2e'}}>কম্পানি রেজিস্ট্রেশন</option>
-                  <option value="pc-solution" style={{background: '#1a1c2e'}}>পিসি সলুশন</option>
-                  <option value="subscription" style={{background: '#1a1c2e'}}>সাবস্ক্রিপশন</option>
-                  <option value="remote" style={{background: '#1a1c2e'}}>রিমোট</option>
-                </select>
+          <div style={{ ...cardStyle, maxWidth: '600px' }}>
+            <div style={{ position: 'absolute', top: '8px', left: '8px', width: '14px', height: '14px', borderTop: '1px solid var(--accent)', borderLeft: '1px solid var(--accent)' }}></div>
+            <div style={{ position: 'absolute', top: '8px', right: '8px', width: '14px', height: '14px', borderTop: '1px solid var(--accent)', borderRight: '1px solid var(--accent)' }}></div>
+            <div style={{ position: 'absolute', bottom: '8px', left: '8px', width: '14px', height: '14px', borderBottom: '1px solid var(--accent)', borderLeft: '1px solid var(--accent)' }}></div>
+            <div style={{ position: 'absolute', bottom: '8px', right: '8px', width: '14px', height: '14px', borderBottom: '1px solid var(--accent)', borderRight: '1px solid var(--accent)' }}></div>
+            
+            <h2 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '32px', fontFamily: "'Syne', sans-serif" }}>New Product</h2>
+            <form onSubmit={handleAddProduct} style={{ display: 'grid', gap: '24px' }}>
+              <div><label style={labelStyle}>Name</label><input type="text" value={name} onChange={(e) => setName(e.target.value)} required style={inputStyle} /></div>
+              <div><label style={labelStyle}>Description</label><textarea value={desc} onChange={(e) => setDesc(e.target.value)} required style={{...inputStyle, resize: 'none', minHeight: '60px'}} /></div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+                <div><label style={labelStyle}>Price (৳)</label><input type="number" value={price} onChange={(e) => setPrice(e.target.value)} required style={inputStyle} /></div>
+                <div><label style={labelStyle}>Category</label><select value={category} onChange={(e) => setCategory(e.target.value)} style={{...inputStyle, background: 'var(--bg)'}}><option value="shop">Shop</option><option value="software">Software</option><option value="subscription">Subscription</option><option value="remote">Remote</option></select></div>
               </div>
-              <input type="text" placeholder="সফটওয়্যার কী / লিংক" value={key} onChange={(e) => setKey(e.target.value)} required className="d-input" />
-              <button type="submit" className="neon-3d-btn" style={{ width: '100%' }}>প্রোডাক্ট অ্যাড করুন</button>
+              <div><label style={labelStyle}>Software Key / Link</label><input type="text" value={key} onChange={(e) => setKey(e.target.value)} required style={inputStyle} /></div>
+              <button type="submit" style={btnPrimary}>Deploy Product →</button>
+              {message && activeTab === 'add' && <p style={{ color: 'var(--lime)', fontSize: '14px', marginTop: '8px' }}>{message}</p>}
             </form>
-            {message && activeTab === 'add' && <p style={{ color: '#2dce89', textAlign: 'center', marginTop: '15px' }}>{message}</p>}
           </div>
         )}
 
+        {/* Product List Tab */}
         {activeTab === 'list' && (
-          <div className="glass-3d" style={{ overflowX: 'auto' }}>
+          <div style={{ ...cardStyle, overflowX: 'auto' }}>
+            <div style={{ position: 'absolute', top: '8px', left: '8px', width: '14px', height: '14px', borderTop: '1px solid var(--accent)', borderLeft: '1px solid var(--accent)' }}></div>
+            <div style={{ position: 'absolute', top: '8px', right: '8px', width: '14px', height: '14px', borderTop: '1px solid var(--accent)', borderRight: '1px solid var(--accent)' }}></div>
+            <div style={{ position: 'absolute', bottom: '8px', left: '8px', width: '14px', height: '14px', borderBottom: '1px solid var(--accent)', borderLeft: '1px solid var(--accent)' }}></div>
+            <div style={{ position: 'absolute', bottom: '8px', right: '8px', width: '14px', height: '14px', borderBottom: '1px solid var(--accent)', borderRight: '1px solid var(--accent)' }}></div>
+            
             <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '600px' }}>
-              <thead><tr style={{ borderBottom: '2px solid rgba(255,255,255,0.1)', textAlign: 'left' }}><th style={{ padding: '12px', color: 'white' }}>নাম</th><th style={{ padding: '12px', color: 'white' }}>মূল্য</th><th style={{ padding: '12px', color: 'white' }}>স্ট্যাটাস</th><th style={{ padding: '12px', color: 'white' }}>অ্যাকশন</th></tr></thead>
+              <thead><tr style={{ borderBottom: '1px solid var(--border)' }}><th style={{ padding: '12px', textAlign: 'left', fontSize: '10px', color: 'var(--fg-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', fontFamily: "'JetBrains Mono', monospace" }}>Name</th><th style={{ padding: '12px', textAlign: 'left', fontSize: '10px', color: 'var(--fg-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', fontFamily: "'JetBrains Mono', monospace" }}>Price</th><th style={{ padding: '12px', textAlign: 'left', fontSize: '10px', color: 'var(--fg-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', fontFamily: "'JetBrains Mono', monospace" }}>Action</th></tr></thead>
               <tbody>
                 {products.map((p) => (
-                  <tr key={p._id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                    <td style={{ padding: '12px', fontWeight: '600', color: 'white' }}>{p.name}</td>
-                    <td style={{ padding: '12px', color: '#2dce89' }}>৳{p.price}</td>
-                    <td style={{ padding: '12px', color: 'rgba(255,255,255,0.6)' }}>{p.isSold ? 'বিক্রি হয়েছে' : 'Available'}</td>
-                    <td style={{ padding: '12px' }}><button onClick={() => handleDelete(p._id)} className="d-btn-orange" style={{ padding: '8px 12px', fontSize: '12px' }}>ডিলিট</button></td>
+                  <tr key={p._id} style={{ borderBottom: '1px solid var(--border)' }}>
+                    <td style={{ padding: '12px', fontSize: '14px', color: 'var(--fg)' }}>{p.name}</td>
+                    <td style={{ padding: '12px', fontSize: '14px', color: 'var(--lime)' }}>৳{p.price}</td>
+                    <td style={{ padding: '12px' }}><button onClick={() => handleDelete(p._id)} style={{ padding: '8px 12px', background: 'transparent', color: '#ff6b6b', border: '1px solid #ff6b6b', cursor: 'pointer', fontSize: '10px', textTransform: 'uppercase', fontFamily: "'JetBrains Mono', monospace" }}>Delete</button></td>
                   </tr>
                 ))}
               </tbody>
@@ -164,39 +183,55 @@ export default function AdminPanel() {
           </div>
         )}
 
+        {/* Post Job Tab */}
         {activeTab === 'job' && (
-          <div className="glass-3d">
-            <h2 style={{ marginTop: 0, marginBottom: '20px', color: 'white' }}>💼 নতুন রিমোট জব পোস্ট করুন</h2>
-            <form onSubmit={handlePostJob} style={{ display: 'grid', gap: '15px' }}>
-              <input type="text" placeholder="জব টাইটেল (যেমন: Senior Web Developer)" value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} required className="d-input" />
-              <div style={{ display: 'flex', gap: '15px' }}>
-                <input type="text" placeholder="কোম্পানির নাম" value={jobCompany} onChange={(e) => setJobCompany(e.target.value)} required className="d-input" style={{ flex: 1 }} />
-                <input type="text" placeholder="স্যালারি (যেমন: $1000)" value={jobSalary} onChange={(e) => setJobSalary(e.target.value)} required className="d-input" style={{ flex: 1 }} />
+          <div style={{ ...cardStyle, maxWidth: '600px' }}>
+            <div style={{ position: 'absolute', top: '8px', left: '8px', width: '14px', height: '14px', borderTop: '1px solid var(--accent)', borderLeft: '1px solid var(--accent)' }}></div>
+            <div style={{ position: 'absolute', top: '8px', right: '8px', width: '14px', height: '14px', borderTop: '1px solid var(--accent)', borderRight: '1px solid var(--accent)' }}></div>
+            <div style={{ position: 'absolute', bottom: '8px', left: '8px', width: '14px', height: '14px', borderBottom: '1px solid var(--accent)', borderLeft: '1px solid var(--accent)' }}></div>
+            <div style={{ position: 'absolute', bottom: '8px', right: '8px', width: '14px', height: '14px', borderBottom: '1px solid var(--accent)', borderRight: '1px solid var(--accent)' }}></div>
+            
+            <h2 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '32px', fontFamily: "'Syne', sans-serif" }}>New Job Post</h2>
+            <form onSubmit={handlePostJob} style={{ display: 'grid', gap: '24px' }}>
+              <div><label style={labelStyle}>Job Title</label><input type="text" value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} required style={inputStyle} /></div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+                <div><label style={labelStyle}>Company</label><input type="text" value={jobCompany} onChange={(e) => setJobCompany(e.target.value)} required style={inputStyle} /></div>
+                <div><label style={labelStyle}>Salary</label><input type="text" value={jobSalary} onChange={(e) => setJobSalary(e.target.value)} required style={inputStyle} /></div>
               </div>
-              <input type="url" placeholder="এপ্লাই করার লিংক (URL)" value={jobLink} onChange={(e) => setJobLink(e.target.value)} required className="d-input" />
-              <button type="submit" className="neon-3d-btn" style={{ width: '100%' }}>জব পোস্ট করুন</button>
+              <div><label style={labelStyle}>Apply Link</label><input type="url" value={jobLink} onChange={(e) => setJobLink(e.target.value)} required style={inputStyle} /></div>
+              <button type="submit" style={btnPrimary}>Deploy Job →</button>
+              {message && activeTab === 'job' && <p style={{ color: 'var(--lime)', fontSize: '14px', marginTop: '8px' }}>{message}</p>}
             </form>
-            {message && activeTab === 'job' && <p style={{ color: '#2dce89', textAlign: 'center', marginTop: '15px' }}>{message}</p>}
           </div>
         )}
 
+        {/* Orders Tab */}
         {activeTab === 'orders' && (
-          <div className="glass-3d" style={{ overflowX: 'auto' }}>
+          <div style={{ ...cardStyle, overflowX: 'auto' }}>
+            <div style={{ position: 'absolute', top: '8px', left: '8px', width: '14px', height: '14px', borderTop: '1px solid var(--accent)', borderLeft: '1px solid var(--accent)' }}></div>
+            <div style={{ position: 'absolute', top: '8px', right: '8px', width: '14px', height: '14px', borderTop: '1px solid var(--accent)', borderRight: '1px solid var(--accent)' }}></div>
+            <div style={{ position: 'absolute', bottom: '8px', left: '8px', width: '14px', height: '14px', borderBottom: '1px solid var(--accent)', borderLeft: '1px solid var(--accent)' }}></div>
+            <div style={{ position: 'absolute', bottom: '8px', right: '8px', width: '14px', height: '14px', borderBottom: '1px solid var(--accent)', borderRight: '1px solid var(--accent)' }}></div>
+            
             <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '600px' }}>
-              <thead><tr style={{ borderBottom: '2px solid rgba(255,255,255,0.1)', textAlign: 'left' }}><th style={{ padding: '12px', color: 'white' }}>কাস্টমার ইমেইল</th><th style={{ padding: '12px', color: 'white' }}>প্রোডাক্ট</th><th style={{ padding: '12px', color: 'white' }}>মূল্য</th><th style={{ padding: '12px', color: 'white' }}>কী</th></tr></thead>
+              <thead><tr style={{ borderBottom: '1px solid var(--border)' }}>
+                <th style={{ padding: '12px', textAlign: 'left', fontSize: '10px', color: 'var(--fg-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', fontFamily: "'JetBrains Mono', monospace" }}>Customer</th>
+                <th style={{ padding: '12px', textAlign: 'left', fontSize: '10px', color: 'var(--fg-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', fontFamily: "'JetBrains Mono', monospace" }}>Product</th>
+                <th style={{ padding: '12px', textAlign: 'left', fontSize: '10px', color: 'var(--fg-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', fontFamily: "'JetBrains Mono', monospace" }}>Price</th>
+              </tr></thead>
               <tbody>
                 {orders.map((o) => (
-                  <tr key={o._id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                    <td style={{ padding: '12px', color: 'rgba(255,255,255,0.7)' }}>{o.buyerEmail}</td>
-                    <td style={{ padding: '12px', fontWeight: '600', color: 'white' }}>{o.productName}</td>
-                    <td style={{ padding: '12px', color: '#2dce89' }}>৳{o.price}</td>
-                    <td style={{ padding: '12px', fontFamily: 'monospace', color: '#a855f7' }}>{o.deliveredKey}</td>
+                  <tr key={o._id} style={{ borderBottom: '1px solid var(--border)' }}>
+                    <td style={{ padding: '12px', fontSize: '14px', color: 'var(--fg-dim)' }}>{o.buyerEmail}</td>
+                    <td style={{ padding: '12px', fontSize: '14px', color: 'var(--fg)' }}>{o.productName || 'Multiple Items'}</td>
+                    <td style={{ padding: '12px', fontSize: '14px', color: 'var(--lime)' }}>৳{o.price || o.totalAmount}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
         )}
+
       </div>
     </div>
   );
