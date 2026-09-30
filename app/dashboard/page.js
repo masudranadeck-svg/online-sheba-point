@@ -27,7 +27,6 @@ export default function Dashboard() {
     router.push('/login');
   };
 
-  // সব সার্ভিসের লিস্ট (হোম পেজের মতো)
   const services = [
     { name: 'Digital Shop', desc: 'Keys & Subscriptions', link: '/shop', icon: 'fa-solid fa-bag-shopping' },
     { name: 'Online Tools', desc: '30+ Premium Tools', link: '/online-tools', icon: 'fa-solid fa-screwdriver-wrench' },
@@ -72,22 +71,22 @@ export default function Dashboard() {
           </button>
         </div>
 
-        {/* Quick Stats (Fixed Layout) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-16">
-          <div className="relative bg-[var(--bg-card)] p-6 border border-[var(--border)] rounded-lg overflow-hidden">
+        {/* Quick Stats (Fixed Layout - No Overflow) */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-16">
+          <div className="relative bg-[var(--bg-card)] p-8 border border-[var(--border)] rounded-lg flex flex-col items-center text-center">
             <div className="corner-tl"></div><div className="corner-tr"></div><div className="corner-bl"></div><div className="corner-br"></div>
-            <div className="text-[10px] font-mono text-[var(--fg-muted)] uppercase tracking-widest mb-2 whitespace-nowrap">Total Orders</div>
+            <div className="text-[10px] font-mono text-[var(--fg-muted)] uppercase tracking-widest mb-3">Total Orders</div>
             <div className="font-display text-4xl font-bold text-[var(--fg)]">0</div>
           </div>
-          <div className="relative bg-[var(--bg-card)] p-6 border border-[var(--border)] rounded-lg overflow-hidden">
+          <div className="relative bg-[var(--bg-card)] p-8 border border-[var(--border)] rounded-lg flex flex-col items-center text-center">
             <div className="corner-tl"></div><div className="corner-tr"></div><div className="corner-bl"></div><div className="corner-br"></div>
-            <div className="text-[10px] font-mono text-[var(--fg-muted)] uppercase tracking-widest mb-2 whitespace-nowrap">Active Keys</div>
+            <div className="text-[10px] font-mono text-[var(--fg-muted)] uppercase tracking-widest mb-3">Active Keys</div>
             <div className="font-display text-4xl font-bold text-[var(--lime)]">0</div>
           </div>
-          <div className="relative bg-[var(--bg-card)] p-6 border border-[var(--border)] rounded-lg overflow-hidden">
+          <div className="relative bg-[var(--bg-card)] p-8 border border-[var(--border)] rounded-lg flex flex-col items-center text-center">
             <div className="corner-tl"></div><div className="corner-tr"></div><div className="corner-bl"></div><div className="corner-br"></div>
-            <div className="text-[10px] font-mono text-[var(--fg-muted)] uppercase tracking-widest mb-2 whitespace-nowrap">Account Status</div>
-            <div className="font-display text-xl font-bold text-[var(--accent)] uppercase">ACTIVE</div>
+            <div className="text-[10px] font-mono text-[var(--fg-muted)] uppercase tracking-widest mb-3">Account Status</div>
+            <div className="font-display text-xl font-bold text-[var(--accent)] uppercase tracking-widest">ACTIVE</div>
           </div>
         </div>
 
