@@ -21,8 +21,16 @@ export default function PropertiesPage() {
     const fetchItems = async () => {
       try {
         const res = await fetch(`${API_URL}/properties`);
-        setItems(await res.json());
-      } catch (error) {}
+        const data = await res.json();
+        // সেফটি চেক: ডাটা অ্যারে হলেই সেট করবে, নাহলে খালি অ্যারে সেট করবে
+        if (Array.isArray(data)) {
+          setItems(data);
+        } else {
+          setItems([]);
+        }
+      } catch (error) {
+        setItems([]);
+      }
     };
     fetchItems();
   }, []);
@@ -41,13 +49,20 @@ export default function PropertiesPage() {
         setTitle(''); setDesc(''); setPrice(''); setLocation(''); setOwnerName(''); setOwnerPhone('');
         setShowForm(false);
         const resAgain = await fetch(`${API_URL}/properties`);
-        setItems(await resAgain.json());
+        const newData = await resAgain.json();
+        if (Array.isArray(newData)) setItems(newData);
       }
     } catch (error) { setMessage('Server Error!'); }
   };
 
   const handleContact = (item) => {
-    const cleanPhone = item.ownerPhone.replace(/[^0-9]/g, '').replace(/^0/, '880');
+    // নম্বর না থাকলে যেন ক্র্যাশ না করে
+    const phone = item.ownerPhone || '';
+    const cleanPhone = phone.replace(/[^0-9]/g, '').replace(/^0/, '880');
+    if (!cleanPhone) {
+      alert('Owner contact number not available.');
+      return;
+    }
     const msg = `আসসালামু আলাইকুম, আমি আপনার "${item.title}" (${item.location}) এর বিজ্ঞাপনটি দেখে যোগাযোগ করছি। বিস্তারিত জানাবেন।`;
     const waLink = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`;
     window.open(waLink, '_blank');
