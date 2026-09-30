@@ -19,7 +19,20 @@ export default function Register() {
       setMessage('Access Granted! Redirecting...');
       setTimeout(() => { window.location.href = '/dashboard'; }, 1000);
     } catch (error) {
-      setMessage('Registration Failed. Try again.');
+      console.error("Firebase Auth Error:", error); // টার্মিনালে এরর দেখাবে
+      
+      // নিচের লজিকটা আসল এররটা স্ক্রিনে দেখাবে
+      if (error.code === 'auth/weak-password') {
+        setMessage('পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে!');
+      } else if (error.code === 'auth/email-already-in-use') {
+        setMessage('এই ইমেইল দিয়ে ইতিমধ্যে অ্যাকাউন্ট রেজিস্টার করা হয়েছে!');
+      } else if (error.code === 'auth/invalid-email') {
+        setMessage('ইমেইল ফরম্যাট সঠিক নয়!');
+      } else if (error.code === 'auth/unauthorized-domain') {
+        setMessage('এই ডোমেইনটি ফায়ারবেসে অনুমোদিত নয়! (Firebase Console Check)');
+      } else {
+        setMessage(`এরর: ${error.message}`);
+      }
     }
   };
 
@@ -50,7 +63,7 @@ export default function Register() {
             />
           </div>
           <div>
-            <label className="text-[10px] font-mono text-[var(--fg-muted)] uppercase tracking-widest mb-2 block">Password</label>
+            <label className="text-[10px] font-mono text-[var(--fg-muted)] uppercase tracking-widest mb-2 block">Password (Min 6 characters)</label>
             <input 
               type="password" 
               value={password} 
