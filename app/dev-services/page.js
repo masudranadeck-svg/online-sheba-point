@@ -17,40 +17,91 @@ export default function DevServicesPage() {
 
   return (
     <div style={{ background: 'var(--bg)', color: 'var(--fg)', fontFamily: "'Manrope',sans-serif", overflowX: 'hidden', minHeight: '100vh' }}>
-      <div className="max-w-[1480px] mx-auto px-6 lg:px-10 pt-24 pb-16">
+      <div style={{ maxWidth: '1280px', margin: '0 auto', paddingLeft: '24px', paddingRight: '24px', paddingTop: '96px', paddingBottom: '64px' }}>
         
-        <div className="mb-16">
-          <div className="section-eyebrow mb-4">06 / Dev Services</div>
-          <h1 className="font-display font-bold text-5xl lg:text-7xl leading-none">Dev Services.</h1>
-          <p className="max-w-md text-[var(--fg-dim)] mt-6 text-base">From websites to operating systems, we build the instruments of the next decade.</p>
+        {/* Header */}
+        <div style={{ marginBottom: '64px' }}>
+          <div className="section-eyebrow" style={{ marginBottom: '16px' }}>06 / Dev Services</div>
+          <h1 className="font-display" style={{ fontSize: 'clamp(3rem, 5vw, 4.5rem)', fontWeight: '700', lineHeight: '1', margin: '0' }}>Dev Services.</h1>
+          <p style={{ maxWidth: '28rem', color: 'var(--fg-dim)', marginTop: '24px', fontSize: '1rem' }}>From websites to operating systems, we build the instruments of the next decade.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-16">
+        {/* Services Grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px', marginBottom: '64px' }}>
           {services.map((service, i) => (
-            <div key={i} className="relative bg-[var(--bg-card)] p-8 rounded-lg border border-transparent hover:border-[var(--accent)] hover:shadow-[0_0_25px_rgba(255,91,20,0.4)] transition-all duration-300 flex flex-col">
+            <div 
+              key={i} 
+              className="relative bg-[var(--bg-card)]" 
+              style={{ 
+                padding: '32px', 
+                borderRadius: '8px', 
+                border: '1px solid transparent', 
+                transition: 'all 0.3s ease',
+                display: 'flex',
+                flexDirection: 'column'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'var(--accent)';
+                e.currentTarget.style.boxShadow = '0 0 25px rgba(255,91,20,0.4)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'transparent';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
+            >
               <div className="corner-tl"></div><div className="corner-tr"></div><div className="corner-bl"></div><div className="corner-br"></div>
-              <div className="w-16 h-16 rounded-xl flex items-center justify-center text-3xl mb-6"
-                style={{ background: 'var(--bg)', border: '1px solid var(--border-bright)', color: 'var(--accent)' }}>
+              
+              <div 
+                style={{ 
+                  width: '56px', height: '56px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', marginBottom: '24px',
+                  background: 'var(--bg)', border: '1px solid var(--border-bright)', color: 'var(--accent)'
+                }}
+              >
                 <i className={service.icon}></i>
               </div>
-              <h3 className="font-display font-bold text-xl tracking-tight mb-3 text-[var(--fg)]">{service.name}</h3>
-              <p className="text-sm text-[var(--fg-muted)] mb-8 flex-grow leading-relaxed">{service.desc}</p>
-              <div className="mt-auto pt-6 border-t border-[var(--border)]">
-                <p className="text-[10px] font-mono text-[var(--fg-muted)] uppercase tracking-widest mb-2">Starting Price</p>
-                <p className="font-display font-bold text-lg text-[var(--lime)] mb-6">{service.price}</p>
-                <button onClick={() => handleOrder(service.name)} className="btn-primary w-full justify-center">Request Quote →</button>
+              
+              <h3 className="font-display" style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '12px', color: 'var(--fg)' }}>{service.name}</h3>
+              <p style={{ fontSize: '0.875rem', color: 'var(--fg-muted)', marginBottom: '32px', flex: '1', lineHeight: '1.6' }}>{service.desc}</p>
+              
+              <div style={{ marginTop: 'auto', paddingTop: '24px', borderTop: '1px solid var(--border)' }}>
+                <p style={{ fontSize: '10px', fontFamily: 'monospace', color: 'var(--fg-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>Starting Price</p>
+                <p style={{ fontSize: '1.125rem', fontWeight: '700', color: 'var(--lime)', marginBottom: '24px' }}>{service.price}</p>
+                <button onClick={() => handleOrder(service.name)} className="btn-primary" style={{ width: '100%', justifyContent: 'center' }}>Request Quote →</button>
               </div>
             </div>
           ))}
         </div>
 
         {/* Custom Request CTA */}
-        <div className="relative bg-[var(--bg-card)] p-8 md:p-12 rounded-lg border border-[var(--border)] text-center overflow-hidden grid-bg grid-fade">
+        <div 
+          className="relative bg-[var(--bg-card)]" 
+          style={{ 
+            padding: '48px', 
+            borderRadius: '8px', 
+            border: '1px solid var(--border)', 
+            textAlign: 'center', 
+            overflow: 'hidden',
+            backgroundImage: 'radial-gradient(circle at 50% 0%, rgba(255,91,20,0.05) 0%, transparent 60%)'
+          }}
+        >
           <div className="corner-tl"></div><div className="corner-tr"></div><div className="corner-bl"></div><div className="corner-br"></div>
-          <h2 className="font-display font-bold text-3xl lg:text-4xl mb-4 text-[var(--fg)]">💡 Got a custom idea?</h2>
-          <p className="text-[var(--fg-dim)] max-w-xl mx-auto mb-8">Game development, AI bots, cybersecurity tools, or any other software idea? Let's build it.</p>
-          <a href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("আসসালামু আলাইকুম, আমার একটি কাস্টম সফটওয়্যার তৈরির আইডিয়া আছে।")}`} target="_blank" rel="noopener noreferrer" className="btn-ghost">💬 Share on WhatsApp</a>
+          
+          <div style={{ position: 'relative', zIndex: '2' }}>
+            <div style={{ fontSize: '48px', marginBottom: '16px' }}>💡</div>
+            <h2 className="font-display" style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '16px', color: 'var(--fg)' }}>Got a custom idea?</h2>
+            <p style={{ color: 'var(--fg-dim)', maxWidth: '36rem', margin: '0 auto 32px auto', fontSize: '1rem', lineHeight: '1.6' }}>Game development, AI bots, cybersecurity tools, or any other software idea? Let's build it.</p>
+            <a 
+              href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("আসসালামু আলাইকুম, আমার একটি কাস্টম সফটওয়্যার তৈরির আইডিয়া আছে।")}`} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="btn-primary"
+              style={{ display: 'inline-flex', margin: '0 auto' }}
+            >
+              💬 Share on WhatsApp
+            </a>
+          </div>
         </div>
+
       </div>
     </div>
   );
