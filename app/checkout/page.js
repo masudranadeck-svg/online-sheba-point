@@ -70,112 +70,103 @@ export default function Checkout() {
     setLoading(false);
   };
 
+  // Inline CSS Styles
+  const styles = {
+    container: { background: 'var(--bg)', color: 'var(--fg)', fontFamily: "'Manrope', sans-serif", minHeight: '100vh', overflowX: 'hidden' },
+    wrapper: { maxWidth: '1200px', margin: '0 auto', padding: '96px 24px 64px 24px' },
+    header: { marginBottom: '64px' },
+    eyebrow: { display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: 'var(--accent)', fontFamily: "'JetBrains Mono', monospace", textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '16px' },
+    eyebrowLine: { width: '24px', height: '1px', background: 'var(--accent)' },
+    title: { fontSize: 'clamp(2.5rem, 4vw, 3.5rem)', fontWeight: '800', lineHeight: '1', margin: '0', fontFamily: "'Syne', sans-serif", letterSpacing: '-0.025em' },
+    grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' },
+    card: { position: 'relative', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '8px', padding: '32px' },
+    corner: (pos) => ({ position: 'absolute', width: '14px', height: '14px', borderColor: 'var(--accent)', ...pos }),
+    input: { width: '100%', background: 'transparent', border: 'none', borderBottom: '1px solid var(--border-bright)', padding: '12px 0', color: 'white', outline: 'none', fontSize: '14px' },
+    label: { fontSize: '10px', color: 'var(--fg-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', fontFamily: "'JetBrains Mono', monospace", display: 'block', marginBottom: '8px' },
+    btnPrimary: { display: 'block', width: '100%', padding: '14px', background: 'var(--accent)', color: '#0a0a0b', border: 'none', fontWeight: '700', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.08em', cursor: 'pointer', clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)' },
+    payBtn: (isActive) => ({ flex: 1, padding: '10px', background: isActive ? 'var(--accent)' : 'transparent', color: isActive ? '#0a0a0b' : 'var(--fg-dim)', border: isActive ? 'none' : '1px solid var(--border-bright)', cursor: 'pointer', fontSize: '12px', textTransform: 'uppercase', fontFamily: "'JetBrains Mono', monospace", transition: 'all 0.3s' })
+  };
+
   return (
-    <div className="deepin-body" style={{ minHeight:'100vh', padding: '100px 24px' }}>
-      <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-        <h2 style={{ color: 'white', marginBottom: 32, textAlign: 'center', fontSize: 28, fontWeight: 700 }}>🛒 চেকআউট</h2>
+    <div style={styles.container}>
+      <div style={styles.wrapper}>
         
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
+        {/* Header */}
+        <div style={styles.header}>
+          <div style={styles.eyebrow}>
+            <span style={styles.eyebrowLine}></span>
+            05 / Checkout
+          </div>
+          <h1 style={styles.title}>Secure Checkout.</h1>
+        </div>
+
+        <div style={styles.grid}>
           
-          {/* LEFT SIDE: Cart Items */}
-          <div className="glass-3d">
-            <h3 style={{ color: 'white', marginBottom: 24, borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: 12 }}>অর্ডার করা প্রোডাক্ট</h3>
-            
+          {/* Left: Cart Items */}
+          <div style={styles.card}>
+            <div style={styles.corner({top: '8px', left: '8px', borderTop: '1px solid', borderLeft: '1px solid'})}></div>
+            <div style={styles.corner({top: '8px', right: '8px', borderTop: '1px solid', borderRight: '1px solid'})}></div>
+            <div style={styles.corner({bottom: '8px', left: '8px', borderBottom: '1px solid', borderLeft: '1px solid'})}></div>
+            <div style={styles.corner({bottom: '8px', right: '8px', borderBottom: '1px solid', borderRight: '1px solid'})}></div>
+
+            <h2 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '24px', fontFamily: "'Syne', sans-serif" }}>Order Summary</h2>
             {cart.length === 0 ? (
-              <p style={{ color: 'rgba(255,255,255,0.5)' }}>আপনার কার্ট খালি!</p>
+              <p style={{ color: 'var(--fg-muted)', textAlign: 'center', padding: '32px 0' }}>Your cart is empty.</p>
             ) : (
               cart.map((c, i) => (
-                <div key={i} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', color:'white', marginBottom:16, paddingBottom:16, borderBottom:'1px solid rgba(255,255,255,0.05)' }}>
+                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', paddingBottom: '16px', borderBottom: '1px solid var(--border)' }}>
                   <div>
-                    <p style={{ margin: 0, fontWeight: 600, fontSize: 16 }}>{c.name}</p>
-                    <p style={{ margin: '4px 0 0 0', fontSize: 13, color: 'rgba(255,255,255,0.4)' }}>পরিমাণ: {c.qty} টি</p>
+                    <h4 style={{ fontSize: '14px', fontWeight: '600', color: 'var(--fg)', margin: '0 0 4px 0' }}>{c.name}</h4>
+                    <p style={{ fontSize: '12px', color: 'var(--fg-muted)', margin: '0' }}>Qty: {c.qty}</p>
                   </div>
-                  <p style={{ margin: 0, color: '#2dce89', fontWeight: 700, fontSize: 16 }}>৳{c.price * c.qty}</p>
+                  <p style={{ fontSize: '16px', fontWeight: '700', color: 'var(--lime)', margin: '0' }}>৳{c.price * c.qty}</p>
                 </div>
               ))
             )}
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '24px', paddingTop: '24px', borderTop: '1px solid var(--border)' }}>
+              <span style={{ fontSize: '16px', fontWeight: '700', color: 'var(--fg)' }}>Total Amount</span>
+              <span style={{ fontSize: '24px', fontWeight: '800', color: 'var(--accent)', fontFamily: "'Syne', sans-serif" }}>৳{total}</span>
+            </div>
           </div>
 
-          {/* RIGHT SIDE: Order Summary & Payment */}
-          <div className="glass-3d" style={{ alignSelf: 'flex-start' }}>
-            <h3 style={{ color: 'white', marginBottom: 24 }}>অর্ডার সারাংশ</h3>
+          {/* Right: Payment Details */}
+          <div style={styles.card}>
+            <div style={styles.corner({top: '8px', left: '8px', borderTop: '1px solid', borderLeft: '1px solid'})}></div>
+            <div style={styles.corner({top: '8px', right: '8px', borderTop: '1px solid', borderRight: '1px solid'})}></div>
+            <div style={styles.corner({bottom: '8px', left: '8px', borderBottom: '1px solid', borderLeft: '1px solid'})}></div>
+            <div style={styles.corner({bottom: '8px', right: '8px', borderBottom: '1px solid', borderRight: '1px solid'})}></div>
+
+            <h2 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '24px', fontFamily: "'Syne', sans-serif" }}>Payment Method</h2>
             
-            <div style={{ display:'flex', justifyContent:'space-between', color:'rgba(255,255,255,0.6)', marginBottom: 12 }}>
-              <span>সাবটোটাল</span>
-              <span>৳{total}</span>
-            </div>
-            <div style={{ display:'flex', justifyContent:'space-between', color:'rgba(255,255,255,0.6)', marginBottom: 12, borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: 12 }}>
-              <span>ডেলিভারি ফ্রি</span>
-              <span style={{ color: '#2dce89', fontWeight: 600 }}>ফ্রি</span>
-            </div>
-            <div style={{ display:'flex', justifyContent:'space-between', color:'white', fontWeight: 700, fontSize: 18, marginBottom: 24 }}>
-              <span>সর্বমোট</span>
-              <span style={{ color: '#2dce89' }}>৳{total}</span>
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '32px' }}>
+              {['Bkash', 'Nagad', 'Rocket'].map(method => (
+                <button key={method} onClick={() => setPaymentMethod(method)} style={styles.payBtn(paymentMethod === method)}>
+                  {method}
+                </button>
+              ))}
             </div>
 
-            {/* Payment Method */}
-            <div style={{ marginBottom: 20 }}>
-              <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: 14, display: 'block', marginBottom: 8 }}>পেমেন্ট মেথড</label>
-              <div style={{ display: 'flex', gap: 8 }}>
-                {['Bkash', 'Nagad', 'Rocket'].map(method => (
-                  <button 
-                    key={method} 
-                    onClick={() => setPaymentMethod(method)}
-                    style={{
-                      flex: 1,
-                      padding: '10px',
-                      borderRadius: 8,
-                      border: paymentMethod === method ? '1px solid #4e6ef2' : '1px solid rgba(255,255,255,0.1)',
-                      background: paymentMethod === method ? 'rgba(78,110,242,0.2)' : 'rgba(255,255,255,0.05)',
-                      color: 'white',
-                      cursor: 'pointer',
-                      fontWeight: 600,
-                      fontSize: 13
-                    }}
-                  >
-                    {method}
-                  </button>
-                ))}
-              </div>
+            <div style={{ background: 'rgba(255,91,20,0.05)', border: '1px solid var(--border)', padding: '16px', marginBottom: '32px', borderRadius: '4px' }}>
+              <p style={{ fontSize: '12px', color: 'var(--fg-dim)', margin: '0 0 8px 0' }}>Send Money To:</p>
+              <p style={{ fontSize: '20px', fontWeight: '700', color: 'var(--accent)', margin: '0 0 8px 0', fontFamily: "'JetBrains Mono', monospace" }}>01790242308</p>
+              <p style={{ fontSize: '12px', color: 'var(--fg-muted)', margin: '0' }}>({paymentMethod} Personal)</p>
             </div>
 
-            {/* Instructions Box (Apnar Number Add Kore Dewa Holo) */}
-            <div style={{ background: 'rgba(78,110,242,0.1)', padding: 12, borderRadius: 8, marginBottom: 20, border: '1px solid rgba(78,110,242,0.2)' }}>
-              <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 12, margin: 0, textAlign: 'center' }}>
-                ⚠️ <span style={{ fontWeight: 'bold', color: '#2dce89' }}>{paymentMethod}</span> এ <span style={{ fontWeight: 'bold', color: 'white' }}>01790242308</span> নম্বরে <span style={{ fontWeight: 'bold', color: '#2dce89' }}>৳{total}</span> পাঠান।
-              </p>
+            <div style={{ marginBottom: '24px' }}>
+              <label style={styles.label}>Your {paymentMethod} Number</label>
+              <input type="text" value={senderNumber} onChange={(e) => setSenderNumber(e.target.value)} placeholder="01XXXXXXXXX" style={styles.input} />
             </div>
 
-            {/* Payment Inputs */}
-            <div style={{ marginBottom: 12 }}>
-              <input 
-                type="text" 
-                className="d-input"
-                value={senderNumber}
-                onChange={(e) => setSenderNumber(e.target.value)}
-                placeholder="আপনার সেন্ডার নম্বর"
-              />
-            </div>
-            <div style={{ marginBottom: 24 }}>
-              <input 
-                type="text" 
-                className="d-input"
-                value={transactionId}
-                onChange={(e) => setTransactionId(e.target.value)}
-                placeholder="ট্রানজেকশন আইডি (TrxID)"
-              />
+            <div style={{ marginBottom: '32px' }}>
+              <label style={styles.label}>Transaction ID (TrxID)</label>
+              <input type="text" value={transactionId} onChange={(e) => setTransactionId(e.target.value)} placeholder="Enter TrxID" style={styles.input} />
             </div>
 
-            <button 
-              onClick={placeOrder} 
-              disabled={loading}
-              className="neon-3d-btn" 
-              style={{ width:'100%', opacity: loading ? 0.5 : 1 }}
-            >
-              চেকআউট করুন
+            <button onClick={placeOrder} disabled={loading} style={{ ...styles.btnPrimary, opacity: loading ? 0.5 : 1 }}>
+              {loading ? 'Processing...' : 'Confirm Order →'}
             </button>
 
-            {message && <p style={{ marginTop: 16, color: '#4e6ef2', textAlign: 'center', fontSize: 14 }}>{message}</p>}
+            {message && <p style={{ marginTop: '16px', color: 'var(--lime)', fontSize: '14px', textAlign: 'center' }}>{message}</p>}
           </div>
           
         </div>
