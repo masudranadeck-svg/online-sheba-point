@@ -15,7 +15,7 @@ export default function DevServicesPage() {
     window.open(waLink, '_blank');
   };
 
-  // Inline Hover Effect Function (গ্লো ইফেক্ট এর জন্য)
+  // Inline Hover Effect Function
   const handleMouseEnter = (e) => {
     e.currentTarget.style.borderColor = 'var(--accent)';
     e.currentTarget.style.boxShadow = '0 0 25px rgba(255,91,20,0.4)';
@@ -28,7 +28,8 @@ export default function DevServicesPage() {
   };
 
   return (
-    <div style={{ background: 'var(--bg)', color: 'var(--fg)', fontFamily: "'Manrope',sans-serif', minHeight: '100vh', overflowX: 'hidden' }}>
+    // এখানে fontFamily এর স্ট্রিং ঠিক করা হয়েছে
+    <div style={{ background: 'var(--bg)', color: 'var(--fg)', fontFamily: "'Manrope', sans-serif", minHeight: '100vh', overflowX: 'hidden' }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '96px 24px 64px 24px' }}>
         
         {/* Header Section */}
@@ -41,7 +42,7 @@ export default function DevServicesPage() {
           <p style={{ maxWidth: '28rem', color: 'var(--fg-dim)', marginTop: '24px', fontSize: '1rem', lineHeight: '1.6' }}>From websites to operating systems, we build the instruments of the next decade.</p>
         </div>
 
-        {/* Services Grid (100% CSS Grid) */}
+        {/* Services Grid */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px', marginBottom: '64px' }}>
           {services.map((service, i) => (
             <div 
@@ -107,7 +108,7 @@ export default function DevServicesPage() {
           ))}
         </div>
 
-        {/* Custom Request CTA (Fixed Layout) */}
+        {/* Custom Request CTA */}
         <div style={{ 
           position: 'relative',
           background: 'var(--bg-card)', 
