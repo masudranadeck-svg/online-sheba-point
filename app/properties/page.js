@@ -21,26 +21,18 @@ export default function PropertiesPage() {
     const fetchItems = async () => {
       try {
         const res = await fetch(`${API_URL}/properties`);
-        const data = await res.json();
-        if (Array.isArray(data)) {
-          setItems(data);
-        } else {
-          setItems([]);
-        }
-      } catch (error) {
-        setItems([]);
-      }
+        setItems(await res.json());
+      } catch (error) {}
     };
     fetchItems();
   }, []);
 
   const handlePost = async (e) => {
     e.preventDefault();
-    setMessage('পোস্ট হচ্ছে...');
+    setMessage('Posting...');
     try {
       const res = await fetch(`${API_URL}/properties/add`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title, description: desc, price: Number(price), location, type, ownerName, ownerPhone })
       });
       const data = await res.json();
@@ -49,121 +41,142 @@ export default function PropertiesPage() {
         setTitle(''); setDesc(''); setPrice(''); setLocation(''); setOwnerName(''); setOwnerPhone('');
         setShowForm(false);
         const resAgain = await fetch(`${API_URL}/properties`);
-        const newData = await resAgain.json();
-        if (Array.isArray(newData)) setItems(newData);
+        setItems(await resAgain.json());
       }
-    } catch (error) {
-      setMessage('সার্ভার এরর!');
-    }
+    } catch (error) { setMessage('Server Error!'); }
   };
 
   const handleContact = (item) => {
     const cleanPhone = item.ownerPhone.replace(/[^0-9]/g, '').replace(/^0/, '880');
-    const msg = `আসসালামু আলাইকুম, আপনার "${item.title}" (${item.location}) এর বিজ্ঞাপনটি দেখে যোগাযোগ করছি। বিস্তারিত জানাবেন।`;
+    const msg = `আসসালামু আলাইকুম, আমি আপনার "${item.title}" (${item.location}) এর বিজ্ঞাপনটি দেখে যোগাযোগ করছি। বিস্তারিত জানাবেন।`;
     const waLink = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`;
     window.open(waLink, '_blank');
   };
 
   const filteredItems = filter === 'all' ? items : items.filter(item => item.type === filter);
 
-  // এখানে 'sell' (ফ্ল্যাট বিক্রি) যোগ করা হয়েছে
-  const typeLabels = {
-    rent: { label: 'ফ্ল্যাট ভাড়া', color: '#4e6ef2' },
-    sell: { label: 'ফ্ল্যাট বিক্রি', color: '#fb6340' }, 
-    house: { label: 'বাড়ি কেনা-বেচা', color: '#a855f7' },
-    land: { label: 'জমি বিক্রি', color: '#2dce89' }
+  // Inline Styles for Stability
+  const styles = {
+    container: { background: 'var(--bg)', color: 'var(--fg)', fontFamily: "'Manrope', sans-serif", minHeight: '100vh', overflowX: 'hidden' },
+    wrapper: { maxWidth: '1280px', margin: '0 auto', padding: '96px 24px 64px 24px' },
+    headerFlex: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '48px', flexWrap: 'wrap', gap: '24px' },
+    eyebrow: { display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: 'var(--accent)', fontFamily: "'JetBrains Mono', monospace", textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '16px' },
+    title: { fontSize: 'clamp(2.5rem, 4vw, 3.5rem)', fontWeight: '800', lineHeight: '1', margin: '0', fontFamily: "'Syne', sans-serif", letterSpacing: '-0.025em' },
+    btnPrimary: { display: 'inline-block', padding: '14px 28px', background: 'var(--accent)', color: '#0a0a0b', border: 'none', fontWeight: '700', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.08em', cursor: 'pointer', clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)' },
+    filterBtn: (isActive) => ({ padding: '8px 16px', background: isActive ? 'var(--bg-card)' : 'transparent', color: isActive ? 'var(--accent)' : 'var(--fg-muted)', border: 'none', borderBottom: isActive ? '2px solid var(--accent)' : '2px solid transparent', cursor: 'pointer', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: "'JetBrains Mono', monospace" }),
+    card: { position: 'relative', background: 'var(--bg-card)', border: '1px solid transparent', borderRadius: '8px', padding: '24px', transition: 'all 0.3s ease', display: 'flex', flexDirection: 'column' },
+    corner: (pos) => ({ position: 'absolute', width: '14px', height: '14px', borderColor: 'var(--accent)', ...pos }),
+    input: { width: '100%', background: 'transparent', border: 'none', borderBottom: '1px solid var(--border-bright)', padding: '12px 0', color: 'white', outline: 'none', fontSize: '14px' },
+    label: { fontSize: '10px', color: 'var(--fg-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', fontFamily: "'JetBrains Mono', monospace", display: 'block', marginBottom: '8px' },
+  };
+  
+  const handleMouseEnter = (e) => {
+    e.currentTarget.style.borderColor = 'var(--accent)';
+    e.currentTarget.style.boxShadow = '0 0 25px rgba(255,91,20,0.4)';
+    e.currentTarget.style.transform = 'translateY(-4px)';
+  };
+  const handleMouseLeave = (e) => {
+    e.currentTarget.style.borderColor = 'transparent';
+    e.currentTarget.style.boxShadow = 'none';
+    e.currentTarget.style.transform = 'translateY(0)';
   };
 
   return (
-    <div className="deepin-body" style={{ minHeight: '100vh', paddingTop: '150px', paddingBottom: '40px' }}>
-      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 20px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '15px' }}>
-          <h1 style={{ color: 'white', margin: 0 }}>🏠 রিয়েল এস্টেট (ফ্ল্যাট, বাড়ি ও জমি)</h1>
-          <button onClick={() => setShowForm(!showForm)} className="d-btn glow-btn" style={{ padding: '10px 20px', border: 'none', cursor: 'pointer' }}>
-            {showForm ? '❌ বন্ধ করুন' : '➕ বিজ্ঞাপন দিন'}
+    <div style={styles.container}>
+      <div style={styles.wrapper}>
+        
+        {/* Header */}
+        <div style={styles.headerFlex}>
+          <div>
+            <div style={styles.eyebrow}>
+              <span style={{ width: '24px', height: '1px', background: 'var(--accent)' }}></span>
+              15 / Real Estate
+            </div>
+            <h1 style={styles.title}>Properties.</h1>
+            <p style={{ color: 'var(--fg-dim)', marginTop: '16px', maxWidth: '400px' }}>Buy, sell, and rent properties directly from owners.</p>
+          </div>
+          <button onClick={() => setShowForm(!showForm)} style={styles.btnPrimary}>
+            {showForm ? '❌ Close' : '➕ Post Ad'}
           </button>
         </div>
 
-        {/* ফিল্টার বাটন (এখানে ফ্ল্যাট বিক্রি যোগ করা হয়েছে) */}
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '30px' }}>
-          {[
-            { id: 'all', label: '🎯 সব' },
-            { id: 'rent', label: '🏢 ফ্ল্যাট ভাড়া' },
-            { id: 'sell', label: '🔑 ফ্ল্যাট বিক্রি' },
-            { id: 'house', label: '🏡 বাড়ি' },
-            { id: 'land', label: '🌍 জমি' }
-          ].map(cat => (
-            <button 
-              key={cat.id} 
-              onClick={() => setFilter(cat.id)} 
-              className={filter === cat.id ? 'd-btn glow-btn' : 'd-btn-outline'}
-              style={{ padding: '8px 20px', fontSize: '13px', cursor: 'pointer' }}
-            >
-              {cat.label}
-            </button>
+        {/* Filters */}
+        <div style={{ display: 'flex', gap: '4px', marginBottom: '32px', borderBottom: '1px solid var(--border)', paddingBottom: '16px', flexWrap: 'wrap' }}>
+          {[{id:'all', label:'All'}, {id:'rent', label:'Rent'}, {id:'sell', label:'Sell'}, {id:'house', label:'House'}, {id:'land', label:'Land'}].map(f => (
+            <button key={f.id} onClick={() => setFilter(f.id)} style={styles.filterBtn(filter === f.id)}>{f.label}</button>
           ))}
         </div>
 
+        {/* Form */}
         {showForm && (
-          <div className="glass-3d" style={{ marginBottom: '30px' }}>
-            <h2 style={{ marginTop: 0, marginBottom: '20px', color: 'white' }}>আপনার প্রপার্টির বিজ্ঞাপন দিন</h2>
-            <form onSubmit={handlePost} style={{ display: 'grid', gap: '15px' }}>
-              <input type="text" placeholder="শিরোনাম (যেমন: ৩ বেডরুমের ফ্ল্যাট বিক্রি)" value={title} onChange={(e) => setTitle(e.target.value)} required className="d-input" />
-              <textarea placeholder="বিস্তারিত (সাইজ, ফ্লোর, এমেনিটিজ ইত্যাদি)" value={desc} onChange={(e) => setDesc(e.target.value)} required className="d-input" style={{ minHeight: '80px' }} />
-              
-              <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
-                <select value={type} onChange={(e) => setType(e.target.value)} className="d-input" style={{ flex: 1, minWidth: '200px' }}>
-                  <option value="rent" style={{background: '#1a1c2e'}}>ফ্ল্যাট ভাড়া</option>
-                  <option value="sell" style={{background: '#1a1c2e'}}>ফ্ল্যাট বিক্রি</option>
-                  <option value="house" style={{background: '#1a1c2e'}}>বাড়ি কেনা-বেচা</option>
-                  <option value="land" style={{background: '#1a1c2e'}}>জমি বিক্রি</option>
-                </select>
-                <input type="text" placeholder="এলাকা (যেমন: মিরপুর, ঢাকা)" value={location} onChange={(e) => setLocation(e.target.value)} required className="d-input" style={{ flex: 1, minWidth: '200px' }} />
-                <input type="number" placeholder="মূল্য (টাকা/মাস)" value={price} onChange={(e) => setPrice(e.target.value)} required className="d-input" style={{ flex: 1, minWidth: '200px' }} />
+          <div style={{ ...styles.card, maxWidth: '600px', margin: '0 auto 48px auto', border: '1px solid var(--border)' }}>
+            <div style={styles.corner({top: '8px', left: '8px', borderTop: '1px solid', borderLeft: '1px solid'})}></div>
+            <div style={styles.corner({top: '8px', right: '8px', borderTop: '1px solid', borderRight: '1px solid'})}></div>
+            <div style={styles.corner({bottom: '8px', left: '8px', borderBottom: '1px solid', borderLeft: '1px solid'})}></div>
+            <div style={styles.corner({bottom: '8px', right: '8px', borderBottom: '1px solid', borderRight: '1px solid'})}></div>
+            
+            <h2 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '32px', fontFamily: "'Syne', sans-serif" }}>Post Property Ad</h2>
+            <form onSubmit={handlePost} style={{ display: 'grid', gap: '24px' }}>
+              <div><label style={styles.label}>Title</label><input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required style={styles.input} /></div>
+              <div><label style={styles.label}>Description</label><textarea value={desc} onChange={(e) => setDesc(e.target.value)} required style={{...styles.input, resize: 'none', minHeight: '60px'}} /></div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+                <div><label style={styles.label}>Type</label><select value={type} onChange={(e) => setType(e.target.value)} style={{...styles.input, background: 'var(--bg)'}}><option value="rent">Rent</option><option value="sell">Sell</option><option value="house">House</option><option value="land">Land</option></select></div>
+                <div><label style={styles.label}>Price (৳)</label><input type="number" value={price} onChange={(e) => setPrice(e.target.value)} required style={styles.input} /></div>
               </div>
-              
-              <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
-                <input type="text" placeholder="মালিকের নাম" value={ownerName} onChange={(e) => setOwnerName(e.target.value)} required className="d-input" style={{ flex: 1, minWidth: '200px' }} />
-                <input type="text" placeholder="হোয়াটসঅ্যাপ নাম্বার" value={ownerPhone} onChange={(e) => setOwnerPhone(e.target.value)} required className="d-input" style={{ flex: 1, minWidth: '200px' }} />
+              <div><label style={styles.label}>Location</label><input type="text" value={location} onChange={(e) => setLocation(e.target.value)} required style={styles.input} /></div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+                <div><label style={styles.label}>Your Name</label><input type="text" value={ownerName} onChange={(e) => setOwnerName(e.target.value)} required style={styles.input} /></div>
+                <div><label style={styles.label}>WhatsApp Number</label><input type="text" value={ownerPhone} onChange={(e) => setOwnerPhone(e.target.value)} required style={styles.input} /></div>
               </div>
-              
-              <button type="submit" className="neon-3d-btn" style={{ width: '100%' }}>বিজ্ঞাপন পোস্ট করুন</button>
+              <button type="submit" style={styles.btnPrimary}>Deploy Ad →</button>
+              {message && <p style={{ color: 'var(--lime)', fontSize: '14px', marginTop: '8px' }}>{message}</p>}
             </form>
-            {message && <p style={{ color: '#2dce89', textAlign: 'center', marginTop: '15px' }}>{message}</p>}
           </div>
         )}
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
-          {filteredItems.length > 0 ? (
+        {/* Properties Grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
+          {filteredItems.length === 0 ? (
+            <div style={{ ...styles.card, gridColumn: '1 / -1', textAlign: 'center', border: '1px solid var(--border)' }}>
+              <div style={styles.corner({top: '8px', left: '8px', borderTop: '1px solid', borderLeft: '1px solid'})}></div>
+              <div style={styles.corner({top: '8px', right: '8px', borderTop: '1px solid', borderRight: '1px solid'})}></div>
+              <div style={styles.corner({bottom: '8px', left: '8px', borderBottom: '1px solid', borderLeft: '1px solid'})}></div>
+              <div style={styles.corner({bottom: '8px', right: '8px', borderBottom: '1px solid', borderRight: '1px solid'})}></div>
+              <p style={{ color: 'var(--fg-muted)', padding: '48px 0' }}>No properties available in this category.</p>
+            </div>
+          ) : (
             filteredItems.map((item) => (
-              <div key={item._id} className="glass-3d" style={{ display: 'flex', flexDirection: 'column' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                  {/* কালার এখানে আপডেট করা হয়েছে */}
-                  <span style={{ background: `rgba(${item.type === 'rent' ? '78,110,242' : item.type === 'sell' ? '251,99,64' : item.type === 'house' ? '168,85,247' : '45,206,137'}, 0.2)`, color: typeLabels[item.type]?.color, padding: '4px 10px', borderRadius: '20px', fontSize: '12px', fontWeight: 700 }}>
-                    {typeLabels[item.type]?.label}
-                  </span>
+              <div 
+                key={item._id} 
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                style={styles.card}
+              >
+                <div style={styles.corner({top: '8px', left: '8px', borderTop: '1px solid', borderLeft: '1px solid'})}></div>
+                <div style={styles.corner({top: '8px', right: '8px', borderTop: '1px solid', borderRight: '1px solid'})}></div>
+                <div style={styles.corner({bottom: '8px', left: '8px', borderBottom: '1px solid', borderLeft: '1px solid'})}></div>
+                <div style={styles.corner({bottom: '8px', right: '8px', borderBottom: '1px solid', borderRight: '1px solid'})}></div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                  <span style={{ fontSize: '10px', fontFamily: "'JetBrains Mono', monospace", textTransform: 'uppercase', letterSpacing: '0.1em', padding: '4px 8px', background: 'var(--accent)', color: '#0a0a0b', fontWeight: '700' }}>{item.type}</span>
+                  <span style={{ fontSize: '10px', color: 'var(--fg-muted)', fontFamily: "'JetBrains Mono', monospace" }}>{item.location}</span>
                 </div>
-                <h3 style={{ fontSize: '18px', fontWeight: 700, marginBottom: 8, color: 'white' }}>{item.title}</h3>
-                <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.6)', marginBottom: 8, flex: 1 }}>{item.description}</p>
-                <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.8)', marginBottom: 16 }}>📍 {item.location}</p>
                 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '15px' }}>
+                <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '12px', color: 'var(--fg)', fontFamily: "'Syne', sans-serif" }}>{item.title}</h3>
+                <p style={{ fontSize: '14px', color: 'var(--fg-muted)', marginBottom: '24px', flex: '1', lineHeight: '1.6' }}>{item.description}</p>
+                
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', paddingTop: '24px', borderTop: '1px solid var(--border)' }}>
                   <div>
-                    <p style={{ fontSize: 20, fontWeight: 700, color: '#2dce89', margin: 0 }}>৳{item.price}</p>
-                    <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)', margin: 0 }}>By {item.ownerName}</p>
+                    <p style={{ fontSize: '10px', color: 'var(--fg-muted)', fontFamily: "'JetBrains Mono', monospace", margin: '0 0 4px 0', textTransform: 'uppercase' }}>Price</p>
+                    <p style={{ fontSize: '20px', fontWeight: '800', color: 'var(--lime)', margin: '0', fontFamily: "'Syne', sans-serif" }}>৳{item.price}</p>
                   </div>
-                  <button onClick={() => handleContact(item)} className="d-btn-green glow-btn-green" style={{ padding: '10px 20px', border: 'none', cursor: 'pointer' }}>
-                    💬 যোগাযোগ করুন
-                  </button>
+                  <button onClick={() => handleContact(item)} style={{ padding: '10px 16px', background: 'transparent', color: 'var(--accent)', border: '1px solid var(--accent)', cursor: 'pointer', fontSize: '11px', textTransform: 'uppercase', fontFamily: "'JetBrains Mono', monospace", clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)' }}>Contact →</button>
                 </div>
               </div>
             ))
-          ) : (
-            <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.4)', fontSize: '18px', gridColumn: '1 / -1' }}>
-              এই ক্যাটাগরিতে এখনো কোনো বিজ্ঞাপন নেই।
-            </p>
           )}
         </div>
+
       </div>
     </div>
   );
