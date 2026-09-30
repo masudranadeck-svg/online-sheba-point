@@ -1,74 +1,65 @@
 'use client';
-import Link from 'next/link';
 
 export default function AccountsPage() {
-  const whatsappNumber = "8801610205062"; 
+  const whatsappNumber = "8801610205062";
 
-  const services = [
-    { id: 1, name: 'Payoneer Account', desc: 'Fully Verified US/EU Payment Account', price: '৳1,500 - ৳2,500', icon: '💳' },
-    { id: 2, name: 'Wise (TransferWise)', desc: 'Multi-currency Account for Freelancers', price: '৳1,200 - ৳2,000', icon: '🌍' },
-    { id: 3, name: 'Skrill Account', desc: 'Verified Skrill for International Payment', price: '৳1,000', icon: '💸' },
-    { id: 4, name: 'Neteller Account', desc: 'Secure Online Payment Gateway', price: '৳1,000', icon: '🏦' },
-    { id: 5, name: 'Virtual Credit Card (VCC)', desc: 'For Online Purchase & Verification', price: '৳500 - ৳1,500', icon: '🪪' },
-    { id: 6, name: 'Tally ERP 9 / Prime', desc: 'Accounting Software with License', price: '৳1,000 - ৳3,000', icon: '📊' },
+  const accounts = [
+    { name: 'Social Media Accounts', desc: 'Verified Facebook, Instagram, Twitter accounts.', icon: 'fa-solid fa-hashtag' },
+    { name: 'Email Accounts', desc: 'Aged and verified Gmail, Outlook, Yahoo accounts.', icon: 'fa-solid fa-envelope' },
+    { name: 'Gaming Accounts', desc: 'Steam, Epic Games, Riot, and more.', icon: 'fa-solid fa-gamepad' },
+    { name: 'Streaming Accounts', desc: 'Netflix, Spotify, Disney+, Prime Video.', icon: 'fa-solid fa-clapperboard' }
   ];
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f5f7fa' }}>
-      <section style={{ background: 'linear-gradient(135deg, #4e6ef2, #6c5ce7)', paddingTop: 120, paddingBottom: 64, paddingLeft: 24, paddingRight: 24 }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', textAlign: 'center' }}>
-          <h1 style={{ fontSize: 36, fontWeight: 700, color: 'white', marginBottom: 8 }}>💳 ফিন্যান্সিয়াল অ্যাকাউন্ট সেবা</h1>
-          <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 15 }}>ফ্রিল্যান্সারদের জন্য নিরাপদ ও ভেরিফাইড পেমেন্ট অ্যাকাউন্ট সলিউশন।</p>
+    <div style={{ background: 'var(--bg)', color: 'var(--fg)', fontFamily: "'Manrope',sans-serif", minHeight: '100vh', overflowX: 'hidden' }}>
+      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '96px 24px 64px 24px' }}>
+        
+        <div style={{ marginBottom: '64px' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: 'var(--accent)', fontFamily: "'JetBrains Mono', monospace", textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '16px' }}>
+            <span style={{ width: '24px', height: '1px', background: 'var(--accent)' }}></span>
+            11 / Accounts
+          </div>
+          <h1 style={{ fontSize: 'clamp(3rem, 5vw, 4.5rem)', fontWeight: '800', lineHeight: '1', margin: '0', fontFamily: "'Syne', sans-serif", letterSpacing: '-0.025em' }}>Accounts.</h1>
+          <p style={{ maxWidth: '28rem', color: 'var(--fg-dim)', marginTop: '24px', fontSize: '1rem', lineHeight: '1.6' }}>Buy verified and premium accounts for various platforms.</p>
         </div>
-      </section>
 
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '32px 24px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
-          
-          {services.map((service) => {
-            const msg = `আসসালামু আলাইকুম, আমি "${service.name}" এর জন্য সেবা নিতে চাই। অনুগ্রহ করে বিস্তারিত জানাবেন।`;
-            const waLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`;
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px', marginBottom: '64px' }}>
+          {accounts.map((account, i) => (
+            <div 
+              key={i} 
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.boxShadow = '0 0 25px rgba(255,91,20,0.4)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.boxShadow = 'none'; }}
+              style={{ 
+                position: 'relative', background: 'var(--bg-card)', padding: '32px', borderRadius: '8px', 
+                border: '1px solid transparent', transition: 'all 0.3s ease', display: 'flex', flexDirection: 'column'
+              }}
+            >
+              <div style={{ position: 'absolute', top: '8px', left: '8px', width: '14px', height: '14px', borderTop: '1px solid var(--accent)', borderLeft: '1px solid var(--accent)' }}></div>
+              <div style={{ position: 'absolute', top: '8px', right: '8px', width: '14px', height: '14px', borderTop: '1px solid var(--accent)', borderRight: '1px solid var(--accent)' }}></div>
+              <div style={{ position: 'absolute', bottom: '8px', left: '8px', width: '14px', height: '14px', borderBottom: '1px solid var(--accent)', borderLeft: '1px solid var(--accent)' }}></div>
+              <div style={{ position: 'absolute', bottom: '8px', right: '8px', width: '14px', height: '14px', borderBottom: '1px solid var(--accent)', borderRight: '1px solid var(--accent)' }}></div>
 
-            return (
-              <div key={service.id} className="d-card glow-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                <div>
-                  <div style={{ fontSize: 40, marginBottom: 12 }}>{service.icon}</div>
-                  <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 8, color: '#1a1a2e' }}>{service.name}</h3>
-                  <p style={{ fontSize: 14, color: '#888', marginBottom: 16, minHeight: 40 }}>{service.desc}</p>
-                </div>
-                
-                <div>
-                  <p style={{ fontSize: 20, fontWeight: 700, color: '#2dce89', marginBottom: 16 }}>{service.price}</p>
-                  <a 
-                    href={waLink} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="d-btn glow-btn" 
-                    style={{ width: '100%', display: 'block', textAlign: 'center', textDecoration: 'none', boxSizing: 'border-box' }}
-                  >
-                    🟢 Buy Now
-                  </a>
-                </div>
+              <div style={{ width: '56px', height: '56px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', marginBottom: '24px', background: 'var(--bg)', border: '1px solid var(--border-bright)', color: 'var(--accent)' }}>
+                <i className={account.icon}></i>
               </div>
-            );
-          })}
-
+              <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '12px', color: 'var(--fg)', fontFamily: "'Syne', sans-serif" }}>{account.name}</h3>
+              <p style={{ fontSize: '14px', color: 'var(--fg-muted)', marginBottom: '24px', flex: '1', lineHeight: '1.6' }}>{account.desc}</p>
+            </div>
+          ))}
         </div>
 
-        {/* কাস্টম অর্ডার বক্স */}
-        <div style={{ background: 'linear-gradient(135deg, #25D366, #128C7E)', padding: '24px', borderRadius: '16px', marginTop: '40px', textAlign: 'center', color: 'white', boxShadow: '0 8px 20px rgba(37, 211, 102, 0.3)' }}>
-          <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>🟢 অন্য কোনো অ্যাকাউন্ট সেবা দরকার?</h2>
-          <p style={{ fontSize: 14, marginBottom: 16, opacity: 0.9 }}>আপনার যদি এখানে তালিকাভুক্ত ছাড়া অন্য কোনো ফিন্যান্সিয়াল সেবা লাগে, সরাসরি হোয়াটসঅ্যাপে মেসেজ করুন।</p>
-          <a 
-            href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("আসসালামু আলাইকুম, আমার অন্য একটি অ্যাকাউন্ট সেবা দরকার ছিল।")}`} 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            style={{ display: 'inline-block', background: 'white', color: '#128C7E', fontWeight: 700, padding: '12px 30px', borderRadius: '30px', textDecoration: 'none', fontSize: 16 }}
-          >
-            📲 হোয়াটসঅ্যাপে মেসেজ করুন
-          </a>
-        </div>
+        <div style={{ position: 'relative', background: 'var(--bg-card)', padding: '48px 24px', borderRadius: '8px', border: '1px solid var(--border)', textAlign: 'center', overflow: 'hidden', backgroundImage: 'radial-gradient(circle at 50% 0%, rgba(255,91,20,0.1) 0%, transparent 60%)' }}>
+          <div style={{ position: 'absolute', top: '8px', left: '8px', width: '14px', height: '14px', borderTop: '1px solid var(--accent)', borderLeft: '1px solid var(--accent)' }}></div>
+          <div style={{ position: 'absolute', top: '8px', right: '8px', width: '14px', height: '14px', borderTop: '1px solid var(--accent)', borderRight: '1px solid var(--accent)' }}></div>
+          <div style={{ position: 'absolute', bottom: '8px', left: '8px', width: '14px', height: '14px', borderBottom: '1px solid var(--accent)', borderLeft: '1px solid var(--accent)' }}></div>
+          <div style={{ position: 'absolute', bottom: '8px', right: '8px', width: '14px', height: '14px', borderBottom: '1px solid var(--accent)', borderRight: '1px solid var(--accent)' }}></div>
 
+          <div style={{ position: 'relative', zIndex: '2', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <h2 style={{ fontSize: '32px', fontWeight: '700', marginBottom: '16px', color: 'var(--fg)', fontFamily: "'Syne', sans-serif" }}>Need an account?</h2>
+            <p style={{ color: 'var(--fg-dim)', maxWidth: '500px', margin: '0 0 32px 0', fontSize: '16px', lineHeight: '1.6' }}>Contact us on WhatsApp for verified accounts.</p>
+            <a href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("আসসালামু আলাইকুম, আমার একটি ভেরিফায়েড অ্যাকাউন্ট দরকার।")}`} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', padding: '14px 28px', background: 'var(--accent)', color: '#0a0a0b', textDecoration: 'none', fontWeight: '700', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.08em', clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)' }}>💬 Buy Account</a>
+          </div>
+        </div>
       </div>
     </div>
   );
