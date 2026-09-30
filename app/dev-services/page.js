@@ -4,30 +4,9 @@ export default function DevServicesPage() {
   const whatsappNumber = "8801610205062";
 
   const services = [
-    {
-      id: 1,
-      title: 'Website Development',
-      icon: '🌐',
-      desc: 'E-commerce, Portfolio, Business, Custom Web Application ও হাই-সিকিউরিটি ওয়েবসাইট তৈরি।',
-      features: ['Next.js / React', 'Node.js Backend', 'Database (MongoDB/SQL)', 'SSL & Hosting Setup'],
-      price: '১০,০০০ টাকা থেকে শুরু'
-    },
-    {
-      id: 2,
-      title: 'App Development',
-      icon: '📱',
-      desc: 'Android ও iOS এর জন্য প্রফেশনাল মোবাইল অ্যাপ্লিকেশন তৈরি।',
-      features: ['React Native / Flutter', 'User Authentication', 'Push Notification', 'Play Store Upload'],
-      price: '১৫,০০০ টাকা থেকে শুরু'
-    },
-    {
-      id: 3,
-      title: 'OS & Software Dev',
-      icon: '💻',
-      desc: 'নতুন অপারেটিং সিস্টেম, কাস্টম সফটওয়্যার বা সিস্টেম লেভেলের টুল তৈরি।',
-      features: ['Linux/Custom OS', 'Desktop Software (Win/Mac)', 'C++ / Python / Rust', 'System Driver'],
-      price: '২৫,০০০ টাকা থেকে শুরু'
-    }
+    { name: 'Website Development', desc: 'E-commerce, Portfolio, Business, Custom Web Application ও হাই-সিকিউরিটি ওয়েবসাইট তৈরি।', price: '১০,০০০ টাকা থেকে শুরু', icon: 'fa-solid fa-laptop-code' },
+    { name: 'App Development', desc: 'Android ও iOS এর জন্য প্রফেশনাল মোবাইল অ্যাপ্লিকেশন তৈরি।', price: '১৫,০০০ টাকা থেকে শুরু', icon: 'fa-solid fa-mobile-screen' },
+    { name: 'OS & Software Dev', desc: 'নতুন অপারেটিং সিস্টেম, কাস্টম সফটওয়্যার বা সিস্টেম লেভেলের টুল তৈরি।', price: '২৫,০০০ টাকা থেকে শুরু', icon: 'fa-solid fa-microchip' }
   ];
 
   const handleOrder = (serviceTitle) => {
@@ -37,61 +16,41 @@ export default function DevServicesPage() {
   };
 
   return (
-    <div className="deepin-body" style={{ minHeight: '100vh' }}>
-      <section style={{ background: 'linear-gradient(135deg, #4e6ef2, #6c5ce7)', paddingTop: 120, paddingBottom: 64, paddingLeft: 24, paddingRight: 24 }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', textAlign: 'center' }}>
-          <h1 style={{ fontSize: 36, fontWeight: 700, color: 'white', marginBottom: 8 }}>🚀 ডেভেলপমেন্ট সার্ভিস</h1>
-          <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 15 }}>ওয়েবসাইট, মোবাইল অ্যাপ থেকে শুরু করে নতুন অপারেটিং সিস্টেম (OS) তৈরি পর্যন্ত - সব ধরনের সফটওয়্যার ডেভেলপমেন্ট সলিউশন।</p>
-        </div>
-      </section>
-
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '40px 24px' }}>
+    <div style={{ background: 'var(--bg)', color: 'var(--fg)', fontFamily: "'Manrope',sans-serif", overflowX: 'hidden', minHeight: '100vh' }}>
+      <div className="max-w-[1480px] mx-auto px-6 lg:px-10 pt-24 pb-16">
         
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
-          
-          {services.map((service) => (
-            <div key={service.id} className="glass-3d" style={{ padding: '32px 24px', display: 'flex', flexDirection: 'column' }}>
-              <div style={{ fontSize: 50, marginBottom: 16 }}>{service.icon}</div>
-              <h3 style={{ fontSize: 22, fontWeight: 700, marginBottom: 12, color: 'white' }}>{service.title}</h3>
-              <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', marginBottom: 24, lineHeight: 1.6 }}>{service.desc}</p>
-              
-              <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 24px 0', flex: 1 }}>
-                {service.features.map((feat, i) => (
-                  <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px', fontSize: 14, color: 'rgba(255,255,255,0.7)' }}>
-                    <span style={{ color: '#4e6ef2', fontWeight: 'bold' }}>▹</span> {feat}
-                  </li>
-                ))}
-              </ul>
+        <div className="mb-16">
+          <div className="section-eyebrow mb-4">06 / Dev Services</div>
+          <h1 className="font-display font-bold text-5xl lg:text-7xl leading-none">Dev Services.</h1>
+          <p className="max-w-md text-[var(--fg-dim)] mt-6 text-base">From websites to operating systems, we build the instruments of the next decade.</p>
+        </div>
 
-              <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '20px' }}>
-                <p style={{ fontSize: 18, fontWeight: 700, color: '#2dce89', marginBottom: 16 }}>{service.price}</p>
-                <button 
-                  onClick={() => handleOrder(service.title)} 
-                  className="neon-3d-btn" 
-                  style={{ width: '100%', padding: '14px', fontSize: 16, border: 'none', cursor: 'pointer', textAlign: 'center', display: 'block', textDecoration: 'none', boxSizing: 'border-box' }}
-                >
-                  📲 অর্ডার বা কোটেশন নিন
-                </button>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-16">
+          {services.map((service, i) => (
+            <div key={i} className="relative bg-[var(--bg-card)] p-8 rounded-lg border border-transparent hover:border-[var(--accent)] hover:shadow-[0_0_25px_rgba(255,91,20,0.4)] transition-all duration-300 flex flex-col">
+              <div className="corner-tl"></div><div className="corner-tr"></div><div className="corner-bl"></div><div className="corner-br"></div>
+              <div className="w-16 h-16 rounded-xl flex items-center justify-center text-3xl mb-6"
+                style={{ background: 'var(--bg)', border: '1px solid var(--border-bright)', color: 'var(--accent)' }}>
+                <i className={service.icon}></i>
+              </div>
+              <h3 className="font-display font-bold text-xl tracking-tight mb-3 text-[var(--fg)]">{service.name}</h3>
+              <p className="text-sm text-[var(--fg-muted)] mb-8 flex-grow leading-relaxed">{service.desc}</p>
+              <div className="mt-auto pt-6 border-t border-[var(--border)]">
+                <p className="text-[10px] font-mono text-[var(--fg-muted)] uppercase tracking-widest mb-2">Starting Price</p>
+                <p className="font-display font-bold text-lg text-[var(--lime)] mb-6">{service.price}</p>
+                <button onClick={() => handleOrder(service.name)} className="btn-primary w-full justify-center">Request Quote →</button>
               </div>
             </div>
           ))}
-
         </div>
 
-        {/* কাস্টম রিকোয়েস্ট সেকশন */}
-        <div className="glass-3d" style={{ background: 'linear-gradient(135deg, rgba(78,110,242,0.2), rgba(168,85,247,0.2))', marginTop: '50px', textAlign: 'center' }}>
-          <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 12, color: 'white' }}>💡 আপনার কি অন্য কোনো কাস্টম আইডিয়া আছে?</h2>
-          <p style={{ fontSize: 15, marginBottom: 24, color: 'rgba(255,255,255,0.7)' }}>গেম তৈরি, এআই (AI) বট, সাইবার সিকিউরিটি টুল বা এর বাইরে যেকোনো সফটওয়্যার তৈরির আইডিয়া থাকলে আমাদের সাথে শেয়ার করুন। আমরা বানিয়ে দিব!</p>
-          <a 
-            href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("আসসালামু আলাইকুম, আমার একটি কাস্টম সফটওয়্যার তৈরির আইডিয়া আছে।")}`} 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            style={{ display: 'inline-block', background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.2)', fontWeight: 700, padding: '14px 40px', borderRadius: '14px', textDecoration: 'none', fontSize: 16 }}
-          >
-            💬 হোয়াটসঅ্যাপে আইডিয়া শেয়ার করুন
-          </a>
+        {/* Custom Request CTA */}
+        <div className="relative bg-[var(--bg-card)] p-8 md:p-12 rounded-lg border border-[var(--border)] text-center overflow-hidden grid-bg grid-fade">
+          <div className="corner-tl"></div><div className="corner-tr"></div><div className="corner-bl"></div><div className="corner-br"></div>
+          <h2 className="font-display font-bold text-3xl lg:text-4xl mb-4 text-[var(--fg)]">💡 Got a custom idea?</h2>
+          <p className="text-[var(--fg-dim)] max-w-xl mx-auto mb-8">Game development, AI bots, cybersecurity tools, or any other software idea? Let's build it.</p>
+          <a href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("আসসালামু আলাইকুম, আমার একটি কাস্টম সফটওয়্যার তৈরির আইডিয়া আছে।")}`} target="_blank" rel="noopener noreferrer" className="btn-ghost">💬 Share on WhatsApp</a>
         </div>
-
       </div>
     </div>
   );
