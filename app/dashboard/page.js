@@ -11,6 +11,10 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('overview');
   const router = useRouter();
 
+  // Support Form State
+  const [supportSubject, setSupportSubject] = useState('');
+  const [supportMessage, setSupportMessage] = useState('');
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
@@ -26,6 +30,26 @@ export default function Dashboard() {
   const handleLogout = async () => {
     await signOut(auth);
     router.push('/login');
+  };
+
+  // WhatsApp Submit Function
+  const handleSupportSubmit = (e) => {
+    e.preventDefault();
+    if (!supportSubject || !supportMessage) {
+      alert('সাবজেক্ট এবং মেসেজ দিন!');
+      return;
+    }
+    const adminWhatsApp = '8801610205062'; // আপনার হোয়াটসঅ্যাপ নম্বর
+    const messageText = `*Support Ticket from Online Sheba Point*%0A%0A*User:* ${user.email}%0A*Subject:* ${supportSubject}%0A*Message:* ${supportMessage}`;
+    const whatsappUrl = `https://wa.me/${adminWhatsApp}?text=${messageText}`;
+    
+    // নতুন ট্যাবে হোয়াটসঅ্যাপ ওপেন করবে
+    window.open(whatsappUrl, '_blank');
+    
+    // ফর্ম ক্লিয়ার করা
+    setSupportSubject('');
+    setSupportMessage('');
+    alert('আপনার মেসেজটি হোয়াটসঅ্যাপে পাঠানো হচ্ছে...');
   };
 
   const services = [
@@ -187,22 +211,38 @@ export default function Dashboard() {
             </div>
           )}
 
-          {/* 5. SUPPORT TAB */}
+          {/* 5. SUPPORT TAB (WhatsApp Integration) */}
           {activeTab === 'support' && (
             <div className="relative bg-[var(--bg-card)] p-8 border border-[var(--border)] rounded-lg max-w-2xl mx-auto">
               <div className="corner-tl"></div><div className="corner-tr"></div><div className="corner-bl"></div><div className="corner-br"></div>
               <h3 className="font-display font-bold text-xl text-[var(--fg)] mb-2">Support Center</h3>
-              <p className="text-sm text-[var(--fg-muted)] mb-8">Having trouble? Send us a message and we'll get back to you.</p>
-              <form className="flex flex-col gap-6">
+              <p className="text-sm text-[var(--fg-muted)] mb-8">Having trouble? Send us a message directly to our WhatsApp.</p>
+              <form onSubmit={handleSupportSubmit} className="flex flex-col gap-6">
                 <div>
                   <label className="text-[10px] font-mono text-[var(--fg-muted)] uppercase tracking-widest mb-2 block">Subject</label>
-                  <input type="text" className="w-full bg-transparent border-b border-[var(--border-bright)] py-3 text-white outline-none focus:border-[var(--accent)] transition-colors" placeholder="What's the issue?" />
+                  <input 
+                    type="text" 
+                    value={supportSubject}
+                    onChange={(e) => setSupportSubject(e.target.value)}
+                    required
+                    className="w-full bg-transparent border-b border-[var(--border-bright)] py-3 text-white outline-none focus:border-[var(--accent)] transition-colors" 
+                    placeholder="What's the issue?" 
+                  />
                 </div>
                 <div>
                   <label className="text-[10px] font-mono text-[var(--fg-muted)] uppercase tracking-widest mb-2 block">Message</label>
-                  <textarea rows="4" className="w-full bg-transparent border-b border-[var(--border-bright)] py-3 text-white outline-none focus:border-[var(--accent)] transition-colors resize-none" placeholder="Describe your problem..."></textarea>
+                  <textarea 
+                    rows="4" 
+                    value={supportMessage}
+                    onChange={(e) => setSupportMessage(e.target.value)}
+                    required
+                    className="w-full bg-transparent border-b border-[var(--border-bright)] py-3 text-white outline-none focus:border-[var(--accent)] transition-colors resize-none" 
+                    placeholder="Describe your problem..."
+                  ></textarea>
                 </div>
-                <button type="button" className="btn-primary w-fit mt-4">Submit Ticket →</button>
+                <button type="submit" className="btn-primary w-fit mt-4" style={{ background: '#25D366', color: '#000' }}>
+                  <i className="fab fa-whatsapp mr-2"></i> Send to WhatsApp
+                </button>
               </form>
             </div>
           )}
