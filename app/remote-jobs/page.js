@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import { useState, useEffect } from 'react';
 
 export default function RemoteJobs() {
@@ -10,40 +10,50 @@ export default function RemoteJobs() {
       try {
         const res = await fetch(`${API_URL}/jobs`);
         setJobs(await res.json());
-      } catch (error) {
-        console.log("জব আনতে সমস্যা");
-      }
+      } catch (error) { console.log("Error fetching jobs"); }
     };
     fetchJobs();
   }, []);
 
   return (
-    <div className="deepin-body" style={{ minHeight: '100vh', paddingTop: '150px', paddingBottom: '40px' }}>
-      <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '0 20px' }}>
-        <h1 style={{ color: 'white', textAlign: 'center', marginBottom: '10px' }}>🌍 Remote Job Portal</h1>
-        <p style={{ color: 'rgba(255,255,255,0.6)', textAlign: 'center', marginBottom: '40px', fontSize: '16px' }}>বাংলাদেশ ও বিশ্বের বিভিন্ন কোম্পানির রিমোট জব। সরাসরি এপ্লাই করুন।</p>
+    <div style={{ background: 'var(--bg)', color: 'var(--fg)', fontFamily: "'Manrope',sans-serif", overflowX: 'hidden', minHeight: '100vh' }}>
+      <div className="max-w-[1480px] mx-auto px-6 lg:px-10 pt-24 pb-16">
+        
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-12 gap-6">
+          <div>
+            <div className="section-eyebrow mb-4">05 / Remote Jobs</div>
+            <h1 className="font-display font-bold text-5xl lg:text-7xl leading-none">Remote Jobs.</h1>
+            <p className="max-w-md text-[var(--fg-dim)] mt-6 text-base">Find the best remote work opportunities from around the world.</p>
+          </div>
+        </div>
 
-        <div style={{ display: 'grid', gap: '20px' }}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {jobs.length === 0 ? (
-            <div className="glass-3d" style={{ padding: '40px', textAlign: 'center' }}>
-              <p style={{ fontSize: '40px', marginBottom: '10px' }}>💼</p>
-              <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '18px' }}>এখনো কোনো রিমোট জব পোস্ট করা হয়নি। শীঘ্রই আসছে!</p>
+            <div className="relative bg-[var(--bg-card)] p-12 border border-[var(--border)] rounded-lg col-span-full text-center">
+              <div className="corner-tl"></div><div className="corner-tr"></div><div className="corner-bl"></div><div className="corner-br"></div>
+              <i className="fa-solid fa-briefcase text-5xl text-[var(--fg-muted)] mb-4"></i>
+              <h3 className="font-display font-bold text-xl text-[var(--fg)]">No Jobs Available</h3>
+              <p className="text-sm text-[var(--fg-muted)] mt-2">Check back soon for new opportunities.</p>
             </div>
           ) : (
             jobs.map((job) => (
-              <div key={job._id} className="glass-3d" style={{ padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
-                <div style={{ flex: '1 1 300px' }}>
-                  <h3 style={{ margin: '0 0 5px 0', color: 'white', fontSize: '20px' }}>{job.title}</h3>
-                  <p style={{ margin: '0 0 10px 0', color: '#4e6ef2', fontWeight: '600', fontSize: '14px' }}>🏢 {job.company}</p>
-                  <p style={{ margin: '0 0 10px 0', color: 'rgba(255,255,255,0.6)', fontSize: '14px' }}>{job.description}</p>
-                  <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
-                    <span style={{ background: 'rgba(45,206,137,0.2)', color: '#2dce89', padding: '4px 12px', borderRadius: '20px', fontSize: '13px', fontWeight: '600' }}>💰 {job.salary}</span>
-                    <span style={{ background: 'rgba(78,110,242,0.2)', color: '#4e6ef2', padding: '4px 12px', borderRadius: '20px', fontSize: '13px', fontWeight: '600' }}>📍 {job.location}</span>
+              <div key={job._id} className="relative bg-[var(--bg-card)] p-6 rounded-lg border border-transparent hover:border-[var(--accent)] hover:shadow-[0_0_25px_rgba(255,91,20,0.4)] transition-all duration-300">
+                <div className="corner-tl"></div><div className="corner-tr"></div><div className="corner-bl"></div><div className="corner-br"></div>
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <h3 className="font-display font-bold text-lg tracking-tight text-[var(--fg)]">{job.title}</h3>
+                    <p className="text-sm text-[var(--accent)] font-mono mt-1">{job.company}</p>
                   </div>
+                  <span className="text-[9px] font-mono px-2 py-1 bg-[var(--lime)] text-black font-bold tracking-widest rounded-sm">REMOTE</span>
                 </div>
-                <a href={job.applyLink} target="_blank" rel="noopener noreferrer" className="neon-3d-btn" style={{ padding: '12px 24px', textDecoration: 'none', textAlign: 'center' }}>
-                  Apply Now →
-                </a>
+                <p className="text-xs text-[var(--fg-muted)] mb-6">{job.description}</p>
+                <div className="flex justify-between items-center mt-auto pt-4 border-t border-[var(--border)]">
+                  <div className="flex gap-4 text-sm">
+                    <span className="text-[var(--fg)] font-mono">💰 {job.salary}</span>
+                    <span className="text-[var(--fg-muted)] font-mono">📍 {job.location}</span>
+                  </div>
+                  <a href={job.applyLink} target="_blank" rel="noopener noreferrer" className="btn-primary !py-2 !px-4 text-[10px]">Apply Now →</a>
+                </div>
               </div>
             ))
           )}
