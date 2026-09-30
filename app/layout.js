@@ -10,9 +10,12 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="bn">
+      <head>
+        {/* Font Awesome Global Link */}
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+      </head>
       <body style={{ minHeight:'100vh', display:'flex', flexDirection:'column', background: 'var(--bg)'}}>
         <Navbar />
-        {/* 80px padding-top দেওয়া হলো যাতে নেভবারের সাথে কোনো কন্টেন্ট না মিলে */}
         <main style={{flex:1, paddingTop: '80px'}}>{children}</main>
         <Footer />
       </body>

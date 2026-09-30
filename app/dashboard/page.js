@@ -75,7 +75,7 @@ export default function Dashboard() {
         {/* Action Grid */}
         <h3 className="text-[10px] font-mono text-[var(--fg-muted)] uppercase tracking-widest mb-6 pb-2 border-b border-[var(--border)]">Quick Access</h3>
         
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           
           <Link href="/shop" className="relative bg-[var(--bg-card)] border border-transparent rounded-lg p-6 flex flex-col items-center text-center transition-all duration-300 hover:bg-[var(--bg-elev)] hover:border-[var(--accent)] hover:shadow-[0_0_25px_rgba(255,91,20,0.4),inset_0_0_15px_rgba(255,91,20,0.1)] group cursor-pointer">
             <div className="corner-tl"></div><div className="corner-tr"></div><div className="corner-bl"></div><div className="corner-br"></div>
@@ -105,16 +105,6 @@ export default function Dashboard() {
             </div>
             <h4 className="font-display font-bold text-sm tracking-tight mb-1 text-[var(--fg)]">Real Estate</h4>
             <p className="text-[11px] text-[var(--fg-muted)] leading-relaxed">Buy & rent</p>
-          </Link>
-
-          <Link href="/admin" className="relative bg-[var(--bg-card)] border border-transparent rounded-lg p-6 flex flex-col items-center text-center transition-all duration-300 hover:bg-[var(--bg-elev)] hover:border-[var(--accent)] hover:shadow-[0_0_25px_rgba(255,91,20,0.4),inset_0_0_15px_rgba(255,91,20,0.1)] group cursor-pointer">
-            <div className="corner-tl"></div><div className="corner-tr"></div><div className="corner-bl"></div><div className="corner-br"></div>
-            <div className="w-14 h-14 rounded-xl flex items-center justify-center text-2xl mb-4 transition-all duration-300 group-hover:scale-110"
-              style={{ background: 'var(--bg)', border: '1px solid var(--border-bright)', color: 'var(--accent)' }}>
-              <i className="fa-solid fa-user-gear"></i>
-            </div>
-            <h4 className="font-display font-bold text-sm tracking-tight mb-1 text-[var(--fg)]">Admin Panel</h4>
-            <p className="text-[11px] text-[var(--fg-muted)] leading-relaxed">Manage site</p>
           </Link>
 
         </div>
