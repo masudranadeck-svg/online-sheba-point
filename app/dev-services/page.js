@@ -15,57 +15,135 @@ export default function DevServicesPage() {
     window.open(waLink, '_blank');
   };
 
+  // Inline Hover Effect Function (গ্লো ইফেক্ট এর জন্য)
+  const handleMouseEnter = (e) => {
+    e.currentTarget.style.borderColor = 'var(--accent)';
+    e.currentTarget.style.boxShadow = '0 0 25px rgba(255,91,20,0.4)';
+    e.currentTarget.style.transform = 'translateY(-4px)';
+  };
+  const handleMouseLeave = (e) => {
+    e.currentTarget.style.borderColor = 'transparent';
+    e.currentTarget.style.boxShadow = 'none';
+    e.currentTarget.style.transform = 'translateY(0)';
+  };
+
   return (
-    <div style={{ background: 'var(--bg)', color: 'var(--fg)', fontFamily: "'Manrope',sans-serif", overflowX: 'hidden', minHeight: '100vh' }}>
-      <div className="max-w-[1280px] mx-auto px-6 lg:px-10 pt-24 pb-16">
+    <div style={{ background: 'var(--bg)', color: 'var(--fg)', fontFamily: "'Manrope',sans-serif', minHeight: '100vh', overflowX: 'hidden' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '96px 24px 64px 24px' }}>
         
-        {/* Header */}
-        <div className="mb-16">
-          <div className="section-eyebrow mb-4">06 / Dev Services</div>
-          <h1 className="font-display font-bold text-5xl lg:text-7xl leading-none">Dev Services.</h1>
-          <p className="max-w-md text-[var(--fg-dim)] mt-6 text-base">From websites to operating systems, we build the instruments of the next decade.</p>
+        {/* Header Section */}
+        <div style={{ marginBottom: '64px' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: 'var(--accent)', fontFamily: "'JetBrains Mono', monospace", textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '16px' }}>
+            <span style={{ width: '24px', height: '1px', background: 'var(--accent)' }}></span>
+            06 / Dev Services
+          </div>
+          <h1 style={{ fontSize: 'clamp(3rem, 5vw, 4.5rem)', fontWeight: '800', lineHeight: '1', margin: '0', fontFamily: "'Syne', sans-serif", letterSpacing: '-0.025em' }}>Dev Services.</h1>
+          <p style={{ maxWidth: '28rem', color: 'var(--fg-dim)', marginTop: '24px', fontSize: '1rem', lineHeight: '1.6' }}>From websites to operating systems, we build the instruments of the next decade.</p>
         </div>
 
-        {/* Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-16">
+        {/* Services Grid (100% CSS Grid) */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px', marginBottom: '64px' }}>
           {services.map((service, i) => (
             <div 
               key={i} 
-              // এখানে Tailwind এর hover:shadow ক্লাস ব্যবহার করা হয়েছে নিয়ন গ্লো-র জন্য
-              className="relative bg-[var(--bg-card)] border border-transparent rounded-lg p-8 flex flex-col transition-all duration-300 hover:bg-[var(--bg-elev)] hover:border-[var(--accent)] hover:shadow-[0_0_25px_rgba(255,91,20,0.4),inset_0_0_15px_rgba(255,91,20,0.1)] group cursor-pointer"
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              style={{ 
+                position: 'relative',
+                background: 'var(--bg-card)', 
+                padding: '32px', 
+                borderRadius: '8px', 
+                border: '1px solid transparent', 
+                transition: 'all 0.3s ease',
+                display: 'flex',
+                flexDirection: 'column'
+              }}
             >
-              <div className="corner-tl"></div><div className="corner-tr"></div><div className="corner-bl"></div><div className="corner-br"></div>
-              
-              <div className="w-16 h-16 rounded-xl flex items-center justify-center text-3xl mb-6 transition-all duration-300 group-hover:scale-110"
-                style={{ background: 'var(--bg)', border: '1px solid var(--border-bright)', color: 'var(--accent)' }}>
+              {/* Corner Markers */}
+              <div style={{ position: 'absolute', top: '8px', left: '8px', width: '14px', height: '14px', borderTop: '1px solid var(--accent)', borderLeft: '1px solid var(--accent)' }}></div>
+              <div style={{ position: 'absolute', top: '8px', right: '8px', width: '14px', height: '14px', borderTop: '1px solid var(--accent)', borderRight: '1px solid var(--accent)' }}></div>
+              <div style={{ position: 'absolute', bottom: '8px', left: '8px', width: '14px', height: '14px', borderBottom: '1px solid var(--accent)', borderLeft: '1px solid var(--accent)' }}></div>
+              <div style={{ position: 'absolute', bottom: '8px', right: '8px', width: '14px', height: '14px', borderBottom: '1px solid var(--accent)', borderRight: '1px solid var(--accent)' }}></div>
+
+              {/* Icon */}
+              <div style={{ 
+                width: '64px', height: '64px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px', marginBottom: '24px',
+                background: 'var(--bg)', border: '1px solid var(--border-bright)', color: 'var(--accent)'
+              }}>
                 <i className={service.icon}></i>
               </div>
               
-              <h3 className="font-display font-bold text-xl tracking-tight mb-3 text-[var(--fg)]">{service.name}</h3>
-              <p className="text-sm text-[var(--fg-muted)] mb-8 flex-grow leading-relaxed">{service.desc}</p>
+              {/* Content */}
+              <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '12px', color: 'var(--fg)', fontFamily: "'Syne', sans-serif" }}>{service.name}</h3>
+              <p style={{ fontSize: '14px', color: 'var(--fg-muted)', marginBottom: '32px', flex: '1', lineHeight: '1.6' }}>{service.desc}</p>
               
-              <div className="mt-auto pt-6 border-t border-[var(--border)]">
-                <p className="text-[10px] font-mono text-[var(--fg-muted)] uppercase tracking-widest mb-2">Starting Price</p>
-                <p className="font-display font-bold text-lg text-[var(--lime)] mb-6">{service.price}</p>
-                <button onClick={() => handleOrder(service.name)} className="btn-primary w-full justify-center">Request Quote →</button>
+              {/* Footer */}
+              <div style={{ marginTop: 'auto', paddingTop: '24px', borderTop: '1px solid var(--border)' }}>
+                <p style={{ fontSize: '10px', fontFamily: "'JetBrains Mono', monospace", color: 'var(--fg-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>Starting Price</p>
+                <p style={{ fontSize: '18px', fontWeight: '700', color: 'var(--lime)', marginBottom: '24px' }}>{service.price}</p>
+                <button 
+                  onClick={() => handleOrder(service.name)} 
+                  style={{ 
+                    width: '100%', 
+                    padding: '14px', 
+                    background: 'var(--accent)', 
+                    color: '#0a0a0b', 
+                    border: 'none', 
+                    borderRadius: '4px', 
+                    fontWeight: '700', 
+                    fontSize: '12px', 
+                    textTransform: 'uppercase', 
+                    letterSpacing: '0.08em', 
+                    cursor: 'pointer',
+                    transition: 'background 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => e.target.style.background = 'var(--lime)'}
+                  onMouseLeave={(e) => e.target.style.background = 'var(--accent)'}
+                >
+                  Request Quote →
+                </button>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Custom Request CTA */}
-        <div className="relative bg-[var(--bg-card)] p-8 md:p-12 rounded-lg border border-[var(--border)] text-center overflow-hidden grid-bg grid-fade">
-          <div className="corner-tl"></div><div className="corner-tr"></div><div className="corner-bl"></div><div className="corner-br"></div>
-          
-          <div style={{ position: 'relative', zIndex: '2' }}>
+        {/* Custom Request CTA (Fixed Layout) */}
+        <div style={{ 
+          position: 'relative',
+          background: 'var(--bg-card)', 
+          padding: '48px 24px', 
+          borderRadius: '8px', 
+          border: '1px solid var(--border)', 
+          textAlign: 'center', 
+          overflow: 'hidden',
+          backgroundImage: 'radial-gradient(circle at 50% 0%, rgba(255,91,20,0.1) 0%, transparent 60%)'
+        }}>
+          {/* Corner Markers */}
+          <div style={{ position: 'absolute', top: '8px', left: '8px', width: '14px', height: '14px', borderTop: '1px solid var(--accent)', borderLeft: '1px solid var(--accent)' }}></div>
+          <div style={{ position: 'absolute', top: '8px', right: '8px', width: '14px', height: '14px', borderTop: '1px solid var(--accent)', borderRight: '1px solid var(--accent)' }}></div>
+          <div style={{ position: 'absolute', bottom: '8px', left: '8px', width: '14px', height: '14px', borderBottom: '1px solid var(--accent)', borderLeft: '1px solid var(--accent)' }}></div>
+          <div style={{ position: 'absolute', bottom: '8px', right: '8px', width: '14px', height: '14px', borderBottom: '1px solid var(--accent)', borderRight: '1px solid var(--accent)' }}></div>
+
+          <div style={{ position: 'relative', zIndex: '2', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div style={{ fontSize: '48px', marginBottom: '16px' }}>💡</div>
-            <h2 className="font-display font-bold text-3xl lg:text-4xl mb-4 text-[var(--fg)]">Got a custom idea?</h2>
-            <p className="text-[var(--fg-dim)] max-w-xl mx-auto mb-8">Game development, AI bots, cybersecurity tools, or any other software idea? Let's build it.</p>
+            <h2 style={{ fontSize: '32px', fontWeight: '700', marginBottom: '16px', color: 'var(--fg)', fontFamily: "'Syne', sans-serif" }}>Got a custom idea?</h2>
+            <p style={{ color: 'var(--fg-dim)', maxWidth: '500px', margin: '0 0 32px 0', fontSize: '16px', lineHeight: '1.6' }}>Game development, AI bots, cybersecurity tools, or any other software idea? Let's build it.</p>
             <a 
               href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("আসসালামু আলাইকুম, আমার একটি কাস্টম সফটওয়্যার তৈরির আইডিয়া আছে।")}`} 
               target="_blank" 
-              rel="noopener noreferrer" 
-              className="btn-primary"
+              rel="noopener noreferrer"
+              style={{ 
+                display: 'inline-block',
+                padding: '14px 28px', 
+                background: 'var(--accent)', 
+                color: '#0a0a0b', 
+                textDecoration: 'none', 
+                fontWeight: '700', 
+                fontSize: '12px', 
+                textTransform: 'uppercase', 
+                letterSpacing: '0.08em',
+                clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)'
+              }}
             >
               💬 Share on WhatsApp
             </a>
