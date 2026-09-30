@@ -1,73 +1,66 @@
 'use client';
-import { useState } from 'react';
-
-const services=[
-  {id:1,name:'FRP Unlock',icon:'🔓',cat:'android',price:500,time:'১০-৩০ মিনিট',desc:'Google FRP Lock আনলক',supported:['Samsung','Xiaomi','Huawei','OPPO'],req:['TeamViewer','ইন্টারনেট']},
-  {id:2,name:'iCloud Unlock',icon:'🍎',cat:'iphone',price:2000,time:'২৪-৭২ ঘণ্টা',desc:'iCloud Activation Lock',supported:['iPhone 6-15','iPad'],req:['IMEI নম্বর','ধৈর্য']},
-  {id:3,name:'Network Unlock',icon:'📶',cat:'android',price:800,time:'১-২৪ ঘণ্টা',desc:'নেটওয়ার্ক আনলক',supported:['Samsung','iPhone','Huawei'],req:['IMEI','মডেল']},
-  {id:4,name:'Mi Account Unlock',icon:'📱',cat:'android',price:400,time:'১০-৩০ মিনিট',desc:'Xiaomi Mi Account',supported:['Xiaomi','Redmi','POCO'],req:['TeamViewer','ইন্টারনেট']},
-  {id:5,name:'Pattern/Pin Unlock',icon:'🔢',cat:'android',price:300,time:'৫-১৫ মিনিট',desc:'প্যাটার্ন/পিন ভুলে গেলে',supported:['Samsung','Xiaomi','OPPO'],req:['TeamViewer','ইন্টারনেট']},
-  {id:6,name:'Bootloader Unlock',icon:'🔧',cat:'android',price:600,time:'১-২ ঘণ্টা',desc:'কাস্টম ROM এর জন্য',supported:['Xiaomi','OnePlus'],req:['TeamViewer','USB ক্যাবল']},
-];
 
 export default function RemotePage() {
-  const [sel,setSel]=useState('all');
-  const [order,setOrder]=useState(null);
-  const filtered=sel==='all'?services:services.filter(s=>s.cat===sel);
+  const whatsappNumber = "8801610205062";
+
+  const services = [
+    { name: 'Phone Unlock', desc: 'FRP bypass, iCloud unlock, network unlock.', icon: 'fa-solid fa-mobile-screen' },
+    { name: 'Remote Install', desc: 'Remote software installation and setup.', icon: 'fa-solid fa-download' },
+    { name: 'Virus Removal', desc: 'Remote virus scan and system cleanup.', icon: 'fa-solid fa-shield-virus' },
+    { name: 'Data Recovery', desc: 'Remote data recovery from devices.', icon: 'fa-solid fa-database' }
+  ];
+
   return (
-    <div style={{minHeight:'100vh'}}>
-      <section style={{background:'linear-gradient(135deg, #fb6340, #f7b731)', paddingTop:120, paddingBottom:64, paddingLeft:24, paddingRight:24}}>
-        <div style={{maxWidth:1100,margin:'0 auto',textAlign:'center'}}><h1 style={{fontSize:36,fontWeight:700,color:'white',marginBottom:8}}>রিমোট আনলক সার্ভিস</h1><p style={{color:'rgba(255,255,255,0.6)',fontSize:15}}>টিমভিউয়ার/অ্যানিডেস্ক দিয়ে রিমোটলি আনলক</p></div>
-      </section>
-      <div style={{maxWidth:1100,margin:'0 auto',padding:'32px 24px'}}>
-        <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:32}}>
-          {[{id:'all',n:'সব'},{id:'android',n:'🤖 Android'},{id:'iphone',n:'🍎 iPhone'}].map(c=>(
-            <button key={c.id} onClick={()=>setSel(c.id)} className={sel===c.id?'d-btn-orange glow-btn-orange':''} style={sel!==c.id?{background:'white',color:'#888',border:'2px solid #e8ecf1',borderRadius:12,padding:'8px 20px',fontSize:13,fontWeight:600,cursor:'pointer',transition:'all 0.3s'}:{}}>{c.n}</button>
+    <div style={{ background: 'var(--bg)', color: 'var(--fg)', fontFamily: "'Manrope',sans-serif", minHeight: '100vh', overflowX: 'hidden' }}>
+      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '96px 24px 64px 24px' }}>
+        
+        <div style={{ marginBottom: '64px' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: 'var(--accent)', fontFamily: "'JetBrains Mono', monospace", textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '16px' }}>
+            <span style={{ width: '24px', height: '1px', background: 'var(--accent)' }}></span>
+            14 / Remote Services
+          </div>
+          <h1 style={{ fontSize: 'clamp(3rem, 5vw, 4.5rem)', fontWeight: '800', lineHeight: '1', margin: '0', fontFamily: "'Syne', sans-serif", letterSpacing: '-0.025em' }}>Remote Services.</h1>
+          <p style={{ maxWidth: '28rem', color: 'var(--fg-dim)', marginTop: '24px', fontSize: '1rem', lineHeight: '1.6' }}>Professional remote services for your devices. Fast and secure.</p>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px', marginBottom: '64px' }}>
+          {services.map((service, i) => (
+            <div 
+              key={i} 
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.boxShadow = '0 0 25px rgba(255,91,20,0.4)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.boxShadow = 'none'; }}
+              style={{ 
+                position: 'relative', background: 'var(--bg-card)', padding: '32px', borderRadius: '8px', 
+                border: '1px solid transparent', transition: 'all 0.3s ease', display: 'flex', flexDirection: 'column'
+              }}
+            >
+              <div style={{ position: 'absolute', top: '8px', left: '8px', width: '14px', height: '14px', borderTop: '1px solid var(--accent)', borderLeft: '1px solid var(--accent)' }}></div>
+              <div style={{ position: 'absolute', top: '8px', right: '8px', width: '14px', height: '14px', borderTop: '1px solid var(--accent)', borderRight: '1px solid var(--accent)' }}></div>
+              <div style={{ position: 'absolute', bottom: '8px', left: '8px', width: '14px', height: '14px', borderBottom: '1px solid var(--accent)', borderLeft: '1px solid var(--accent)' }}></div>
+              <div style={{ position: 'absolute', bottom: '8px', right: '8px', width: '14px', height: '14px', borderBottom: '1px solid var(--accent)', borderRight: '1px solid var(--accent)' }}></div>
+
+              <div style={{ width: '56px', height: '56px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', marginBottom: '24px', background: 'var(--bg)', border: '1px solid var(--border-bright)', color: 'var(--accent)' }}>
+                <i className={service.icon}></i>
+              </div>
+              <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '12px', color: 'var(--fg)', fontFamily: "'Syne', sans-serif" }}>{service.name}</h3>
+              <p style={{ fontSize: '14px', color: 'var(--fg-muted)', marginBottom: '24px', flex: '1', lineHeight: '1.6' }}>{service.desc}</p>
+            </div>
           ))}
         </div>
-        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(480px, 1fr))',gap:20}}>
-          {filtered.map(s=>(
-            <div key={s.id} className="d-card glow-card glow-orange">
-              <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:16}}>
-                <span style={{fontSize:28}}>{s.icon}</span>
-                <div><h3 style={{fontSize:16,fontWeight:700,color:'#1a1a2e',margin:0}}>{s.name}</h3><p style={{fontSize:13,color:'#aaa',margin:0}}>{s.desc}</p></div>
-              </div>
-              <div style={{display:'flex',alignItems:'center',gap:16,marginBottom:16}}>
-                <span style={{fontSize:24,fontWeight:700,color:'#fb6340'}}>৳{s.price}</span>
-                <span style={{fontSize:13,color:'#aaa'}}>⏱️ {s.time}</span>
-              </div>
-              <div style={{marginBottom:12}}>
-                <p style={{fontSize:12,fontWeight:600,color:'#888',marginBottom:8}}>সাপোর্টেড：</p>
-                <div style={{display:'flex',flexWrap:'wrap',gap:6}}>{s.supported.map((d,j)=><span key={j} style={{fontSize:12,background:'#f5f5f5',color:'#666',padding:'4px 12px',borderRadius:8}}>{d}</span>)}</div>
-              </div>
-              <div style={{marginBottom:16}}>
-                <p style={{fontSize:12,fontWeight:600,color:'#888',marginBottom:8}}>প্রয়োজন：</p>
-                <div style={{display:'flex',flexWrap:'wrap',gap:6}}>{s.req.map((r,j)=><span key={j} style={{fontSize:12,background:'#fff8f0',color:'#fb6340',padding:'4px 12px',borderRadius:8}}>⚠️ {r}</span>)}</div>
-              </div>
-              <button onClick={()=>setOrder(s)} className="d-btn-orange glow-btn-orange" style={{width:'100%',padding:'10px 0',fontSize:14}}>📱 সার্ভিস নিন</button>
-            </div>
-          ))}
-        </div>
-      </div>
-      {order&&(
-        <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.4)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:50,padding:16}} onClick={()=>setOrder(null)}>
-          <div style={{background:'white',borderRadius:20,padding:32,maxWidth:420,width:'100%',boxShadow:'0 20px 60px rgba(0,0,0,0.2)'}} onClick={e=>e.stopPropagation()}>
-            <h2 style={{fontSize:20,fontWeight:700,marginBottom:4,color:'#1a1a2e',margin:'0 0 4px 0'}}>{order.icon} {order.name}</h2>
-            <p style={{fontSize:24,fontWeight:700,color:'#fb6340',marginBottom:24,margin:'0 0 24px 0'}}>৳{order.price}</p>
-            <div style={{display:'flex',flexDirection:'column',gap:12,marginBottom:24}}>
-              <input type="text" placeholder="আপনার নাম" className="d-input" />
-              <input type="text" placeholder="ফোন নম্বর" className="d-input" />
-              <input type="text" placeholder="ডিভাইস মডেল" className="d-input" />
-              <input type="text" placeholder="TeamViewer / AnyDesk ID" className="d-input" />
-              <textarea placeholder="সমস্যার বিবরণ" rows={2} className="d-input" />
-            </div>
-            <div style={{display:'flex',gap:12}}>
-              <button className="d-btn-orange glow-btn-orange" style={{flex:1,padding:'12px 0',fontSize:14}}>✅ অর্ডার করুন</button>
-              <button onClick={()=>setOrder(null)} style={{flex:1,background:'#f5f5f5',color:'#888',padding:'12px 0',borderRadius:12,fontWeight:600,fontSize:14,border:'none',cursor:'pointer'}}>বন্ধ</button>
-            </div>
+
+        <div style={{ position: 'relative', background: 'var(--bg-card)', padding: '48px 24px', borderRadius: '8px', border: '1px solid var(--border)', textAlign: 'center', overflow: 'hidden', backgroundImage: 'radial-gradient(circle at 50% 0%, rgba(255,91,20,0.1) 0%, transparent 60%)' }}>
+          <div style={{ position: 'absolute', top: '8px', left: '8px', width: '14px', height: '14px', borderTop: '1px solid var(--accent)', borderLeft: '1px solid var(--accent)' }}></div>
+          <div style={{ position: 'absolute', top: '8px', right: '8px', width: '14px', height: '14px', borderTop: '1px solid var(--accent)', borderRight: '1px solid var(--accent)' }}></div>
+          <div style={{ position: 'absolute', bottom: '8px', left: '8px', width: '14px', height: '14px', borderBottom: '1px solid var(--accent)', borderLeft: '1px solid var(--accent)' }}></div>
+          <div style={{ position: 'absolute', bottom: '8px', right: '8px', width: '14px', height: '14px', borderBottom: '1px solid var(--accent)', borderRight: '1px solid var(--accent)' }}></div>
+
+          <div style={{ position: 'relative', zIndex: '2', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <h2 style={{ fontSize: '32px', fontWeight: '700', marginBottom: '16px', color: 'var(--fg)', fontFamily: "'Syne', sans-serif" }}>Need Remote Help?</h2>
+            <p style={{ color: 'var(--fg-dim)', maxWidth: '500px', margin: '0 0 32px 0', fontSize: '16px', lineHeight: '1.6' }}>Get instant remote support for your devices. Contact us on WhatsApp.</p>
+            <a href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("আসসালামু আলাইকুম, আমার রিমোট সার্ভিস দরকার।")}`} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', padding: '14px 28px', background: 'var(--accent)', color: '#0a0a0b', textDecoration: 'none', fontWeight: '700', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.08em', clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)' }}>💬 Get Support</a>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }

@@ -1,113 +1,67 @@
 'use client';
-import { useState } from 'react';
 
 export default function CompanyFormationPage() {
-  const [country, setCountry] = useState('usa'); // usa বা uk
   const whatsappNumber = "8801610205062";
 
-  // USA LLC প্যাকেজ
-  const usaPlans = [
-    { name: 'Basic Plan', price: '$189', desc: 'স্টার্টারদের জন্য পারফেক্ট।', features: ['Company Name Check', 'Articles of Organization', 'Operating Agreement', 'EIN Number'] },
-    { name: 'Popular Plan', price: '$349', desc: 'আমাদের সবচেয়ে বিক্রিত প্যাকেজ।', features: ['Basic Plan এর সব সুবিধা', 'Registered Agent (1 Year)', 'US Business Address', 'Bank Account Guidance'], popular: true },
-    { name: 'Exclusive Plan', price: '$599', desc: 'সম্পূর্ণ প্যাকেজ প্রিমিয়াম সাপোর্টসহ।', features: ['Popular Plan এর সব সুবিধা', 'ITIN Application Support', 'US Phone Number', 'Expedited Processing'] },
+  const services = [
+    { name: 'Company Registration', desc: 'Register your business legally with full documentation.', icon: 'fa-solid fa-building' },
+    { name: 'Trade License', desc: 'Get your trade license quickly and hassle-free.', icon: 'fa-solid fa-file-contract' },
+    { name: 'TIN & BIN', desc: 'Tax Identification Number and Business Identification Number.', icon: 'fa-solid fa-id-card' },
+    { name: 'Bank Account', desc: 'Corporate bank account opening assistance.', icon: 'fa-solid fa-building-columns' },
+    { name: 'Legal Compliance', desc: 'Ensure your business meets all legal requirements.', icon: 'fa-solid fa-scale-balanced' },
+    { name: 'Virtual Office', desc: 'Virtual office address for your business registration.', icon: 'fa-solid fa-briefcase' }
   ];
-
-  // UK LTD প্যাকেজ
-  const ukPlans = [
-    { name: 'Basic Plan', price: '£89', desc: 'UK কোম্পানি রেজিস্ট্রেশনের প্রাথমিক প্যাকেজ।', features: ['Company Name Registration', 'Certificate of Incorporation', 'Memorandum & Articles', 'Digital Documents'] },
-    { name: 'Popular Plan', price: '£139', desc: 'ব্যাংক অ্যাকাউন্ট খোলার জন্য সেরা।', features: ['Basic Plan এর সব সুবিধা', 'Registered Office Address', 'Director Service Address', 'Bank Account Guidance'], popular: true },
-    { name: 'Exclusive Plan', price: '£199', desc: 'সম্পূর্ণ প্যাকেজ ভ্যাট সাপোর্টসহ।', features: ['Popular Plan এর সব সুবিধা', 'VAT Registration', 'Confirmation Statement', 'Priority Support'] },
-  ];
-
-  const currentPlans = country === 'usa' ? usaPlans : ukPlans;
-
-  const handleOrder = (planName, price) => {
-    const msg = `আসসালামু আলাইকুম, আমি ${country.toUpperCase()} কোম্পানি ফরমেশন সেবা নিতে চাই।%0Aপ্যাকেজ: ${planName}%0Aমূল্য: ${price}`;
-    const waLink = `https://wa.me/${whatsappNumber}?text=${msg}`;
-    window.open(waLink, '_blank');
-  };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f5f7fa' }}>
-      <section style={{ background: 'linear-gradient(135deg, #4e6ef2, #6c5ce7)', paddingTop: 120, paddingBottom: 64, paddingLeft: 24, paddingRight: 24 }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', textAlign: 'center' }}>
-          <h1 style={{ fontSize: 36, fontWeight: 700, color: 'white', marginBottom: 8 }}>🏢 কোম্পানি ফরমেশন (Company Formation)</h1>
-          <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 15 }}>ফ্রিল্যান্সার ও ই-কমার্স ব্যবসায়ীদের জন্য বিশ্বমানের কোম্পানি রেজিস্ট্রেশন সেবা।</p>
-        </div>
-      </section>
-
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '32px 24px' }}>
+    <div style={{ background: 'var(--bg)', color: 'var(--fg)', fontFamily: "'Manrope',sans-serif", minHeight: '100vh', overflowX: 'hidden' }}>
+      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '96px 24px 64px 24px' }}>
         
-        {/* কান্ট্রি টগল বাটন */}
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', marginBottom: '40px' }}>
-          <button 
-            onClick={() => setCountry('usa')} 
-            className={country === 'usa' ? 'd-btn glow-btn' : ''}
-            style={country !== 'usa' ? { padding: '10px 30px', border: '2px solid #e8ecf1', background: 'white', borderRadius: '12px', fontWeight: 600, color: '#888', cursor: 'pointer' } : { padding: '10px 30px', textDecoration: 'none', display: 'block', boxSizing: 'border-box'}}
-          >
-            🇺🇸 USA LLC
-          </button>
-          <button 
-            onClick={() => setCountry('uk')} 
-            className={country === 'uk' ? 'd-btn glow-btn' : ''}
-            style={country !== 'uk' ? { padding: '10px 30px', border: '2px solid #e8ecf1', background: 'white', borderRadius: '12px', fontWeight: 600, color: '#888', cursor: 'pointer' } : { padding: '10px 30px', textDecoration: 'none', display: 'block', boxSizing: 'border-box'}}
-          >
-            🇬🇧 UK LTD
-          </button>
+        <div style={{ marginBottom: '64px' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: 'var(--accent)', fontFamily: "'JetBrains Mono', monospace", textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '16px' }}>
+            <span style={{ width: '24px', height: '1px', background: 'var(--accent)' }}></span>
+            12 / Company Formation
+          </div>
+          <h1 style={{ fontSize: 'clamp(3rem, 5vw, 4.5rem)', fontWeight: '800', lineHeight: '1', margin: '0', fontFamily: "'Syne', sans-serif", letterSpacing: '-0.025em' }}>Company Formation.</h1>
+          <p style={{ maxWidth: '28rem', color: 'var(--fg-dim)', marginTop: '24px', fontSize: '1rem', lineHeight: '1.6' }}>Start your business journey with complete legal registration and compliance.</p>
         </div>
 
-        {/* প্যাকেজ কার্ডসমূহ */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
-          
-          {currentPlans.map((plan, index) => (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px', marginBottom: '64px' }}>
+          {services.map((service, i) => (
             <div 
-              key={index} 
-              className="d-card glow-card" 
+              key={i} 
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.boxShadow = '0 0 25px rgba(255,91,20,0.4)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.boxShadow = 'none'; }}
               style={{ 
-                padding: '32px 24px', 
-                display: 'flex', 
-                flexDirection: 'column', 
-                border: plan.popular ? '2px solid #4e6ef2' : '1px solid #f0f0f0',
-                position: 'relative'
+                position: 'relative', background: 'var(--bg-card)', padding: '32px', borderRadius: '8px', 
+                border: '1px solid transparent', transition: 'all 0.3s ease', display: 'flex', flexDirection: 'column'
               }}
             >
-              {plan.popular && (
-                <div style={{ position: 'absolute', top: '-12px', left: '50%', transform: 'translateX(-50%)', background: '#4e6ef2', color: 'white', padding: '4px 16px', borderRadius: '20px', fontSize: '12px', fontWeight: 700 }}>
-                  ★ সবচেয়ে জনপ্রিয়
-                </div>
-              )}
-              
-              <h3 style={{ fontSize: 20, fontWeight: 700, color: '#1a1a2e', margin: '0 0 8px 0' }}>{plan.name}</h3>
-              <p style={{ fontSize: 14, color: '#888', marginBottom: 16 }}>{plan.desc}</p>
-              
-              <h2 style={{ fontSize: 36, fontWeight: 700, color: '#1a1a2e', margin: '0 0 24px 0' }}>
-                {plan.price} <span style={{ fontSize: 14, color: '#888', fontWeight: 400 }}>+ Govt Fees</span>
-              </h2>
+              <div style={{ position: 'absolute', top: '8px', left: '8px', width: '14px', height: '14px', borderTop: '1px solid var(--accent)', borderLeft: '1px solid var(--accent)' }}></div>
+              <div style={{ position: 'absolute', top: '8px', right: '8px', width: '14px', height: '14px', borderTop: '1px solid var(--accent)', borderRight: '1px solid var(--accent)' }}></div>
+              <div style={{ position: 'absolute', bottom: '8px', left: '8px', width: '14px', height: '14px', borderBottom: '1px solid var(--accent)', borderLeft: '1px solid var(--accent)' }}></div>
+              <div style={{ position: 'absolute', bottom: '8px', right: '8px', width: '14px', height: '14px', borderBottom: '1px solid var(--accent)', borderRight: '1px solid var(--accent)' }}></div>
 
-              <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 24px 0', flex: 1 }}>
-                {plan.features.map((feat, i) => (
-                  <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px', fontSize: 14, color: '#555' }}>
-                    <span style={{ color: '#2dce89', fontWeight: 'bold' }}>✓</span> {feat}
-                  </li>
-                ))}
-              </ul>
-
-              <button 
-                onClick={() => handleOrder(plan.name, plan.price)} 
-                className={plan.popular ? 'd-btn glow-btn' : 'd-btn-green glow-btn-green'} 
-                style={{ width: '100%', padding: '12px', fontSize: 16, border: 'none', cursor: 'pointer', textAlign: 'center', display: 'block', textDecoration: 'none', boxSizing: 'border-box' }}
-              >
-                📲 অর্ডার করুন
-              </button>
+              <div style={{ width: '56px', height: '56px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', marginBottom: '24px', background: 'var(--bg)', border: '1px solid var(--border-bright)', color: 'var(--accent)' }}>
+                <i className={service.icon}></i>
+              </div>
+              <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '12px', color: 'var(--fg)', fontFamily: "'Syne', sans-serif" }}>{service.name}</h3>
+              <p style={{ fontSize: '14px', color: 'var(--fg-muted)', marginBottom: '24px', flex: '1', lineHeight: '1.6' }}>{service.desc}</p>
             </div>
           ))}
-
         </div>
 
-        <p style={{ textAlign: 'center', color: '#888', fontSize: 13, marginTop: 32 }}>
-          * সরকারি ফি (Govt Fees) প্যাকেজের মূল্যের সাথে যুক্ত হবে। বিস্তারিত জানতে হোয়াটসঅ্যাপে যোগাযোগ করুন।
-        </p>
+        <div style={{ position: 'relative', background: 'var(--bg-card)', padding: '48px 24px', borderRadius: '8px', border: '1px solid var(--border)', textAlign: 'center', overflow: 'hidden', backgroundImage: 'radial-gradient(circle at 50% 0%, rgba(255,91,20,0.1) 0%, transparent 60%)' }}>
+          <div style={{ position: 'absolute', top: '8px', left: '8px', width: '14px', height: '14px', borderTop: '1px solid var(--accent)', borderLeft: '1px solid var(--accent)' }}></div>
+          <div style={{ position: 'absolute', top: '8px', right: '8px', width: '14px', height: '14px', borderTop: '1px solid var(--accent)', borderRight: '1px solid var(--accent)' }}></div>
+          <div style={{ position: 'absolute', bottom: '8px', left: '8px', width: '14px', height: '14px', borderBottom: '1px solid var(--accent)', borderLeft: '1px solid var(--accent)' }}></div>
+          <div style={{ position: 'absolute', bottom: '8px', right: '8px', width: '14px', height: '14px', borderBottom: '1px solid var(--accent)', borderRight: '1px solid var(--accent)' }}></div>
 
+          <div style={{ position: 'relative', zIndex: '2', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <h2 style={{ fontSize: '32px', fontWeight: '700', marginBottom: '16px', color: 'var(--fg)', fontFamily: "'Syne', sans-serif" }}>Register Your Company</h2>
+            <p style={{ color: 'var(--fg-dim)', maxWidth: '500px', margin: '0 0 32px 0', fontSize: '16px', lineHeight: '1.6' }}>Get complete company formation services. Contact us on WhatsApp.</p>
+            <a href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("আসসালামু আলাইকুম, আমি কোম্পানি রেজিস্ট্রেশন করতে চাই।")}`} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', padding: '14px 28px', background: 'var(--accent)', color: '#0a0a0b', textDecoration: 'none', fontWeight: '700', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.08em', clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)' }}>💬 Get Started</a>
+          </div>
+        </div>
       </div>
     </div>
   );
