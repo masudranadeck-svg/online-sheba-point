@@ -5,13 +5,25 @@ import { useRouter } from 'next/navigation';
 import { auth } from '@/lib/firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 
-// নতুন SVG Logo Component
+// Updated Logo (Soft White & Orange)
 const Logo = () => (
-  <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0, filter: 'drop-shadow(0 0 5px rgba(255,91,20,0.6))' }}>
-    <path d="M16 2L28 9V23L16 30L4 23V9L16 2Z" stroke="#ff5b14" strokeWidth="2" strokeLinejoin="round"/>
-    <path d="M16 10L22 13.5V20.5L16 24L10 20.5V13.5L16 10Z" fill="#ff5b14"/>
-    <path d="M16 14L19 15.75V19.25L16 21L13 19.25V15.75L16 14Z" fill="#0a0a0b"/>
-  </svg>
+  <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
+    <svg width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0, filter: 'drop-shadow(0 0 5px rgba(255,91,20,0.5))', marginBottom: '4px' }}>
+      {/* Outer Hexagon */}
+      <path d="M50 5L90 27.5V72.5L50 95L10 72.5V27.5L50 5Z" stroke="#ff5b14" strokeWidth="5" strokeLinejoin="round"/>
+      {/* Connecting Lines (Soft White) */}
+      <line x1="50" y1="50" x2="50" y2="20" stroke="#f1ece1" strokeWidth="4" strokeLinecap="round"/>
+      <line x1="50" y1="50" x2="76" y2="65" stroke="#f1ece1" strokeWidth="4" strokeLinecap="round"/>
+      <line x1="50" y1="50" x2="24" y2="65" stroke="#f1ece1" strokeWidth="4" strokeLinecap="round"/>
+      {/* Center Hub (The Point) */}
+      <circle cx="50" cy="50" r="12" fill="#ff5b14"/>
+      <circle cx="50" cy="50" r="5" fill="#0a0a0b"/>
+      {/* Outer Nodes (Soft White) */}
+      <circle cx="50" cy="20" r="7" fill="#f1ece1"/>
+      <circle cx="76" cy="65" r="7" fill="#f1ece1"/>
+      <circle cx="24" cy="65" r="7" fill="#f1ece1"/>
+    </svg>
+  </div>
 );
 
 export default function Navbar() {
@@ -61,7 +73,10 @@ export default function Navbar() {
         <div className="flex items-center gap-10">
           <Link href="/" className="flex items-center gap-3">
             <Logo />
-            <span className="font-display font-bold text-base md:text-lg tracking-tight">ONLINE SHEBA POINT</span>
+            <div className="flex flex-col">
+              <span className="font-display font-bold text-base md:text-lg tracking-tight leading-none">ONLINE SHEBA POINT</span>
+              <span className="text-[9px] md:text-[10px] text-[var(--fg-muted)] tracking-[0.2em] uppercase font-mono mt-1">One Point. Infinite Solutions.</span>
+            </div>
           </Link>
           <nav className="hidden lg:flex items-center gap-8">
             {mainLinks.map(link => (
