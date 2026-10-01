@@ -5,23 +5,23 @@ import { useRouter } from 'next/navigation';
 import { auth } from '@/lib/firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 
-// Updated Logo (Soft White & Orange)
+// Updated Logo (Golden & Orange)
 const Logo = () => (
   <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
     <svg width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0, filter: 'drop-shadow(0 0 5px rgba(255,91,20,0.5))', marginBottom: '4px' }}>
       {/* Outer Hexagon */}
       <path d="M50 5L90 27.5V72.5L50 95L10 72.5V27.5L50 5Z" stroke="#ff5b14" strokeWidth="5" strokeLinejoin="round"/>
-      {/* Connecting Lines (Soft White) */}
-      <line x1="50" y1="50" x2="50" y2="20" stroke="#f1ece1" strokeWidth="4" strokeLinecap="round"/>
-      <line x1="50" y1="50" x2="76" y2="65" stroke="#f1ece1" strokeWidth="4" strokeLinecap="round"/>
-      <line x1="50" y1="50" x2="24" y2="65" stroke="#f1ece1" strokeWidth="4" strokeLinecap="round"/>
+      {/* Connecting Lines (Golden) */}
+      <line x1="50" y1="50" x2="50" y2="20" stroke="#D4AF37" strokeWidth="4" strokeLinecap="round"/>
+      <line x1="50" y1="50" x2="76" y2="65" stroke="#D4AF37" strokeWidth="4" strokeLinecap="round"/>
+      <line x1="50" y1="50" x2="24" y2="65" stroke="#D4AF37" strokeWidth="4" strokeLinecap="round"/>
       {/* Center Hub (The Point) */}
       <circle cx="50" cy="50" r="12" fill="#ff5b14"/>
       <circle cx="50" cy="50" r="5" fill="#0a0a0b"/>
-      {/* Outer Nodes (Soft White) */}
-      <circle cx="50" cy="20" r="7" fill="#f1ece1"/>
-      <circle cx="76" cy="65" r="7" fill="#f1ece1"/>
-      <circle cx="24" cy="65" r="7" fill="#f1ece1"/>
+      {/* Outer Nodes (Golden) */}
+      <circle cx="50" cy="20" r="7" fill="#D4AF37"/>
+      <circle cx="76" cy="65" r="7" fill="#D4AF37"/>
+      <circle cx="24" cy="65" r="7" fill="#D4AF37"/>
     </svg>
   </div>
 );
