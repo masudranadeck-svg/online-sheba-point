@@ -14,7 +14,7 @@ export default function AdminPanel() {
   const [desc, setDesc] = useState('');
   const [regularPrice, setRegularPrice] = useState('');
   const [offerPrice, setOfferPrice] = useState('');
-  const [imageUrl, setImageUrl] = useState(''); // ছবির স্টেট
+  const [images, setImages] = useState([]); // একাধিক ছবির স্টেট
   const [keyFeatures, setKeyFeatures] = useState('');
   const [specifications, setSpecifications] = useState('');
   const [category, setCategory] = useState('shop');
@@ -50,14 +50,28 @@ export default function AdminPanel() {
     else alert("ভুল পাসওয়ার্ড! অ্যাক্সেস ডিনায়েড।");
   };
 
-  // ছবিকে Base64 এ কনভার্ট করার ফাংশন
+  // একাধিক ছবিকে Base64 এ কনভার্ট করার ফাংশন
   const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+    
+    const tempImages = [];
+    files.forEach(file => {
       const reader = new FileReader();
-      reader.onload = () => setImageUrl(reader.result);
+      reader.onload = () => {
+        tempImages.push(reader.result);
+        // সব ফাইল রিড হলে স্টেটে সেভ করবে
+        if (tempImages.length === files.length) {
+          setImages(prev => [...prev, ...tempImages]);
+        }
+      };
       reader.readAsDataURL(file);
-    }
+    });
+  };
+
+  // ছবি রিমুভ করার ফাংশন
+  const removeImage = (index) => {
+    setImages(images.filter((_, i) => i !== index));
   };
 
   const handleAddProduct = async (e) => {
@@ -71,7 +85,7 @@ export default function AdminPanel() {
           description: desc, 
           regularPrice: Number(regularPrice), 
           offerPrice: Number(offerPrice), 
-          imageUrl, // ছবি পাঠানো হচ্ছে
+          images, // ছবির অ্যারে পাঠানো হচ্ছে
           keyFeatures: keyFeatures.split('\n').filter(f => f.trim() !== ''), 
           specifications, 
           category, 
@@ -81,7 +95,7 @@ export default function AdminPanel() {
       const data = await res.json();
       setMessage(data.message);
       if (res.ok) { 
-        setName(''); setDesc(''); setRegularPrice(''); setOfferPrice(''); setImageUrl(''); setKeyFeatures(''); setSpecifications(''); setKey(''); 
+        setName(''); setDesc(''); setRegularPrice(''); setOfferPrice(''); setImages([]); setKeyFeatures(''); setSpecifications(''); setKey(''); 
         fetchData(); 
       }
     } catch (error) { setMessage('সার্ভার এরর!'); }
@@ -174,11 +188,20 @@ export default function AdminPanel() {
             <form onSubmit={handleAddProduct} style={{ display: 'grid', gap: '24px' }}>
               <div><label style={labelStyle}>Name</label><input type="text" value={name} onChange={(e) => setName(e.target.value)} required style={inputStyle} /></div>
               
-              {/* ছবি আপলোডের অপশন */}
+              {/* একাধিক ছবি আপলোডের অপশন */}
               <div>
-                <label style={labelStyle}>Product Image</label>
-                <input type="file" accept="image/*" onChange={handleImageUpload} style={{ color: 'var(--fg-muted)', fontSize: '14px', padding: '8px 0' }} />
-                {imageUrl && <img src={imageUrl} alt="Preview" style={{ width: '80px', height: '80px', objectFit: 'cover', marginTop: '12px', borderRadius: '4px', border: '1px solid var(--border)' }} />}
+                <label style={labelStyle}>Product Images / GIF (Multiple allowed)</label>
+                <input type="file" multiple accept="image/*,image/gif" onChange={handleImageUpload} style={{ color: 'var(--fg-muted)', fontSize: '14px', padding: '8px 0' }} />
+                {images.length > 0 && (
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '12px' }}>
+                    {images.map((img, i) => (
+                      <div key={i} style={{ position: 'relative' }}>
+                        <img src={img} alt={`Preview ${i}`} style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px', border: '1px solid var(--border)' }} />
+                        <button type="button" onClick={() => removeImage(i)} style={{ position: 'absolute', top: '-4px', right: '-4px', background: '#ff6b6b', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', cursor: 'pointer', fontSize: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>X</button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <div><label style={labelStyle}>Description</label><textarea value={desc} onChange={(e) => setDesc(e.target.value)} required style={{...inputStyle, resize: 'none', minHeight: '60px'}} /></div>
@@ -200,7 +223,7 @@ export default function AdminPanel() {
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
                 <div><label style={labelStyle}>Category</label><select value={category} onChange={(e) => setCategory(e.target.value)} style={{...inputStyle, background: 'var(--bg)'}}><option value="shop">Shop</option><option value="software">Software</option><option value="subscription">Subscription</option><option value="remote">Remote</option></select></div>
-                <div><label style={labelStyle}>Software Key / Delivery Info</label><input type="text" value={key} onChange={(e) => setKey(e.target.value)} style={inputStyle} placeholder="Instant Delivery / License Key" /></div>
+                <div><label style={labelStyle}>Delivery Info</label><input type="text" value={key} onChange={(e) => setKey(e.target.value)} style={inputStyle} placeholder="Instant / 1-3 Days" /></div>
               </div>
               <button type="submit" style={btnPrimary}>Deploy Product →</button>
               {message && activeTab === 'add' && <p style={{ color: 'var(--lime)', fontSize: '14px', marginTop: '8px' }}>{message}</p>}

@@ -110,10 +110,15 @@ export default function ShopPage() {
                   <span style={{ fontSize: '9px', color: 'var(--lime)', fontFamily: "'JetBrains Mono', monospace" }}>IN STOCK</span>
                 </div>
 
-                {/* প্রোডাক্টের ছবি */}
-                {p.imageUrl && (
-                  <div style={{ width: '100%', height: '160px', marginBottom: '16px', borderRadius: '4px', overflow: 'hidden', background: 'var(--bg)' }}>
-                    <img src={p.imageUrl} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                {/* প্রোডাক্টের একাধিক ছবির প্রথম ছবি এবং গণনা */}
+                {p.images && p.images.length > 0 && (
+                  <div style={{ position: 'relative', width: '100%', height: '160px', marginBottom: '16px', borderRadius: '4px', overflow: 'hidden', background: 'var(--bg)' }}>
+                    <img src={p.images[0]} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    {p.images.length > 1 && (
+                      <div style={{ position: 'absolute', bottom: '8px', right: '8px', background: 'rgba(0,0,0,0.8)', color: 'white', padding: '4px 8px', borderRadius: '4px', fontSize: '10px', fontFamily: "'JetBrains Mono', monospace"">
+                        +{p.images.length - 1} more
+                      </div>
+                    )}
                   </div>
                 )}
 

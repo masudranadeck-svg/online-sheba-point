@@ -5,7 +5,7 @@ const productSchema = new mongoose.Schema({
     description: { type: String, required: true },
     regularPrice: { type: Number, default: 0 },
     offerPrice: { type: Number, required: true },
-    imageUrl: { type: String, default: '' }, // ছবির জন্য নতুন ফিল্ড
+    images: [{ type: String }], // একাধিক ছবির জন্য Array
     keyFeatures: [{ type: String }],
     specifications: { type: String },
     category: { type: String, required: true },
