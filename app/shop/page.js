@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 export default function ShopPage() {
   const [products, setProducts] = useState([]);
@@ -36,7 +37,6 @@ export default function ShopPage() {
     grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' },
     card: { position: 'relative', background: 'var(--bg-card)', border: '1px solid transparent', borderRadius: '8px', padding: '24px', transition: 'all 0.3s ease', display: 'flex', flexDirection: 'column' },
     corner: (pos) => ({ position: 'absolute', width: '14px', height: '14px', borderColor: 'var(--accent)', ...pos }),
-    btnPrimary: { padding: '10px 16px', background: 'var(--accent)', color: '#0a0a0b', border: 'none', fontWeight: '700', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em', cursor: 'pointer', clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)' },
   };
 
   const handleMouseEnter = (e) => {
@@ -92,11 +92,13 @@ export default function ShopPage() {
             <p style={{ color: 'var(--fg-muted)', gridColumn: '1 / -1', textAlign: 'center' }}>No products available.</p>
           ) : (
             filteredProducts.map((p) => (
-              <div 
+              // Link দিয়ে কার্ডটি র‍্যাপ করা হয়েছে, ক্লিক করলে ডিটেইলস পেজে যাবে
+              <Link 
                 key={p._id} 
+                href={`/product/${p._id}`}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
-                style={styles.card}
+                style={{ ...styles.card, textDecoration: 'none' }}
               >
                 <div style={styles.corner({top: '8px', left: '8px', borderTop: '1px solid', borderLeft: '1px solid'})}></div>
                 <div style={styles.corner({top: '8px', right: '8px', borderTop: '1px solid', borderRight: '1px solid'})}></div>
@@ -127,16 +129,6 @@ export default function ShopPage() {
                   {p.description}
                 </p>
 
-                {p.keyFeatures && p.keyFeatures.length > 0 && (
-                  <div style={{ marginBottom: '16px', borderTop: '1px solid var(--border)', paddingTop: '12px' }}>
-                    {p.keyFeatures.slice(0, 3).map((f, i) => (
-                      <p key={i} style={{ fontSize: '12px', color: 'var(--fg-dim)', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ color: 'var(--lime)' }}>✓</span> {f}
-                      </p>
-                    ))}
-                  </div>
-                )}
-
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
                   <span style={{ fontSize: '22px', fontWeight: '800', color: 'var(--lime)', fontFamily: "'Syne', sans-serif" }}>
                     ৳{p.offerPrice || p.price}
@@ -153,8 +145,11 @@ export default function ShopPage() {
                   )}
                 </div>
 
-                <button style={styles.btnPrimary}>Add to Cart →</button>
-              </div>
+                {/* "Add to Cart" বাটনের বদলে "View Details" টেক্সট দেওয়া হয়েছে */}
+                <div style={{ textAlign: 'center', color: 'var(--accent)', fontSize: '12px', textTransform: 'uppercase', fontFamily: "'JetBrains Mono', monospace", marginTop: 'auto' }}>
+                  View Details →
+                </div>
+              </Link>
             ))
           )}
         </div>

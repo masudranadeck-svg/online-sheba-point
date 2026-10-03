@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Product = require('../models/Product');
 
-// সব প্রোডাক্ট দেখার রুট
+// সব প্রোডাক্ট আনার রুট
 router.get('/', async (req, res) => {
     try {
         const products = await Product.find().sort({ createdAt: -1 });
@@ -12,7 +12,18 @@ router.get('/', async (req, res) => {
     }
 });
 
-// প্রোডাক্ট অ্যাড করার রুট (আপডেট করা হয়েছে)
+// নতুন: নির্দিষ্ট প্রোডাক্ট আনার রুট (ID দিয়ে)
+router.get('/:id', async (req, res) => {
+    try {
+        const product = await Product.findById(req.params.id);
+        if (!product) return res.status(404).json({ message: "Product not found" });
+        res.status(200).json(product);
+    } catch (error) {
+        res.status(500).json({ message: "Server Error", error: error.message });
+    }
+});
+
+// প্রোডাক্ট অ্যাড করার রুট
 router.post('/add', async (req, res) => {
     try {
         const { name, description, regularPrice, offerPrice, images, keyFeatures, specifications, category, softwareKey } = req.body;
