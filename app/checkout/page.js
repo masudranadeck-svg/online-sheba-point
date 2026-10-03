@@ -14,12 +14,33 @@ export default function Checkout() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
+  // ⬅️ নতুন: ডুপ্লিকেট আইটেম মার্জ করার ফাংশন
+  const mergeCartItems = (items) => {
+    const merged = [];
+    items.forEach((item) => {
+      const existingIndex = merged.findIndex((m) => m._id === item._id);
+      if (existingIndex !== -1) {
+        // একই প্রোডাক্ট আগে আছে → qty যোগ হবে
+        merged[existingIndex].qty += item.qty;
+      } else {
+        merged.push({ ...item });
+      }
+    });
+    return merged;
+  };
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUserEmail(user.email);
         const savedCart = JSON.parse(localStorage.getItem('cart')) || [];
-        setCart(savedCart);
+        
+        // ⬅️ মার্জ করে সেট করা হচ্ছে
+        const cleanCart = mergeCartItems(savedCart);
+        setCart(cleanCart);
+        
+        // ⬅️ মার্জ করা কার্ট আবার localStorage-এও সেভ হচ্ছে (পুরনো ডুপ্লিকেট মুছে যাবে)
+        localStorage.setItem('cart', JSON.stringify(cleanCart));
       } else {
         router.push('/login');
       }
