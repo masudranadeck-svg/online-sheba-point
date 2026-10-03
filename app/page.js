@@ -92,7 +92,8 @@ export default function Home() {
               <div style={{ position: 'absolute', inset: 0, border: '1px solid var(--border-bright)', borderRadius: '50%', animation: 'spin 20s linear infinite' }}></div>
               <div style={{ position: 'absolute', inset: '10%', border: '1px solid rgba(255,91,20,0.2)', borderRadius: '50%', animation: 'spin 30s linear infinite reverse' }}></div>
               <div style={{ position: 'absolute', inset: '20%', border: '1px dashed rgba(255,255,255,0.05)', borderRadius: '50%', animation: 'spin 25s linear infinite' }}></div>
-              <div style={{ position: 'absolute', inset: '28%', borderRadius: '50%', background: 'radial-gradient(circle at 32% 28%, #ffb98a 0%, #ff7a3a 25%, #ff5b14 45%, #a8350a 75%, #3a1003 100%)', boxShadow: '0 0 80px rgba(255,91,20,0.4), 0 0 160px rgba(255,91,20,0.4), inset -15px -25px 60px rgba(0,0,0,0.5), inset 8px 12px 30px rgba(255,255,255,0.15)' }}></div>
+              {/* এখানে pulse অ্যানিমেশন যোগ করা হয়েছে */}
+              <div style={{ position: 'absolute', inset: '28%', borderRadius: '50%', background: 'radial-gradient(circle at 32% 28%, #ffb98a 0%, #ff7a3a 25%, #ff5b14 45%, #a8350a 75%, #3a1003 100%)', boxShadow: '0 0 80px rgba(255,91,20,0.4), 0 0 160px rgba(255,91,20,0.4), inset -15px -25px 60px rgba(0,0,0,0.5), inset 8px 12px 30px rgba(255,255,255,0.15)', animation: 'pulse 5s ease-in-out infinite' }}></div>
             </div>
           </div>
         </div>

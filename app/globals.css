@@ -442,3 +442,11 @@ html { scroll-behavior: smooth; }
 .pv-cube::after { content:''; position:absolute; inset:20%; border-radius:4px; background:linear-gradient(135deg,var(--accent),#3a1003); box-shadow:0 0 30px var(--accent-glow); }
 .pv-lens { width:65%; aspect-ratio:1.3; border-radius:30%; background:linear-gradient(135deg,#1a1a1d,#0a0a0b); border:1px solid #2a2a30; box-shadow:0 20px 60px rgba(0,0,0,.5); position:relative; display:flex; align-items:center; justify-content:center; }
 .pv-lens::after { content:''; width:45%; aspect-ratio:1; border-radius:50%; background:radial-gradient(circle at 30% 30%,#fff5,var(--accent) 30%,#3a1003 90%); box-shadow:0 0 25px var(--accent-glow),inset -3px -5px 10px rgba(0,0,0,.4); }
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.04); opacity: 0.9; }
+}
