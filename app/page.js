@@ -67,8 +67,8 @@ export default function Home() {
         <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)', backgroundSize: '64px 64px' }}></div>
         <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '50%', backgroundImage: 'linear-gradient(rgba(255,91,20,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255,91,20,0.15) 1px, transparent 1px)', backgroundSize: '60px 60px', transform: 'perspective(500px) rotateX(60deg)', transformOrigin: 'center top', maskImage: 'linear-gradient(to bottom, black, transparent 80%)', WebkitMaskImage: 'linear-gradient(to bottom, black, transparent 80%)' }}></div>
         
-        <div style={styles.wrapper} className="grid lg:grid-cols-2 gap-12 items-center w-full pt-24 pb-12">
-          <div style={{ position: 'relative', zIndex: 10 }}>
+        <div style={{ ...styles.wrapper, display: 'flex', flexWrap: 'wrap', alignItems: 'center', width: '100%', paddingTop: '96px', paddingBottom: '48px' }}>
+          <div style={{ flex: '1 1 400px', position: 'relative', zIndex: 10, minWidth: '300px' }}>
             <div style={styles.eyebrow}>
               <span style={{ width: '24px', height: '1px', background: 'var(--accent)' }}></span>
               01 / Digital Ecosystem
@@ -87,15 +87,15 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Original AETHER Orb with Spinning Rings and Dots */}
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} className="hidden md:flex">
+          {/* Right Side Orb (With Rings, Dots and Floating Tags) */}
+          <div style={{ flex: '1 1 400px', display: 'flex', justifyContent: 'center', alignItems: 'center', minWidth: '300px', marginTop: '40px' }}>
             <div className="orb-wrap">
               <div className="ring r1"></div>
               <div className="ring r2"></div>
               <div className="ring r3"></div>
               <div className="orb-core"></div>
               
-              {/* Floating Tags (Points that rotate/move) */}
+              {/* Floating Tags (Points that move up and down) */}
               <div className="float-tag" style={{top:'8%', left:'-5%', animationDelay:'0s'}}>
                 <div style={{color:'#6b665e', marginBottom:'4px'}}>[01]</div>
                 <div style={{fontWeight:'600', color:'white'}}>Online Tools</div>
@@ -134,7 +134,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* NEW: BRIEF DESCRIPTION (জন্ম থেকে মৃত্যু পর্যন্ত) */}
+      {/* BRIEF DESCRIPTION */}
       <section style={{ padding: '80px 24px', textAlign: 'center' }}>
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
           <div style={styles.eyebrow}>
