@@ -6,12 +6,6 @@ export default function Home() {
   const [time, setTime] = useState('');
 
   useEffect(() => {
-    // Font Awesome CDN load করার জন্য
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
-    document.head.appendChild(link);
-
     const updateClock = () => {
       const now = new Date();
       const h = String(now.getHours()).padStart(2,'0');
@@ -21,14 +15,9 @@ export default function Home() {
     };
     const timer = setInterval(updateClock, 1000);
     updateClock();
-    
-    return () => {
-      clearInterval(timer);
-      document.head.removeChild(link);
-    };
+    return () => clearInterval(timer);
   }, []);
 
-  // সব সার্ভিসের লিস্ট
   const services = [
     { name: 'Digital Shop', desc: 'Keys & Subscriptions', link: '/shop', icon: 'fa-solid fa-bag-shopping' },
     { name: 'Online Tools', desc: '30+ Premium Tools', link: '/online-tools', icon: 'fa-solid fa-screwdriver-wrench' },
@@ -47,150 +36,132 @@ export default function Home() {
     { name: 'Remote Service', desc: 'Phone Unlock', link: '/remote', icon: 'fa-solid fa-satellite-dish' }
   ];
 
+  const styles = {
+    container: { background: 'var(--bg)', color: 'var(--fg)', fontFamily: "'Manrope',sans-serif", overflowX: 'hidden' },
+    wrapper: { maxWidth: '1280px', margin: '0 auto', padding: '0 24px' },
+    eyebrow: { display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: 'var(--accent)', fontFamily: "'JetBrains Mono', monospace", textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '16px' },
+    title: { fontSize: 'clamp(2.5rem, 5vw, 4rem)', fontWeight: '800', lineHeight: '1', margin: '0', fontFamily: "'Syne', sans-serif", letterSpacing: '-0.025em' },
+    btnPrimary: { display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 28px', background: 'var(--accent)', color: '#0a0a0b', border: 'none', fontWeight: '700', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.08em', cursor: 'pointer', clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)' },
+    btnGhost: { display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 28px', background: 'transparent', color: 'var(--fg)', border: '1px solid var(--border-bright)', fontWeight: '600', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.08em', cursor: 'pointer', clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)' },
+    card: { position: 'relative', background: 'var(--bg-card)', border: '1px solid transparent', borderRadius: '8px', padding: '24px', transition: 'all 0.3s ease', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' },
+    corner: (pos) => ({ position: 'absolute', width: '14px', height: '14px', borderColor: 'var(--accent)', ...pos }),
+    serviceIcon: { width: '56px', height: '56px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', marginBottom: '16px', background: 'var(--bg)', border: '1px solid var(--border-bright)', color: 'var(--accent)' }
+  };
+
+  const handleMouseEnter = (e) => {
+    e.currentTarget.style.borderColor = 'var(--accent)';
+    e.currentTarget.style.boxShadow = '0 0 25px rgba(255,91,20,0.4)';
+    e.currentTarget.style.transform = 'translateY(-4px)';
+  };
+  const handleMouseLeave = (e) => {
+    e.currentTarget.style.borderColor = 'transparent';
+    e.currentTarget.style.boxShadow = 'none';
+    e.currentTarget.style.transform = 'translateY(0)';
+  };
+
   return (
-    <div style={{ background: 'var(--bg)', color: 'var(--fg)', fontFamily: "'Manrope',sans-serif", overflowX: 'hidden' }}>
+    <div style={styles.container}>
       
       {/* HERO SECTION */}
-      <section className="relative min-h-screen pt-16 overflow-hidden grid-bg flex flex-col justify-center">
-        <div className="floor-grid"></div>
-        <div className="absolute top-1/4 -left-32 w-[500px] h-[500px] rounded-full bg-[var(--accent)] opacity-[0.08] blur-[120px] pointer-events-none"></div>
+      <section style={{ position: 'relative', minHeight: '100vh', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)', backgroundSize: '64px 64px' }}></div>
+        <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '50%', backgroundImage: 'linear-gradient(rgba(255,91,20,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255,91,20,0.15) 1px, transparent 1px)', backgroundSize: '60px 60px', transform: 'perspective(500px) rotateX(60deg)', transformOrigin: 'center top', maskImage: 'linear-gradient(to bottom, black, transparent 80%)', WebkitMaskImage: 'linear-gradient(to bottom, black, transparent 80%)' }}></div>
         
-        {/* Status Bar */}
-        <div className="relative max-w-[1480px] mx-auto w-full px-6 lg:px-10 pt-6 flex items-center justify-between text-[11px] font-mono text-[var(--fg-muted)]">
-          <div className="flex items-center gap-3">
-            <span className="live-dot"></span>
-            <span>SYSTEM ONLINE / 30+ TOOLS ACTIVE</span>
-          </div>
-          <div className="hidden md:flex items-center gap-6">
-            <span>LAT 23.8103° N</span>
-            <span>LON 90.4125° E</span>
-            <span>{time}</span>
-          </div>
-        </div>
-
-        {/* Hero Content Wrapper */}
-        <div className="relative max-w-[1480px] mx-auto w-full px-6 lg:px-10 grid lg:grid-cols-2 gap-8 items-center py-10 lg:py-16 flex-1">
-          
-          {/* Left: Copy */}
-          <div className="relative z-10 text-center lg:text-left">
-            <div className="section-eyebrow mb-8 justify-center lg:justify-start">01 / Digital Ecosystem</div>
-            
-            <h1 className="font-display font-bold text-4xl sm:text-5xl lg:text-6xl xl:text-7xl leading-[.95] tracking-tight">
+        <div style={styles.wrapper} className="grid lg:grid-cols-2 gap-12 items-center w-full pt-24 pb-12">
+          <div style={{ position: 'relative', zIndex: 10 }}>
+            <div style={styles.eyebrow}>
+              <span style={{ width: '24px', height: '1px', background: 'var(--accent)' }}></span>
+              01 / Digital Ecosystem
+            </div>
+            <h1 style={styles.title}>
               Tomorrow&apos;s<br/>
               digital store,<br/>
-              <span className="accent-underline">today.</span>
+              <span style={{ backgroundImage: 'linear-gradient(var(--accent), var(--accent))', backgroundSize: '100% 6px', backgroundRepeat: 'no-repeat', backgroundPosition: '0 88%' }}>today.</span>
             </h1>
-            
-            <p className="mt-8 max-w-md mx-auto lg:mx-0 text-[var(--fg-dim)] text-base leading-relaxed">
+            <p style={{ marginTop: '24px', maxWidth: '28rem', color: 'var(--fg-dim)', fontSize: '16px', lineHeight: '1.6' }}>
               Software keys, premium subscriptions, remote unlock services, and 30+ free professional online tools. Everything you need for your digital life, engineered for speed and security.
             </p>
-            <div className="mt-10 flex flex-wrap items-center gap-4 justify-center lg:justify-start">
-              <Link href="/shop" className="btn-primary">Explore Shop →</Link>
-              <Link href="/online-tools" className="btn-ghost">Access Free Tools</Link>
+            <div style={{ marginTop: '32px', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+              <Link href="/shop" style={styles.btnPrimary}>Explore Shop →</Link>
+              <Link href="/online-tools" style={styles.btnGhost}>Access Free Tools</Link>
             </div>
           </div>
 
-          {/* Right: Orb Visual */}
-          <div className="relative hidden md:flex justify-center items-center w-full py-10">
-            <div className="orb-wrap" style={{maxWidth: '400px', width: '100%'}}>
-              <div className="ring r1"></div>
-              <div className="ring r2"></div>
-              <div className="ring r3"></div>
-              <div className="orb-core"></div>
-              <div className="orb-hilight"></div>
-              
-              <div className="float-tag" style={{top:'0%',left:'0%',animationDelay:'0s'}}>
-                <div className="text-[var(--fg-muted)] mb-1">[01]</div>
-                <div className="font-semibold">Online Tools</div>
-                <div className="text-[var(--accent)] font-mono">30+ Free</div>
-              </div>
-              <div className="float-tag" style={{top:'45%',right:'0%',animationDelay:'1.5s'}}>
-                <div className="text-[var(--fg-muted)] mb-1">[02]</div>
-                <div className="font-semibold">Instant Delivery</div>
-                <div className="text-[var(--accent)] font-mono">Software Keys</div>
-              </div>
-              <div className="float-tag" style={{bottom:'0%',left:'5%',animationDelay:'3s'}}>
-                <div className="text-[var(--fg-muted)] mb-1">[03]</div>
-                <div className="font-semibold">Secure Payment</div>
-                <div className="text-[var(--accent)] font-mono">bKash / Nagad</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Marquee */}
-        <div className="relative border-t border-b border-[var(--border)] py-4 overflow-hidden mt-auto">
-          <div className="marquee text-sm font-mono text-[var(--fg-dim)] uppercase tracking-widest">
-            <div className="flex gap-12 items-center">
-              <span>Software Keys</span><span className="text-[var(--accent)]">◆</span>
-              <span>Remote Unlock</span><span className="text-[var(--accent)]">◆</span>
-              <span>Premium Subscriptions</span><span className="text-[var(--accent)]">◆</span>
-              <span>Real Estate</span><span className="text-[var(--accent)]">◆</span>
-              <span>30+ Free Tools</span><span className="text-[var(--accent)]">◆</span>
-              <span>Doc Scanner</span><span className="text-[var(--accent)]">◆</span>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} className="hidden md:flex">
+            <div style={{ position: 'relative', width: '100%', maxWidth: '400px', aspectRatio: 1 }}>
+              <div style={{ position: 'absolute', inset: 0, border: '1px solid var(--border-bright)', borderRadius: '50%', animation: 'spin 20s linear infinite' }}></div>
+              <div style={{ position: 'absolute', inset: '10%', border: '1px solid rgba(255,91,20,0.2)', borderRadius: '50%', animation: 'spin 30s linear infinite reverse' }}></div>
+              <div style={{ position: 'absolute', inset: '20%', border: '1px dashed rgba(255,255,255,0.05)', borderRadius: '50%', animation: 'spin 25s linear infinite' }}></div>
+              <div style={{ position: 'absolute', inset: '28%', borderRadius: '50%', background: 'radial-gradient(circle at 32% 28%, #ffb98a 0%, #ff7a3a 25%, #ff5b14 45%, #a8350a 75%, #3a1003 100%)', boxShadow: '0 0 80px rgba(255,91,20,0.4), 0 0 160px rgba(255,91,20,0.4), inset -15px -25px 60px rgba(0,0,0,0.5), inset 8px 12px 30px rgba(255,255,255,0.15)' }}></div>
             </div>
           </div>
         </div>
       </section>
 
       {/* HIGHLIGHTED STATS BAR */}
-      <section className="relative py-12 border-b border-[var(--border)]" style={{ background: 'var(--bg-elev)' }}>
-        <div className="max-w-[1480px] mx-auto px-6 lg:px-10 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+      <section style={{ background: 'var(--bg-elev)', borderBottom: '1px solid var(--border)', padding: '40px 24px' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '32px', textAlign: 'center' }}>
           <div>
-            <div className="stat-num text-4xl lg:text-5xl mb-2">100%</div>
-            <div className="text-xs font-mono text-[var(--fg-muted)] uppercase tracking-widest">Customer Satisfaction</div>
-          </div>
-          <div className="md:border-l md:border-r border-[var(--border)]">
-            <div className="stat-num text-4xl lg:text-5xl mb-2">24/7 365</div>
-            <div className="text-xs font-mono text-[var(--fg-muted)] uppercase tracking-widest">Dedicated Support</div>
+            <div style={{ fontSize: '40px', fontWeight: '800', color: 'var(--fg)', fontFamily: "'Syne', sans-serif" }}>100%</div>
+            <div style={{ fontSize: '11px', color: 'var(--fg-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', fontFamily: "'JetBrains Mono', monospace", marginTop: '8px' }}>Customer Satisfaction</div>
           </div>
           <div>
-            <div className="stat-num text-4xl lg:text-5xl mb-2">100%</div>
-            <div className="text-xs font-mono text-[var(--fg-muted)] uppercase tracking-widest">System Uptime</div>
+            <div style={{ fontSize: '40px', fontWeight: '800', color: 'var(--fg)', fontFamily: "'Syne', sans-serif" }}>24/7 365</div>
+            <div style={{ fontSize: '11px', color: 'var(--fg-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', fontFamily: "'JetBrains Mono', monospace", marginTop: '8px' }}>Dedicated Support</div>
+          </div>
+          <div>
+            <div style={{ fontSize: '40px', fontWeight: '800', color: 'var(--fg)', fontFamily: "'Syne', sans-serif" }}>100%</div>
+            <div style={{ fontSize: '11px', color: 'var(--fg-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', fontFamily: "'JetBrains Mono', monospace", marginTop: '8px' }}>System Uptime</div>
           </div>
         </div>
       </section>
 
-      {/* ALL SERVICES GRID (With Neon Hover Glow) */}
-      <section className="relative py-24 lg:py-32">
-        <div className="max-w-[1480px] mx-auto px-6 lg:px-10">
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-12">
-            <div>
-              <div className="section-eyebrow mb-4">02 / Services</div>
-              <h2 className="font-display font-bold text-5xl lg:text-7xl leading-none">The full<br/>arsenal.</h2>
-            </div>
-            <p className="max-w-sm text-[var(--fg-dim)] mt-6 lg:mt-0">
-              A complete digital ecosystem designed to accelerate your workflow and secure your digital assets.
-            </p>
+      {/* NEW: BRIEF DESCRIPTION (জন্ম থেকে মৃত্যু পর্যন্ত) */}
+      <section style={{ padding: '80px 24px', textAlign: 'center' }}>
+        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+          <div style={styles.eyebrow}>
+            <span style={{ width: '24px', height: '1px', background: 'var(--accent)' }}></span>
+            02 / Our Vision
           </div>
+          <h2 style={{ fontSize: '32px', fontWeight: '700', color: 'var(--fg)', fontFamily: "'Syne', sans-serif", marginBottom: '24px' }}>
+            এক পয়েন্ট, অসীম সমাধান।
+          </h2>
+          <p style={{ fontSize: '16px', color: 'var(--fg-dim)', lineHeight: '1.8' }}>
+            "Online Sheba Point" একটি সমন্বিত ডিজিটাল ইকোসিস্টেম। <span style={{ color: 'var(--accent)', fontWeight: '600' }}>জন্ম থেকে মৃত্যু পর্যন্ত একজন মানুষের অনলাইন সম্পর্কিত সব ধরনের দরকার পূরণের লক্ষ্যে</span> আমরা এই প্ল্যাটফর্ম তৈরি করেছি। শিশুর জন্ম নিবন্ধন থেকে শুরু করে শিক্ষা, ক্যারিয়ার, বিয়ে, ব্যবসা এবং জীবনের শেষ পর্যন্ত প্রয়োজনীয় সব অনলাইন সেবা এখন এক ঠিকানায়।
+          </p>
+        </div>
+      </section>
 
-          {/* Services Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      {/* ALL SERVICES GRID */}
+      <section style={{ padding: '0 24px 80px 24px' }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+            <div style={styles.eyebrow}>
+              <span style={{ width: '24px', height: '1px', background: 'var(--accent)' }}></span>
+              03 / Services
+            </div>
+            <h2 style={styles.title}>The Full Arsenal.</h2>
+          </div>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
             {services.map((service, i) => (
               <Link 
                 key={i} 
                 href={service.link} 
-                // এখানে Neon Glow এর জন্য Tailwind arbitrary values ব্যবহার করা হয়েছে
-                className="relative bg-[var(--bg-card)] border border-transparent p-6 rounded-lg flex flex-col items-center text-center transition-all duration-300 hover:bg-[var(--bg-elev)] hover:border-[var(--accent)] hover:shadow-[0_0_25px_rgba(255,91,20,0.4),inset_0_0_15px_rgba(255,91,20,0.1)] group"
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                style={styles.card}
               >
-                {/* Corner markers */}
-                <div className="corner-tl"></div><div className="corner-tr"></div><div className="corner-bl"></div><div className="corner-br"></div>
+                <div style={styles.corner({top: '8px', left: '8px', borderTop: '1px solid', borderLeft: '1px solid'})}></div>
+                <div style={styles.corner({top: '8px', right: '8px', borderTop: '1px solid', borderRight: '1px solid'})}></div>
+                <div style={styles.corner({bottom: '8px', left: '8px', borderBottom: '1px solid', borderLeft: '1px solid'})}></div>
+                <div style={styles.corner({bottom: '8px', right: '8px', borderBottom: '1px solid', borderRight: '1px solid'})}></div>
                 
-                {/* Icon Container */}
-                <div 
-                  className="w-14 h-14 rounded-xl flex items-center justify-center text-2xl mb-4 transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0_0_15px_var(--accent-glow)]"
-                  style={{ 
-                    background: 'var(--bg)', 
-                    border: '1px solid var(--border-bright)',
-                    color: 'var(--accent)',
-                  }}
-                >
+                <div style={styles.serviceIcon}>
                   <i className={service.icon}></i>
                 </div>
-                
-                {/* Text */}
-                <h3 className="font-display font-bold text-sm tracking-tight mb-1 text-[var(--fg)]">{service.name}</h3>
-                <p className="text-[11px] text-[var(--fg-muted)] leading-relaxed">{service.desc}</p>
+                <h3 style={{ fontSize: '14px', fontWeight: '700', color: 'var(--fg)', fontFamily: "'Syne', sans-serif", marginBottom: '4px' }}>{service.name}</h3>
+                <p style={{ fontSize: '11px', color: 'var(--fg-muted)' }}>{service.desc}</p>
               </Link>
             ))}
           </div>
