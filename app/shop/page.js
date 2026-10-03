@@ -63,7 +63,6 @@ export default function ShopPage() {
           <p style={{ maxWidth: '28rem', color: 'var(--fg-dim)', marginTop: '16px' }}>Software keys, premium subscriptions, and digital goods. Instant delivery upon purchase.</p>
         </div>
 
-        {/* Category Filter */}
         <div style={{ display: 'flex', gap: '8px', marginBottom: '32px', flexWrap: 'wrap' }}>
           {categories.map(cat => (
             <button 
@@ -86,7 +85,6 @@ export default function ShopPage() {
           ))}
         </div>
 
-        {/* Product Grid */}
         <div style={styles.grid}>
           {loading ? (
             <p style={{ color: 'var(--fg-muted)', gridColumn: '1 / -1', textAlign: 'center' }}>Loading products...</p>
@@ -105,7 +103,6 @@ export default function ShopPage() {
                 <div style={styles.corner({bottom: '8px', left: '8px', borderBottom: '1px solid', borderLeft: '1px solid'})}></div>
                 <div style={styles.corner({bottom: '8px', right: '8px', borderBottom: '1px solid', borderRight: '1px solid'})}></div>
 
-                {/* Badge & Stock */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                   <span style={{ fontSize: '9px', fontFamily: "'JetBrains Mono', monospace", textTransform: 'uppercase', letterSpacing: '0.1em', padding: '4px 8px', background: 'var(--accent)', color: '#0a0a0b', fontWeight: '700' }}>
                     {p.category ? p.category.toUpperCase() : 'ITEM'}
@@ -113,15 +110,19 @@ export default function ShopPage() {
                   <span style={{ fontSize: '9px', color: 'var(--lime)', fontFamily: "'JetBrains Mono', monospace" }}>IN STOCK</span>
                 </div>
 
-                {/* Title */}
+                {/* প্রোডাক্টের ছবি */}
+                {p.imageUrl && (
+                  <div style={{ width: '100%', height: '160px', marginBottom: '16px', borderRadius: '4px', overflow: 'hidden', background: 'var(--bg)' }}>
+                    <img src={p.imageUrl} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </div>
+                )}
+
                 <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '8px', color: 'var(--fg)', fontFamily: "'Syne', sans-serif" }}>{p.name}</h3>
                 
-                {/* Description */}
                 <p style={{ fontSize: '14px', color: 'var(--fg-muted)', marginBottom: '16px', flex: '1', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                   {p.description}
                 </p>
 
-                {/* Key Features (If exists) */}
                 {p.keyFeatures && p.keyFeatures.length > 0 && (
                   <div style={{ marginBottom: '16px', borderTop: '1px solid var(--border)', paddingTop: '12px' }}>
                     {p.keyFeatures.slice(0, 3).map((f, i) => (
@@ -132,7 +133,6 @@ export default function ShopPage() {
                   </div>
                 )}
 
-                {/* Price Section */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
                   <span style={{ fontSize: '22px', fontWeight: '800', color: 'var(--lime)', fontFamily: "'Syne', sans-serif" }}>
                     ৳{p.offerPrice || p.price}
@@ -149,7 +149,6 @@ export default function ShopPage() {
                   )}
                 </div>
 
-                {/* Button */}
                 <button style={styles.btnPrimary}>Add to Cart →</button>
               </div>
             ))

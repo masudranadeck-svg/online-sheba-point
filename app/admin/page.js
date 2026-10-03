@@ -14,6 +14,7 @@ export default function AdminPanel() {
   const [desc, setDesc] = useState('');
   const [regularPrice, setRegularPrice] = useState('');
   const [offerPrice, setOfferPrice] = useState('');
+  const [imageUrl, setImageUrl] = useState(''); // ছবির স্টেট
   const [keyFeatures, setKeyFeatures] = useState('');
   const [specifications, setSpecifications] = useState('');
   const [category, setCategory] = useState('shop');
@@ -49,6 +50,16 @@ export default function AdminPanel() {
     else alert("ভুল পাসওয়ার্ড! অ্যাক্সেস ডিনায়েড।");
   };
 
+  // ছবিকে Base64 এ কনভার্ট করার ফাংশন
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => setImageUrl(reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleAddProduct = async (e) => {
     e.preventDefault();
     setMessage('প্রোডাক্ট যোগ করা হচ্ছে...');
@@ -60,6 +71,7 @@ export default function AdminPanel() {
           description: desc, 
           regularPrice: Number(regularPrice), 
           offerPrice: Number(offerPrice), 
+          imageUrl, // ছবি পাঠানো হচ্ছে
           keyFeatures: keyFeatures.split('\n').filter(f => f.trim() !== ''), 
           specifications, 
           category, 
@@ -69,7 +81,7 @@ export default function AdminPanel() {
       const data = await res.json();
       setMessage(data.message);
       if (res.ok) { 
-        setName(''); setDesc(''); setRegularPrice(''); setOfferPrice(''); setKeyFeatures(''); setSpecifications(''); setKey(''); 
+        setName(''); setDesc(''); setRegularPrice(''); setOfferPrice(''); setImageUrl(''); setKeyFeatures(''); setSpecifications(''); setKey(''); 
         fetchData(); 
       }
     } catch (error) { setMessage('সার্ভার এরর!'); }
@@ -151,7 +163,6 @@ export default function AdminPanel() {
           ))}
         </div>
 
-        {/* Add Product Tab */}
         {activeTab === 'add' && (
           <div style={{ ...cardStyle, maxWidth: '600px' }}>
             <div style={{ position: 'absolute', top: '8px', left: '8px', width: '14px', height: '14px', borderTop: '1px solid var(--accent)', borderLeft: '1px solid var(--accent)' }}></div>
@@ -162,6 +173,14 @@ export default function AdminPanel() {
             <h2 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '32px', fontFamily: "'Syne', sans-serif" }}>New Product</h2>
             <form onSubmit={handleAddProduct} style={{ display: 'grid', gap: '24px' }}>
               <div><label style={labelStyle}>Name</label><input type="text" value={name} onChange={(e) => setName(e.target.value)} required style={inputStyle} /></div>
+              
+              {/* ছবি আপলোডের অপশন */}
+              <div>
+                <label style={labelStyle}>Product Image</label>
+                <input type="file" accept="image/*" onChange={handleImageUpload} style={{ color: 'var(--fg-muted)', fontSize: '14px', padding: '8px 0' }} />
+                {imageUrl && <img src={imageUrl} alt="Preview" style={{ width: '80px', height: '80px', objectFit: 'cover', marginTop: '12px', borderRadius: '4px', border: '1px solid var(--border)' }} />}
+              </div>
+
               <div><label style={labelStyle}>Description</label><textarea value={desc} onChange={(e) => setDesc(e.target.value)} required style={{...inputStyle, resize: 'none', minHeight: '60px'}} /></div>
               
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
@@ -189,7 +208,6 @@ export default function AdminPanel() {
           </div>
         )}
 
-        {/* Product List Tab */}
         {activeTab === 'list' && (
           <div style={{ ...cardStyle, overflowX: 'auto' }}>
             <div style={{ position: 'absolute', top: '8px', left: '8px', width: '14px', height: '14px', borderTop: '1px solid var(--accent)', borderLeft: '1px solid var(--accent)' }}></div>
@@ -212,7 +230,6 @@ export default function AdminPanel() {
           </div>
         )}
 
-        {/* Post Job Tab */}
         {activeTab === 'job' && (
           <div style={{ ...cardStyle, maxWidth: '600px' }}>
             <div style={{ position: 'absolute', top: '8px', left: '8px', width: '14px', height: '14px', borderTop: '1px solid var(--accent)', borderLeft: '1px solid var(--accent)' }}></div>
@@ -234,7 +251,6 @@ export default function AdminPanel() {
           </div>
         )}
 
-        {/* Orders Tab */}
         {activeTab === 'orders' && (
           <div style={{ ...cardStyle, overflowX: 'auto' }}>
             <div style={{ position: 'absolute', top: '8px', left: '8px', width: '14px', height: '14px', borderTop: '1px solid var(--accent)', borderLeft: '1px solid var(--accent)' }}></div>
