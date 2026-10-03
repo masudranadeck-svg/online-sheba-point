@@ -87,13 +87,30 @@ export default function Home() {
             </div>
           </div>
 
+          {/* Original AETHER Orb with Spinning Rings and Dots */}
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} className="hidden md:flex">
-            <div style={{ position: 'relative', width: '100%', maxWidth: '400px', aspectRatio: 1 }}>
-              <div style={{ position: 'absolute', inset: 0, border: '1px solid var(--border-bright)', borderRadius: '50%', animation: 'spin 20s linear infinite' }}></div>
-              <div style={{ position: 'absolute', inset: '10%', border: '1px solid rgba(255,91,20,0.2)', borderRadius: '50%', animation: 'spin 30s linear infinite reverse' }}></div>
-              <div style={{ position: 'absolute', inset: '20%', border: '1px dashed rgba(255,255,255,0.05)', borderRadius: '50%', animation: 'spin 25s linear infinite' }}></div>
-              {/* এখানে pulse অ্যানিমেশন যোগ করা হয়েছে */}
-              <div style={{ position: 'absolute', inset: '28%', borderRadius: '50%', background: 'radial-gradient(circle at 32% 28%, #ffb98a 0%, #ff7a3a 25%, #ff5b14 45%, #a8350a 75%, #3a1003 100%)', boxShadow: '0 0 80px rgba(255,91,20,0.4), 0 0 160px rgba(255,91,20,0.4), inset -15px -25px 60px rgba(0,0,0,0.5), inset 8px 12px 30px rgba(255,255,255,0.15)', animation: 'pulse 5s ease-in-out infinite' }}></div>
+            <div className="orb-wrap">
+              <div className="ring r1"></div>
+              <div className="ring r2"></div>
+              <div className="ring r3"></div>
+              <div className="orb-core"></div>
+              
+              {/* Floating Tags (Points that rotate/move) */}
+              <div className="float-tag" style={{top:'8%', left:'-5%', animationDelay:'0s'}}>
+                <div style={{color:'#6b665e', marginBottom:'4px'}}>[01]</div>
+                <div style={{fontWeight:'600', color:'white'}}>Online Tools</div>
+                <div style={{color:'#4e6ef2', fontFamily:'monospace'}}>30+ Free</div>
+              </div>
+              <div className="float-tag" style={{top:'42%', right:'-8%', animationDelay:'1.5s'}}>
+                <div style={{color:'#6b665e', marginBottom:'4px'}}>[02]</div>
+                <div style={{fontWeight:'600', color:'white'}}>Instant Delivery</div>
+                <div style={{color:'#4e6ef2', fontFamily:'monospace'}}>Software Keys</div>
+              </div>
+              <div className="float-tag" style={{bottom:'6%', left:'5%', animationDelay:'3s'}}>
+                <div style={{color:'#6b665e', marginBottom:'4px'}}>[03]</div>
+                <div style={{fontWeight:'600', color:'white'}}>Secure Payment</div>
+                <div style={{color:'#4e6ef2', fontFamily:'monospace'}}>bKash / Nagad</div>
+              </div>
             </div>
           </div>
         </div>

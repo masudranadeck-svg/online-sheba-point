@@ -450,3 +450,40 @@ html { scroll-behavior: smooth; }
   0%, 100% { transform: scale(1); opacity: 1; }
   50% { transform: scale(1.04); opacity: 0.9; }
 }
+/* ===============================================
+   AETHER ORB ANIMATIONS 
+   =============================================== */
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); filter: brightness(1) }
+  50% { transform: scale(1.04); filter: brightness(1.15) }
+}
+@keyframes orbit-a { from { transform: rotate(0) } to { transform: rotate(360deg) } }
+@keyframes orbit-b { from { transform: rotate(0) } to { transform: rotate(-360deg) } }
+@keyframes float-y { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-12px) } }
+
+.orb-wrap { position: relative; width: 100%; aspect-ratio: 1; max-width: 450px; margin: auto; }
+.orb-core {
+  position: absolute; inset: 28%; border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, #ffb98a 0%, #ff7a3a 25%, #ff5b14 45%, #a8350a 75%, #3a1003 100%);
+  box-shadow: 0 0 80px rgba(255,91,20,0.45), 0 0 160px rgba(255,91,20,0.45), inset -15px -25px 60px rgba(0,0,0,0.5), inset 8px 12px 30px rgba(255,255,255,0.15);
+  animation: pulse 5s ease-in-out infinite;
+}
+.ring { position: absolute; border-radius: 50%; border: 1px solid #3a3a42; inset: 0; }
+.ring.r1 { animation: orbit-a 24s linear infinite; }
+.ring.r2 { inset: 10%; animation: orbit-b 32s linear infinite; border-color: rgba(255,91,20,0.25); }
+.ring.r3 { inset: 20%; animation: orbit-a 28s linear infinite; border-style: dashed; border-color: rgba(255,255,255,0.08; 
+.ring.r1::before, .ring.r2::before, .ring.r3::before {
+  content: ''; position: absolute; width: 10px; height: 10px; border-radius: 50%;
+  background: #ff5b14; top: -5px; left: 50%; transform: translateX(-50%);
+  box-shadow: 0 0 20px #ff5b14, 0 0 40px rgba(255,91,20,0.5);
+}
+.ring.r2::before { background: #d4ff3a; box-shadow: 0 0 15px #d4ff3a; }
+.ring.r3::before { background: #e8b04b; box-shadow: 0 0 15px #e8b04b; }
+
+.float-tag {
+  position: absolute; backdrop-filter: blur(12px);
+  background: rgba(20,20,22,0.7); border: 1px solid #3a3a42;
+  border-radius: 10px; padding: 10px 14px; font-size: 11px;
+  animation: float-y 6s ease-in-out infinite;
+}
