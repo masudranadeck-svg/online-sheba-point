@@ -14,13 +14,12 @@ export default function Checkout() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  // ⬅️ নতুন: ডুপ্লিকেট আইটেম মার্জ করার ফাংশন
+  // ডুপ্লিকেট আইটেম মার্জ করার ফাংশন
   const mergeCartItems = (items) => {
     const merged = [];
     items.forEach((item) => {
       const existingIndex = merged.findIndex((m) => m._id === item._id);
       if (existingIndex !== -1) {
-        // একই প্রোডাক্ট আগে আছে → qty যোগ হবে
         merged[existingIndex].qty += item.qty;
       } else {
         merged.push({ ...item });
@@ -34,12 +33,8 @@ export default function Checkout() {
       if (user) {
         setUserEmail(user.email);
         const savedCart = JSON.parse(localStorage.getItem('cart')) || [];
-        
-        // ⬅️ মার্জ করে সেট করা হচ্ছে
         const cleanCart = mergeCartItems(savedCart);
         setCart(cleanCart);
-        
-        // ⬅️ মার্জ করা কার্ট আবার localStorage-এও সেভ হচ্ছে (পুরনো ডুপ্লিকেট মুছে যাবে)
         localStorage.setItem('cart', JSON.stringify(cleanCart));
       } else {
         router.push('/login');
@@ -47,6 +42,19 @@ export default function Checkout() {
     });
     return () => unsubscribe();
   }, [router]);
+
+  // ⬅️ নতুন: একটা আইটেম ডিলিট করার ফাংশন
+  const handleDeleteItem = (index) => {
+    const updatedCart = cart.filter((_, i) => i !== index);
+    setCart(updatedCart);
+    localStorage.setItem('cart', JSON.stringify(updatedCart));
+  };
+
+  // ⬅️ নতুন: পুরো কার্ট ক্লিয়ার করার ফাংশন
+  const handleClearCart = () => {
+    setCart([]);
+    localStorage.removeItem('cart');
+  };
 
   const total = cart.reduce((s, c) => s + c.price * c.qty, 0);
 
@@ -105,7 +113,10 @@ export default function Checkout() {
     input: { width: '100%', background: 'transparent', border: 'none', borderBottom: '1px solid var(--border-bright)', padding: '12px 0', color: 'white', outline: 'none', fontSize: '14px' },
     label: { fontSize: '10px', color: 'var(--fg-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', fontFamily: "'JetBrains Mono', monospace", display: 'block', marginBottom: '8px' },
     btnPrimary: { display: 'block', width: '100%', padding: '14px', background: 'var(--accent)', color: '#0a0a0b', border: 'none', fontWeight: '700', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.08em', cursor: 'pointer', clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)' },
-    payBtn: (isActive) => ({ flex: 1, padding: '10px', background: isActive ? 'var(--accent)' : 'transparent', color: isActive ? '#0a0a0b' : 'var(--fg-dim)', border: isActive ? 'none' : '1px solid var(--border-bright)', cursor: 'pointer', fontSize: '12px', textTransform: 'uppercase', fontFamily: "'JetBrains Mono', monospace", transition: 'all 0.3s' })
+    payBtn: (isActive) => ({ flex: 1, padding: '10px', background: isActive ? 'var(--accent)' : 'transparent', color: isActive ? '#0a0a0b' : 'var(--fg-dim)', border: isActive ? 'none' : '1px solid var(--border-bright)', cursor: 'pointer', fontSize: '12px', textTransform: 'uppercase', fontFamily: "'JetBrains Mono', monospace", transition: 'all 0.3s' }),
+    // ⬇️ নতুন: delete বাটনের styles
+    deleteBtn: { background: 'transparent', border: '1px solid var(--border-bright)', color: 'var(--fg-muted)', width: '28px', height: '28px', borderRadius: '4px', cursor: 'pointer', fontSize: '14px', fontWeight: '700', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', flexShrink: 0 },
+    clearBtn: { background: 'transparent', border: 'none', color: 'var(--fg-muted)', fontSize: '11px', fontFamily: "'JetBrains Mono', monospace", textTransform: 'uppercase', letterSpacing: '0.1em', cursor: 'pointer', textDecoration: 'underline' }
   };
 
   return (
@@ -130,20 +141,37 @@ export default function Checkout() {
             <div style={styles.corner({bottom: '8px', left: '8px', borderBottom: '1px solid', borderLeft: '1px solid'})}></div>
             <div style={styles.corner({bottom: '8px', right: '8px', borderBottom: '1px solid', borderRight: '1px solid'})}></div>
 
-            <h2 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '24px', fontFamily: "'Syne', sans-serif" }}>Order Summary</h2>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+              <h2 style={{ fontSize: '20px', fontWeight: '700', fontFamily: "'Syne', sans-serif", margin: 0 }}>Order Summary</h2>
+              {cart.length > 0 && (
+                <button onClick={handleClearCart} style={styles.clearBtn}>Clear All</button>
+              )}
+            </div>
+
             {cart.length === 0 ? (
               <p style={{ color: 'var(--fg-muted)', textAlign: 'center', padding: '32px 0' }}>Your cart is empty.</p>
             ) : (
               cart.map((c, i) => (
-                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', paddingBottom: '16px', borderBottom: '1px solid var(--border)' }}>
-                  <div>
+                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', paddingBottom: '16px', borderBottom: '1px solid var(--border)', gap: '8px' }}>
+                  <div style={{ flex: 1 }}>
                     <h4 style={{ fontSize: '14px', fontWeight: '600', color: 'var(--fg)', margin: '0 0 4px 0' }}>{c.name}</h4>
                     <p style={{ fontSize: '12px', color: 'var(--fg-muted)', margin: '0' }}>Qty: {c.qty}</p>
                   </div>
-                  <p style={{ fontSize: '16px', fontWeight: '700', color: 'var(--lime)', margin: '0' }}>৳{c.price * c.qty}</p>
+                  <p style={{ fontSize: '16px', fontWeight: '700', color: 'var(--lime)', margin: 0 }}>৳{c.price * c.qty}</p>
+                  {/* ⬇️ নতুন: Delete বাটন */}
+                  <button
+                    onClick={() => handleDeleteItem(i)}
+                    style={styles.deleteBtn}
+                    title="Remove item"
+                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#ff4d4d'; e.currentTarget.style.color = '#ff4d4d'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border-bright)'; e.currentTarget.style.color = 'var(--fg-muted)'; }}
+                  >
+                    ×
+                  </button>
                 </div>
               ))
             )}
+
             <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '24px', paddingTop: '24px', borderTop: '1px solid var(--border)' }}>
               <span style={{ fontSize: '16px', fontWeight: '700', color: 'var(--fg)' }}>Total Amount</span>
               <span style={{ fontSize: '24px', fontWeight: '800', color: 'var(--accent)', fontFamily: "'Syne', sans-serif" }}>৳{total}</span>
