@@ -36,6 +36,7 @@ export default function OnlineTools() {
     { name: 'Social Media Resizer', link: '/online-tools/social-resizer', icon: 'fa-solid fa-mobile-screen' },
     { name: 'Image Color Picker', link: '/online-tools/color-picker', icon: 'fa-solid fa-palette' },
     { name: 'PDF CMYK Converter', link: '/online-tools/pdf-cmyk-converter', icon: 'fa-solid fa-print' },
+    { name: 'PDF to EPS/SVG/AI', link: '/online-tools/pdf-vector-converter', icon: 'fa-solid fa-bezier-curve' },
     { name: 'Bijoy Avro Converter', link: '/online-tools/bijoy-avro-converter', icon: 'fa-solid fa-language' },
     { name: 'Password Generator', link: '/online-tools/password-generator', icon: 'fa-solid fa-key' },
     { name: 'Word Counter', link: '/online-tools/word-counter', icon: 'fa-solid fa-calculator' }
