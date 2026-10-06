@@ -35,6 +35,7 @@ export default function OnlineTools() {
     { name: 'Text to PDF Maker', link: '/online-tools/text-to-pdf', icon: 'fa-solid fa-pen-to-square' },
     { name: 'Social Media Resizer', link: '/online-tools/social-resizer', icon: 'fa-solid fa-mobile-screen' },
     { name: 'Image Color Picker', link: '/online-tools/color-picker', icon: 'fa-solid fa-palette' },
+    { name: 'PDF Editor (BN/EN)', link: '/online-tools/pdf-editor', icon: 'fa-solid fa-file-pen' },
     { name: 'PDF CMYK Converter', link: '/online-tools/pdf-cmyk-converter', icon: 'fa-solid fa-print' },
     { name: 'PDF to EPS/SVG/AI', link: '/online-tools/pdf-vector-converter', icon: 'fa-solid fa-bezier-curve' },
     { name: 'Bijoy Avro Converter', link: '/online-tools/bijoy-avro-converter', icon: 'fa-solid fa-language' },
@@ -42,7 +43,6 @@ export default function OnlineTools() {
     { name: 'Word Counter', link: '/online-tools/word-counter', icon: 'fa-solid fa-calculator' }
   ];
 
-  // সার্চ ফিল্টার লজিক (বড়-ছোট হাতের অক্ষর ignore করে)
   const filteredTools = tools.filter((tool) =>
     tool.name.toLowerCase().includes(search.toLowerCase())
   );
@@ -55,14 +55,12 @@ export default function OnlineTools() {
     <div style={{ background: 'var(--bg)', color: 'var(--fg)', fontFamily: "'Manrope',sans-serif", overflowX: 'hidden', minHeight: '100vh' }}>
       <div className="max-w-[1480px] mx-auto px-6 lg:px-10 pt-24 pb-16">
         
-        {/* Header */}
         <div className="mb-8">
           <div className="section-eyebrow mb-4">02 / Utilities</div>
           <h1 className="font-display font-bold text-5xl lg:text-7xl leading-none">Free Tools.</h1>
           <p className="max-w-sm text-[var(--fg-dim)] mt-6">30+ premium tools for your daily digital tasks. 100% free and secure.</p>
         </div>
 
-        {/* Search Bar */}
         <div className="mb-8 relative max-w-xl">
           <i className="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-[var(--fg-muted)]"></i>
           <input
@@ -83,14 +81,12 @@ export default function OnlineTools() {
           )}
         </div>
 
-        {/* Result count */}
         {search && (
           <p className="text-xs text-[var(--fg-muted)] mb-4 font-mono">
             {filteredTools.length} tool{filteredTools.length !== 1 ? 's' : ''} found for "{search}"
           </p>
         )}
 
-        {/* Tools Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {filteredTools.map((tool, i) => (
             <div 
@@ -112,7 +108,6 @@ export default function OnlineTools() {
           ))}
         </div>
 
-        {/* No results message */}
         {filteredTools.length === 0 && (
           <div className="text-center py-20">
             <i className="fa-solid fa-magnifying-glass text-4xl text-[var(--fg-muted)] mb-4"></i>
