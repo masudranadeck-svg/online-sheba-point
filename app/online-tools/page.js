@@ -27,7 +27,7 @@ export default function OnlineTools() {
     { name: 'Image to Text', link: '/online-tools/image-to-text', icon: 'fa-solid fa-font' },
     { name: 'Pro QR Generator', link: '/online-tools/qr-generator', icon: 'fa-solid fa-qrcode' },
     { name: 'Image Compressor', link: '/online-tools/image-compressor', icon: 'fa-solid fa-minimize' },
-    { name: 'Doc Scanner (PDF)', link: '/online-tools/doc-scanner', icon: 'fa-solid fa-scanner' },
+    { name: 'Doc Scanner (PDF)', link: '/online-tools/doc-scanner', icon: 'fa-solid fa-fax' },
     { name: 'PDF Merge & Split', link: '/online-tools/merge-pdf', icon: 'fa-solid fa-layer-group' },
     { name: 'Watermark Adder', link: '/online-tools/watermark-adder', icon: 'fa-solid fa-droplet' },
     { name: 'PDF Page Manager', link: '/online-tools/pdf-page-manager', icon: 'fa-solid fa-folder-tree' },
