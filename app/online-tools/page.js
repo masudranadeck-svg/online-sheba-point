@@ -41,6 +41,7 @@ export default function OnlineTools() {
     { name: 'Bijoy Avro Converter', link: '/online-tools/bijoy-avro-converter', icon: 'fa-solid fa-language' },
     { name: 'Password Generator', link: '/online-tools/password-generator', icon: 'fa-solid fa-key' },
     { name: 'Word Counter', link: '/online-tools/word-counter', icon: 'fa-solid fa-calculator' }
+    { name: 'Age Calculator', link: '/online-tools/age-calculator', icon: 'fa-solid fa-cake-candles' },
   ];
 
   const filteredTools = tools.filter((tool) =>
