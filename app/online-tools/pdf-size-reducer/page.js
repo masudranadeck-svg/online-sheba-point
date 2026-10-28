@@ -20,6 +20,11 @@ const QUALITY_OPTIONS = [
     title: 'উন্নত কোয়ালিটি',
     desc: 'প্রিন্টের মতো কোয়ালিটি থাকবে, তবে সাইজ তুলনামূলক কম কমবে।',
   },
+  {
+    id: 'custom',
+    title: '🎯 কাস্টম সাইজ',
+    desc: 'নিজেই টার্গেট সাইজ সেট করো — যেমন ৫০০ KB বা ২ MB (ফর্ম/আপলোডের জন্য দারুণ)।',
+  },
 ];
 
 function formatSize(bytes) {
@@ -36,6 +41,8 @@ export default function PdfSizeReducerPage() {
   const [error, setError] = useState('');
   const [result, setResult] = useState(null);
   const [dragOver, setDragOver] = useState(false);
+  const [customValue, setCustomValue] = useState('');
+  const [customUnit, setCustomUnit] = useState('kb');
   const inputRef = useRef(null);
 
   const pickFile = (f) => {
@@ -47,8 +54,8 @@ export default function PdfSizeReducerPage() {
       setError('শুধুমাত্র PDF ফাইল দিয়ে কাজ করা যাবে!');
       return;
     }
-    if (f.size > 30 * 1024 * 1024) {
-      setError('ফাইল সাইজ ৩০ MB এর কম হতে হবে!');
+    if (f.size > 100 * 1024 * 1024) {
+      setError('ফাইল সাইজ ১০০ MB এর কম হতে হবে!');
       return;
     }
     setFile(f);
@@ -64,19 +71,38 @@ export default function PdfSizeReducerPage() {
 
   const handleCompress = async () => {
     if (!file || loading) return;
+    // কাস্টম সাইজ ভ্যালিডেশন
+    let targetKB = null;
+    if (level === 'custom') {
+      const kb = customUnit === 'mb' ? parseFloat(customValue) * 1024 : parseFloat(customValue);
+      if (!kb || isNaN(kb) || kb < 5) {
+        setError('কাস্টম সাইজ লিখো (কমপক্ষে ৫ KB)!');
+        return;
+      }
+      targetKB = Math.round(kb);
+      if (targetKB * 1024 >= file.size) {
+        setError('তোমার ফাইল ইতিমধ্যেই এই সাইজের চেয়ে ছোট! আরো ছোট টার্গেট দাও।');
+        return;
+      }
+    }
     setLoading(true);
     setError('');
     setResult(null);
     try {
       const fd = new FormData();
       fd.append('file', file);
-      fd.append('level', level);
+      if (targetKB) {
+        fd.append('targetKB', String(targetKB));
+      } else {
+        fd.append('level', level);
+      }
       const res = await fetch(API_URL, { method: 'POST', body: fd });
       if (!res.ok) {
         let msg = `সার্ভার এরর (${res.status}) — একটু পরে আবার চেষ্টা করুন`;
         try {
           const j = await res.json();
-          if (j && j.error) msg = j.error;
+          if (j && j.details) msg = j.details;
+          else if (j && j.error) msg = j.error;
         } catch (e) {}
         throw new Error(msg);
       }
@@ -85,7 +111,7 @@ export default function PdfSizeReducerPage() {
       const url = URL.createObjectURL(blob);
       const outName = 'compressed-' + file.name;
       const saved = file.size > 0 ? Math.round(((file.size - blob.size) / file.size) * 100) : 0;
-      setResult({ url, size: blob.size, name: outName, saved });
+      setResult({ url, size: blob.size, name: outName, saved, usedTargetKB: targetKB });
       // Automatic download শুরু
       const a = document.createElement('a');
       a.href = url;
@@ -144,7 +170,7 @@ export default function PdfSizeReducerPage() {
             <div>
               <div className="text-5xl mb-3">🗜️</div>
               <p className="font-medium">PDF ফাইল এখানে টেনে আনুন</p>
-              <p className="text-[var(--fg-muted)] text-sm mt-1">অথবা ক্লিক করে সিলেক্ট করুন (সর্বোচ্চ ৩০ MB)</p>
+              <p className="text-[var(--fg-muted)] text-sm mt-1">অথবা ক্লিক করে সিলেক্ট করুন (সর্বোচ্চ ১০০ MB)</p>
             </div>
           )}
         </div>
@@ -172,6 +198,33 @@ export default function PdfSizeReducerPage() {
               </button>
             ))}
           </div>
+
+          {level === 'custom' && (
+            <div className="mt-3 p-4 rounded-lg border border-[var(--accent)]/60 bg-[var(--bg-elev)]">
+              <p className="text-sm font-medium mb-3">🎯 কত ছোট সাইজ চাও? লিখো:</p>
+              <div className="flex gap-2">
+                <input
+                  type="number"
+                  min="5"
+                  value={customValue}
+                  onChange={(e) => setCustomValue(e.target.value)}
+                  placeholder="যেমন: 500"
+                  className="flex-1 bg-[var(--bg)] border border-[var(--border-bright)] rounded-lg px-4 py-3 text-sm outline-none focus:border-[var(--accent)]"
+                />
+                <select
+                  value={customUnit}
+                  onChange={(e) => setCustomUnit(e.target.value)}
+                  className="bg-[var(--bg)] border border-[var(--border-bright)] rounded-lg px-3 py-3 text-sm outline-none focus:border-[var(--accent)]"
+                >
+                  <option value="kb">KB</option>
+                  <option value="mb">MB</option>
+                </select>
+              </div>
+              <p className="text-[var(--fg-muted)] text-xs mt-2">
+                💡 যত ছোট সাইজ চাওবে, ছবির মান তত কমবে — সার্ভার নিজে নিজে সেরা রেজাল্ট খুঁজে নেবে।
+              </p>
+            </div>
+          )}
         </div>
 
         {/* ===== ধাপ ৩: বাটন ===== */}
@@ -220,6 +273,11 @@ export default function PdfSizeReducerPage() {
             {result.saved <= 0 && (
               <p className="text-[var(--fg-muted)] text-sm mb-4">
                 ℹ️ এই ফাইলটি আগে থেকেই অপটিমাইজড ছিল, তাই সাইজ খুব একটা কমেনি।
+              </p>
+            )}
+            {result.usedTargetKB && result.size > result.usedTargetKB * 1024 && (
+              <p className="text-[var(--fg-muted)] text-sm mb-4">
+                ℹ️ এত ছোট সাইজে নামানো সম্ভব হয়নি — এটাই সবচেয়ে ছোট রেজাল্ট যেটা পাওয়া গেছে।
               </p>
             )}
             <div className="flex gap-3">
